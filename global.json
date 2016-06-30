@@ -1,0 +1,6 @@
+{
+    "projects": [
+        "Konscious.Security.Cryptography.Blake2",
+        "Konscious.Security.Cryptography.Blake2.Test"
+    ]
+}

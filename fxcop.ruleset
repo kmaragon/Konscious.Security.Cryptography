@@ -1,0 +1,3 @@
+<RuleSet Name="Avalara.Identity Rule Set" Description=" " ToolsVersion="14.0">
+  <Include Path="allrules.ruleset" Action="Default" />
+</RuleSet>
