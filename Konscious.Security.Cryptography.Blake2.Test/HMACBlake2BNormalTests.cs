@@ -57,6 +57,14 @@ namespace Konscious.Security.Cryptography.Test
             AssertMatch(0xa089e023, 521, 512, 368);
         }
 
+        [Fact]
+        public void UserFriendlyErrorWithoutInitialize()
+        {
+            var subject = new HMACBlake2B(512);
+            var exc = Assert.ThrowsAny<InvalidOperationException>(() => subject.ComputeHash(Encoding.UTF8.GetBytes("Hello")));
+            Assert.Contains("Initialize", exc.Message);
+        }
+
         private void AssertMatch(uint seed, int dataSize, int hashSize, int keySize)
         {
             var rand = new Random((int)seed);
@@ -68,11 +76,14 @@ namespace Konscious.Security.Cryptography.Test
 
             var slow = new HMACBlake2B(key, hashSize, () => new Blake2bSlow(hashSize / 8));
             var normal = new HMACBlake2B(key, hashSize, () => new Blake2bNormal(hashSize / 8));
+            var deflt = new HMACBlake2B(key, hashSize);
 
             slow.Initialize();
             normal.Initialize();
+            deflt.Initialize();
 
             Assert.Equal(slow.ComputeHash(data), normal.ComputeHash(data));
+            Assert.Equal(deflt.ComputeHash(data), normal.ComputeHash(data));
         }
     }
 }

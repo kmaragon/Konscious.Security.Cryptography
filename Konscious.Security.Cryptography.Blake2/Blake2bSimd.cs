@@ -1,7 +1,7 @@
-using System;
-
 namespace Konscious.Security.Cryptography
 {
+    using System;
+
     internal class Blake2bSimd : Blake2bBase
     {
         public Blake2bSimd(int HashBytes)
@@ -48,13 +48,13 @@ namespace Konscious.Security.Cryptography
                     {
                         for (var i = 0; i < 16; i++)
                         {
-                            m[i] = (m[i] >> 56) |
-                                ((m[i] >> 40) & 0xff00UL) |
-                                ((m[i] >> 24) & 0xff0000UL) |
-                                ((m[i] >> 8) & 0xff000000UL) |
-                                ((m[i] << 8) & 0xff00000000UL) |
-                                ((m[i] << 24) & 0xff0000000000UL) |
-                                ((m[i] << 40) & 0xff000000000000UL) |
+                            m[i] = (m[i] >> 56) ^
+                                ((m[i] >> 40) & 0xff00UL) ^
+                                ((m[i] >> 24) & 0xff0000UL) ^
+                                ((m[i] >> 8) & 0xff000000UL) ^
+                                ((m[i] << 8) & 0xff00000000UL) ^
+                                ((m[i] << 24) & 0xff0000000000UL) ^
+                                ((m[i] << 40) & 0xff000000000000UL) ^
                                 ((m[i] << 56) & 0xff00000000000000UL);
                         }
                     }
@@ -188,11 +188,6 @@ namespace Konscious.Security.Cryptography
                 for (var i = 0; i < 8; ++i)
                     Hash[i] ^= v[i] ^ v[i + 8];
             }
-        }
-
-        private static ulong RotateSlow(ulong x, int y)
-        {
-            return (((x) >> (y)) ^ ((x) << (64 - (y))));
         }
     }
 }

@@ -147,10 +147,5 @@ namespace Konscious.Security.Cryptography
             for (var i = 0; i < 8; ++i)
                 Hash[i] ^= v[i] ^ v[i + 8];
         }
-
-        private static ulong RotateSlow(ulong x, int y)
-        {
-            return (((x) >> (y)) ^ ((x) << (64 - (y))));
-        }
     }
 }

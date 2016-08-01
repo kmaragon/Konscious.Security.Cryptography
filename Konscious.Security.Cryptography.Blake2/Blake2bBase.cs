@@ -30,7 +30,7 @@ namespace Konscious.Security.Cryptography
         public void Initialize(byte[] key)
         {
             Array.Copy(Blake2Constants.IV, _h, 8);
-            _h[0] ^= 0x01010000UL ^ (((ulong)key.Length) << 8) ^ _hashSize;
+            _h[0] ^= 0x01010000UL ^ (((ulong)(key?.Length ?? 0)) << 8) ^ _hashSize;
 
             // start with the key
             if (key?.Length > 0)

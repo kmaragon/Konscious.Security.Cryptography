@@ -10,22 +10,11 @@ namespace Konscious.Security.Cryptography
     public class HMACBlake2B : HMAC
     {
         /// <summary>
-        /// Construct an HMACBlake2B
+        /// Construct an HMACBlake2B without a key
         /// </summary>
-        /// <param name="keyData">The key for the HMAC</param>
-        /// <param name="hashSize">The hash size in bits</param>
-        public HMACBlake2B(byte[] keyData, int hashSize)
+        /// <param name="hashSize">the hash size in bits</param>
+        public HMACBlake2B(int hashSize)
         {
-            if (keyData == null)
-            {
-                keyData = new byte[0];
-            }
-
-            if (keyData.Length > 64)
-            {
-                throw new ArgumentException("Key needs to be between 0 and 64 bytes", nameof(keyData));
-            }
-
             HashName = "Blake2B";
 
             if ((hashSize % 8) > 0)
@@ -38,9 +27,29 @@ namespace Konscious.Security.Cryptography
                 throw new ArgumentException("Hash Size must be between 8 and 512", nameof(hashSize));
             }
 
-            Key = keyData;
             _hashSize = hashSize;
             _createImpl = CreateImplementation;
+        }
+
+        /// <summary>
+        /// Construct an HMACBlake2B
+        /// </summary>
+        /// <param name="keyData">The key for the HMAC</param>
+        /// <param name="hashSize">The hash size in bits</param>
+        public HMACBlake2B(byte[] keyData, int hashSize)
+            : this(hashSize)
+        {
+            if (keyData == null)
+            {
+                keyData = new byte[0];
+            }
+
+            if (keyData.Length > 64)
+            {
+                throw new ArgumentException("Key needs to be between 0 and 64 bytes", nameof(keyData));
+            }
+
+            Key = keyData;
         }
 
         internal HMACBlake2B(byte[] keyData, int hashSize, Func<Blake2bBase> baseCreator)
@@ -94,6 +103,9 @@ namespace Konscious.Security.Cryptography
         /// <param name="size">The amount of data in the hash to consume</param>
         protected override void HashCore(byte[] data, int offset, int size)
         {
+            if (_implementation == null)
+                throw new InvalidOperationException("Instance was not initialized. Call Initialize() first");
+
             _implementation.Update(data, offset, size);
         }
 
