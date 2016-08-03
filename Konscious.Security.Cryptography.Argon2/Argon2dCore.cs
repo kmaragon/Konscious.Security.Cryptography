@@ -36,7 +36,7 @@ namespace Konscious.Security.Cryptography
             }
         }
 
-        internal override IArgon2PseudoRands GenerateState(Argon2Lane[] lanes, int pass, int lane, int slice)
+        internal override IArgon2PseudoRands GenerateState(Argon2Lane[] lanes, int segmentLength, int pass, int lane, int slice)
         {
             return new PseudoRands(lanes);
         }

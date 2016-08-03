@@ -9,8 +9,6 @@ namespace Konscious.Security.Cryptography
 
     internal abstract class Argon2Core
     {
-        private static object _mutex = new object();
-
         public Argon2Core(int hashSize)
         {
             _tagLine = hashSize;
@@ -41,9 +39,7 @@ namespace Konscious.Security.Cryptography
             {
                 for (var s = 0; s < 4; s++)
                 {
-                    // s = slice
-                    for (int l = 0; l < lanes.Length; l++)
-                    //var segment = Enumerable.Range(0, lanes.Length).Select(l => Task.Run(() =>
+                    var segment = Enumerable.Range(0, lanes.Length).Select(l => Task.Run(() =>
                     {
                         var lane = lanes[l];
                         var curOffset = s * segmentLength + start;
@@ -55,7 +51,7 @@ namespace Konscious.Security.Cryptography
                             prevOffset = lane.BlockCount - 1;
                         }
 
-                        var state = GenerateState(lanes, i, l, s);
+                        var state = GenerateState(lanes, segmentLength, i, l, s);
                         for (var c = start; c < segmentLength; ++c, curOffset++)
                         {
                             var pseudoRand = state.PseudoRand(c, prevLane, prevOffset);
@@ -70,24 +66,12 @@ namespace Konscious.Security.Cryptography
                             var refBlock = lanes[refLane][refIndex];
                             var curBlock = lane[curOffset];
 
-                            lock (_mutex)
-                            {
-                                System.Console.Error.WriteLine($"running segment {c}");
-                                System.Console.Error.WriteLine($"prev_lane:  {prevLane}");
-                                System.Console.Error.WriteLine($"prev_index: {prevOffset}");
-                                System.Console.Error.WriteLine($"ref_lane:   {refLane}");
-                                System.Console.Error.WriteLine($"ref_index:  {refIndex}");
-                                System.Console.Error.WriteLine($"next_lane:  {l}");
-                                System.Console.Error.WriteLine($"next_block: {curOffset}");
-                                System.Console.Error.Write("\n\n");
-                            }
-
                             Compress(curBlock, refBlock, lanes[prevLane][prevOffset]);
                             prevOffset = curOffset;
                         }
-                    }//));
+                    }));
 
-                    //await Task.WhenAll(segment);
+                    await Task.WhenAll(segment);
                     start = 0;
                 }
             }
@@ -156,7 +140,7 @@ namespace Konscious.Security.Cryptography
                 dest[n] ^= tmpblock[n];
         }
 
-        internal abstract IArgon2PseudoRands GenerateState(Argon2Lane[] lanes, int pass, int lane, int slice);
+        internal abstract IArgon2PseudoRands GenerateState(Argon2Lane[] lanes, int segmentLength, int pass, int lane, int slice);
 
         internal async Task<Argon2Lane[]> InitializeLanes(byte[] password)
         {

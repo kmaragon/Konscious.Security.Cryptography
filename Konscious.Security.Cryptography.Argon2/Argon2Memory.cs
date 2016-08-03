@@ -56,6 +56,15 @@ namespace Konscious.Security.Cryptography
             }
         }
 
+        public void Set(ulong value)
+        {
+            var off = _offset;
+            for (var i = 0; i < 128; i++)
+            {
+                _data[off++] = 0;
+            }
+        }
+
         public IEnumerator<ulong> GetEnumerator()
         {
             return new Enumerator(_data, _offset);
