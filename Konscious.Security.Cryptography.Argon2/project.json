@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": false,
+    "warningsAsErrors": true,
+    "xmlDoc": true,
+    "additionalArguments": [
+      "/unsafe",
+      "/ruleset:../fxcop.ruleset"
+    ]
+  },
+  "dependencies":
+  {
+      "Konscious.Security.Cryptography.Blake2": "1.*",
+      "Microsoft.CodeAnalysis.FxCopAnalyzers": {
+        "version": "1.1.*",
+        "type": "build"
+      }
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      },
+      "imports": "dnxcore50"
+    }
+  }
+}
