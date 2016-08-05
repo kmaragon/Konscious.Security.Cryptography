@@ -32,7 +32,6 @@ namespace Konscious.Security.Cryptography
         internal async Task<byte[]> Hash(byte[] password)
         {
             var lanes = await InitializeLanes(password);
-            var segmentLength = MemorySize / (lanes.Length * 4);
 
             var start = 2;
             for (var i = 0; i < Iterations; ++i)
@@ -42,6 +41,7 @@ namespace Konscious.Security.Cryptography
                     var segment = Enumerable.Range(0, lanes.Length).Select(l => Task.Run(() =>
                     {
                         var lane = lanes[l];
+                        var segmentLength = lane.BlockCount / 4;
                         var curOffset = s * segmentLength + start;
 
                         var prevLane = l;
@@ -113,7 +113,7 @@ namespace Konscious.Security.Cryptography
             var ds = new LittleEndianActiveStream();
             ds.Expose(lanes[0][lanes[0].BlockCount - 1]);
 
-            ModifiedBlake2.Blake2Prime(lanes[0][1], ds, _tagLine / 8);
+            ModifiedBlake2.Blake2Prime(lanes[0][1], ds, _tagLine);
             var result = new byte[_tagLine];
 
             var stream = new Argon2Memory.Stream(lanes[0][1]);
@@ -146,8 +146,14 @@ namespace Konscious.Security.Cryptography
         {
             var blockHash = Initialize(password);
 
-            var lanes = new Argon2Lane[MemorySize / (4 * DegreeOfParallelism)];
+            var lanes = new Argon2Lane[DegreeOfParallelism];
+
+            // adjust memory size if needed so that each segment has
+            // an even size
+            var segmentLength = MemorySize / (lanes.Length * 4);
+            MemorySize = segmentLength * 4 * lanes.Length;
             var blocksPerLane = MemorySize / lanes.Length;
+
             if (blocksPerLane < 4)
             {
                 throw new InvalidOperationException($"Memory should be enough to provide at least 4 blocks per {nameof(DegreeOfParallelism)}");
@@ -180,6 +186,8 @@ namespace Konscious.Security.Cryptography
             }
 
             await Task.WhenAll(init);
+
+            Array.Clear(blockHash, 0, blockHash.Length);
             return lanes;
         }
 

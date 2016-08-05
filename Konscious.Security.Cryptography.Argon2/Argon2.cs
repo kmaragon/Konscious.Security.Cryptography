@@ -6,7 +6,7 @@ namespace Konscious.Security.Cryptography
     /// <summary>
     /// An implementation of Argon2 https://github.com/P-H-C/phc-winner-argon2
     /// </summary>
-    public class Argon2 : DeriveBytes
+    public abstract class Argon2 : DeriveBytes
     {
         /// <summary>
         /// Create an Argon2 for encrypting the given password
@@ -29,9 +29,18 @@ namespace Konscious.Security.Cryptography
         /// </summary>
         public override byte[] GetBytes(int bc)
         {
-            var n = new Argon2iCore(bc);
-            n.Initialize(_password);
-            throw new NotImplementedException();
+            if (bc > 1024)
+                throw new NotSupportedException("Current implementation of Argon2 only supports generating up to 1024 bytes");
+
+            var n = BuildCore(bc);
+            n.Salt = Salt;
+            n.Secret = KnownSecret;
+            n.AssociatedData = AssociatedData;
+            n.Iterations = Iterations;
+            n.MemorySize = MemorySize;
+            n.DegreeOfParallelism = DegreeOfParallelism;
+
+            return n.Hash(_password).Result;
         }
 
         /// <summary>
@@ -63,6 +72,8 @@ namespace Konscious.Security.Cryptography
         /// The number of lanes to use while processing the hash
         /// </summary>
         public int DegreeOfParallelism { get; set; }
+
+        internal abstract Argon2Core BuildCore(int bc);
 
         private byte[] _password;
     }

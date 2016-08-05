@@ -27,6 +27,7 @@ namespace Konscious.Security.Cryptography
 
         public void Blit(byte[] data, int destOffset = 0, int srcOffset = 0, int byteLength = -1)
         {
+            int remainder = 0;
             int length;
             if (byteLength < 0)
             {
@@ -35,6 +36,7 @@ namespace Konscious.Security.Cryptography
             else
             {
                 length = byteLength / 8;
+                remainder = byteLength - (length * 8);
             }
 
             int readSize = Math.Min((data.Length / 8), length);
@@ -48,6 +50,17 @@ namespace Konscious.Security.Cryptography
             for (; i < readSize; ++i)
             {
                 this[i] = reader.ReadUInt64();
+            }
+
+            if (remainder > 0)
+            {
+                ulong extra = 0;
+
+                // get the remainder as a few bytes
+                for (var n = 0; n < remainder; ++n)
+                    extra = extra | ((ulong)reader.ReadByte() << (8 * n));
+
+                this[i++] = extra;
             }
 
             for (; i < length; ++i)
