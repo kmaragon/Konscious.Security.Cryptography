@@ -3,6 +3,8 @@
 
 # Konscious.Security.Cryptography.Blake2
 
+[NuGet package](https://www.nuget.org/packages/Konscious.Security.Cryptography.Blake2/)
+
 An implementation of Blake2 per RFC 7693 in C# and available for .NET core
 
 https://blake2.net/
@@ -10,7 +12,6 @@ https://blake2.net/
 Usage follows standard types found in System.Security.Cryptography in corefx. Specifically HMAC algorithms.
 
 ## Usage
-
 
 You can use Blake2B interchangeably with any code that uses [`System.Security.Cryptography.HashAlgorithm`](https://docs.microsoft.com/en-us/dotnet/core/api/system.security.cryptography.hashalgorithm#System_Security_Cryptography_HashAlgorithm) Or [`System.Security.Cryptography.HMAC`](https://docs.microsoft.com/en-us/dotnet/core/api/system.security.cryptography.hmac#System_Security_Cryptography_HMAC) And usage is generally consistent with both.
 
@@ -55,6 +56,8 @@ hashAlgorithm.Key = otherByteArray;
 ```
 
 # Konscious.Security.Cryptography.Argon2
+
+[NuGet package](https://www.nuget.org/packages/Konscious.Security.Cryptography.Argon2/)
 
 An implementation of Argon2 winner of PHC
 
