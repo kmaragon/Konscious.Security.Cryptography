@@ -27,7 +27,7 @@ Create an instance of the algorithm:
 using Konscious.Security.Cryptography;
 ```
 ```C#
-var hashAlgorithm = new Blake2B(512)
+var hashAlgorithm = new Blake2B(512);
 ```
 This will give you a default implementation with no salt that generates a 512 bit key
 ```
