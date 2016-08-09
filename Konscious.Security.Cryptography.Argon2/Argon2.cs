@@ -32,6 +32,15 @@ namespace Konscious.Security.Cryptography
             if (bc > 1024)
                 throw new NotSupportedException("Current implementation of Argon2 only supports generating up to 1024 bytes");
 
+            if (Iterations < 1)
+                throw new InvalidOperationException("Cannot perform an Argon2 Hash with out at least 1 iteration");
+
+            if (MemorySize < 4)
+                throw new InvalidOperationException("Argon2 requires a minimum of 4kB of memory (MemorySize >= 4)");
+
+            if (DegreeOfParallelism < 1)
+                throw new InvalidOperationException("Argon2 requires at least 1 thread (DegreeOfParallelism)");
+
             var n = BuildCore(bc);
             n.Salt = Salt;
             n.Secret = KnownSecret;
