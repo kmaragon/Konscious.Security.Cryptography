@@ -77,6 +77,10 @@ namespace Konscious.Security.Cryptography
         {
             get
             {
+#if NET461
+                if (KeyValue == null)
+                    return null;
+#endif
                 return base.Key;
             }
 

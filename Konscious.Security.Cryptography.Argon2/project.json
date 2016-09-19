@@ -27,6 +27,8 @@
         }
       },
       "imports": "dnxcore50"
+    },
+    "net461": {
     }
   }
 }

@@ -26,6 +26,11 @@
         }
       },
       "imports": "dnxcore50"
+    },
+    "net461": {
+      "dependencies": {
+        "System.Numerics.Vectors": "4.1.1"
+      }
     }
   }
 }
