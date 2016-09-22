@@ -1,11 +1,10 @@
-.NET Core Crypto Extensions
+.NET Core Crypto Extensions [![build status](https://ci.appveyor.com/api/projects/status/rqgutdor95f2exav/branch/master?svg=true&branch=master "Appveyor Build Status")](https://ci.appveyor.com/project/kmaragon/konscious-security-cryptography/branch/master)
+
 ===============
 
 # Konscious.Security.Cryptography.Blake2
 
 [NuGet package](https://www.nuget.org/packages/Konscious.Security.Cryptography.Blake2/)
-
-[![build status](https://ci.appveyor.com/api/projects/status/rqgutdor95f2exav?svg=true "Appveyor Build Status")](https://ci.appveyor.com/project/kmaragon/konscious-security-cryptography)
 
 An implementation of Blake2 per RFC 7693 in C# and available for .NET core
 
