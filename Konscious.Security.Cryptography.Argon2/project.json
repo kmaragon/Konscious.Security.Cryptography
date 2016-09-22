@@ -1,5 +1,7 @@
 {
-  "version": "1.0.1-*",
+  "version": "1.0.2-*",
+  "authors": [ "Keef Aragon" ],
+  "title": "Konscious.Security.Cryptography.Argon2",
   "buildOptions": {
     "debugType": "portable",
     "emitEntryPoint": false,
@@ -12,7 +14,7 @@
   },
   "dependencies":
   {
-      "Konscious.Security.Cryptography.Blake2": "1.*",
+      "Konscious.Security.Cryptography.Blake2": "1.0.*",
       "Microsoft.CodeAnalysis.FxCopAnalyzers": {
         "version": "1.1.*",
         "type": "build"
@@ -28,7 +30,35 @@
       },
       "imports": "dnxcore50"
     },
-    "net461": {
+    "net451": {
+    },
+    "netstandard1.3": {
+      "dependencies": {
+        "NETStandard.Library": "1.3.0",
+        "System.IO.UnmanagedMemoryStream": "4.0.1"
+      },
+      "imports": "net46"
     }
+  },
+  "description": "An implementation of Argon2 winner of PHC\n\nhttps://password-hashing.net/#argon2\n\nUsage follows standard types found in System.Security.Cryptography in corefx. Specifically DeriveBytes.",
+  "copyright": "(c) 2016 Keef Aragon",
+  "packOptions": {
+    "owners": [
+      "Keef Aragon"
+    ],
+    "summary": "Argon2 library for .NET",
+    "licenseUrl": "https://github.com/kmaragon/Konscious.Security.Cryptography/blob/master/LICENSE",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/kmaragon/Konscious.Security.Cryptography.git"
+    },
+    "tags": [
+      "crypto",
+      "cryptography",
+      "argon2",
+      "argon2i",
+      "argon2d",
+      "password"
+    ]
   }
 }

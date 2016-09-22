@@ -1,0 +1,33 @@
+version: '1.0.{build}'
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+nuget:
+  disable_publish_on_pr: true
+configuration:
+- Debug
+- Release
+platform: Any CPU
+init:
+- ps: $Env:LABEL = "build" + $ENV:APPVEYOR_BUILD_NUMBER.PadLeft(4, "0")
+before_build:
+- appveyor-retry dotnet restore -v Minimal
+build_script:
+- dotnet build "Konscious.Security.Cryptography.Blake2" -c %CONFIGURATION% --version-suffix %LABEL%
+- dotnet build "Konscious.Security.Cryptography.Blake2.Test" -c %CONFIGURATION% --version-suffix %LABEL%
+- dotnet build "Konscious.Security.Cryptography.Argon2" -c %CONFIGURATION% --version-suffix %LABEL%
+- dotnet build "Konscious.Security.Cryptography.Argon2.Test" -c %CONFIGURATION% --version-suffix %LABEL%
+test_script:
+- dotnet test "Konscious.Security.Cryptography.Blake2.Test" -c %CONFIGURATION% -f netcoreapp1.0
+- dotnet test "Konscious.Security.Cryptography.Argon2.Test" -c %CONFIGURATION% -f netcoreapp1.0
+after_build:
+- dotnet pack "Konscious.Security.Cryptography.Blake2" -c %CONFIGURATION% -o artifacts
+- dotnet pack "Konscious.Security.Cryptography.Argon2" -c %CONFIGURATION% -o artifacts
+artifacts:
+- path: artifacts\*.nupkg
+  name: NuGet
+cache:
+- '%USERPROFILE%\.nuget\packages'
+
