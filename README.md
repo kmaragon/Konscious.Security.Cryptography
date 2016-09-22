@@ -5,6 +5,8 @@
 
 [NuGet package](https://www.nuget.org/packages/Konscious.Security.Cryptography.Blake2/)
 
+[![build status](https://ci.appveyor.com/api/projects/status/rqgutdor95f2exav?svg=true "Appveyor Build Status")](https://ci.appveyor.com/project/kmaragon/konscious-security-cryptography)
+
 An implementation of Blake2 per RFC 7693 in C# and available for .NET core
 
 https://blake2.net/
