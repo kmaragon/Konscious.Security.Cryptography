@@ -44,6 +44,7 @@
     }
   },
   "description": "An implementation of Blake2 for .NET that integrates with the standard crypto libraries",
+  "projectUrl": "https://github.com/kmaragon/Konscious.Security.Cryptography",
   "copyright": "(c) 2016 Keef Aragon",
   "packOptions": {
     "owners": [
