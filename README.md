@@ -1,5 +1,4 @@
 .NET Core Crypto Extensions [![build status](https://ci.appveyor.com/api/projects/status/rqgutdor95f2exav/branch/master?svg=true&branch=master "Appveyor Build Status")](https://ci.appveyor.com/project/kmaragon/konscious-security-cryptography/branch/master)
-
 ===============
 
 # Konscious.Security.Cryptography.Blake2
