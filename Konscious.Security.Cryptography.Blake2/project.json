@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2-*",
+  "version": "1.0.3-*",
   "authors": [ "Keef Aragon" ],
   "title": "Konscious.Security.Cryptography.Blake2",
   "buildOptions": {
