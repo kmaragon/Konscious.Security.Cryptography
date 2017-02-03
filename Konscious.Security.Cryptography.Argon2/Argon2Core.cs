@@ -31,7 +31,7 @@ namespace Konscious.Security.Cryptography
         // private stuff starts here
         internal async Task<byte[]> Hash(byte[] password)
         {
-            var lanes = await InitializeLanes(password);
+            var lanes = await InitializeLanes(password).ConfigureAwait(false);
 
             var start = 2;
             for (var i = 0; i < Iterations; ++i)
@@ -71,7 +71,7 @@ namespace Konscious.Security.Cryptography
                         }
                     }));
 
-                    await Task.WhenAll(segment);
+                    await Task.WhenAll(segment).ConfigureAwait(false);
                     start = 0;
                 }
             }
