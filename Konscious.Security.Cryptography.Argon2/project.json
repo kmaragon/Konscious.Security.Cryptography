@@ -42,7 +42,7 @@
   },
   "projectUrl": "https://github.com/kmaragon/Konscious.Security.Cryptography",
   "description": "An implementation of Argon2 winner of PHC\n\nhttps://password-hashing.net/#argon2\n\nUsage follows standard types found in System.Security.Cryptography in corefx. Specifically DeriveBytes.",
-  "copyright": "(c) 2016 Keef Aragon",
+  "copyright": "(c) 2017 Keef Aragon",
   "packOptions": {
     "owners": [
       "Keef Aragon"
