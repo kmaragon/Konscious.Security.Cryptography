@@ -31,7 +31,7 @@ namespace Konscious.Security.Cryptography
         // private stuff starts here
         internal async Task<byte[]> Hash(byte[] password)
         {
-            var lanes = await InitializeLanes(password).ConfigureAwait(false);
+            var lanes = await InitializeLanes(password);
 
             var start = 2;
             for (var i = 0; i < Iterations; ++i)
@@ -71,7 +71,7 @@ namespace Konscious.Security.Cryptography
                         }
                     }));
 
-                    await Task.WhenAll(segment).ConfigureAwait(false);
+                    await Task.WhenAll(segment);
                     start = 0;
                 }
             }
@@ -116,8 +116,10 @@ namespace Konscious.Security.Cryptography
             ModifiedBlake2.Blake2Prime(lanes[0][1], ds, _tagLine);
             var result = new byte[_tagLine];
 
-            var stream = new Argon2Memory.Stream(lanes[0][1]);
-            stream.Read(result, 0, _tagLine);
+            using (var stream = new Argon2Memory.Stream(lanes[0][1]))
+            {
+                stream.Read(result, 0, _tagLine);
+            }
 
             return result;
         }

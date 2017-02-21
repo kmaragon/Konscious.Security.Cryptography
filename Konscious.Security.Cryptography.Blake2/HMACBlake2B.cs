@@ -108,7 +108,7 @@ namespace Konscious.Security.Cryptography
         protected override void HashCore(byte[] data, int offset, int size)
         {
             if (_implementation == null)
-                throw new InvalidOperationException("Instance was not initialized. Call Initialize() first");
+                Initialize();
 
             _implementation.Update(data, offset, size);
         }

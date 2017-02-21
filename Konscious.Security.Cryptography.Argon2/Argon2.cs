@@ -1,6 +1,7 @@
 namespace Konscious.Security.Cryptography
 {
     using System;
+    using System.Threading.Tasks;
     using System.Security.Cryptography;
 
     /// <summary>
@@ -29,6 +30,15 @@ namespace Konscious.Security.Cryptography
         /// </summary>
         public override byte[] GetBytes(int bc)
         {
+            return GetBytesAsync(bc).Result;
+        }
+
+
+        /// <summary>
+        /// Implementation of GetBytes
+        /// </summary>
+        public Task<byte[]> GetBytesAsync(int bc)
+        {
             if (bc > 1024)
                 throw new NotSupportedException("Current implementation of Argon2 only supports generating up to 1024 bytes");
 
@@ -49,7 +59,7 @@ namespace Konscious.Security.Cryptography
             n.MemorySize = MemorySize;
             n.DegreeOfParallelism = DegreeOfParallelism;
 
-            return n.Hash(_password).Result;
+            return n.Hash(_password);
         }
 
         /// <summary>

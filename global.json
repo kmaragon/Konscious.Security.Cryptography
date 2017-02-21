@@ -1,5 +1,7 @@
 {
     "projects": [
+        "Konscious.Security.Cryptography.Argon2",
+        "Konscious.Security.Cryptography.Argon2.Test",
         "Konscious.Security.Cryptography.Blake2",
         "Konscious.Security.Cryptography.Blake2.Test"
     ]
