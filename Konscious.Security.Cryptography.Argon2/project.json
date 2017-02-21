@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3-*",
+  "version": "1.1.0-*",
   "authors": [ "Keef Aragon" ],
   "title": "Konscious.Security.Cryptography.Argon2",
   "buildOptions": {
@@ -14,7 +14,7 @@
   },
   "dependencies":
   {
-      "Konscious.Security.Cryptography.Blake2": "1.0.3-*",
+      "Konscious.Security.Cryptography.Blake2": "1.0.4-*",
       "Microsoft.CodeAnalysis.FxCopAnalyzers": {
         "version": "1.1.*",
         "type": "build"

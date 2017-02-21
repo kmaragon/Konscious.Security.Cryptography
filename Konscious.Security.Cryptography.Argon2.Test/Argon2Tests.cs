@@ -177,5 +177,31 @@ namespace Konscious.Security.Cryptography
             Assert.Equal(47, actual.Length);
             Assert.Equal(expected, actual);
         }
+
+        [Fact(Skip="This is for manual inspection of memory use")]
+        public void LookForMemoryLeaks()
+        {
+            for (int i = 0; i < 150000; i++)
+            {
+                Hash("TestPassword", "TestSalt");
+                System.GC.Collect();
+            }
+        }
+
+        public static byte[] Hash(string password, string salt)
+        {
+            var saltBytes = Encoding.UTF8.GetBytes(salt);
+            var passwordBytes = Encoding.UTF8.GetBytes(password);
+            using (var argon2 = new Argon2i(passwordBytes)
+                                {
+                                    DegreeOfParallelism = 16,
+                                    MemorySize = 8192,
+                                    Iterations = 40,
+                                    Salt = saltBytes
+                                })
+            {
+                return argon2.GetBytes(128);
+            }
+        }
     }
 }

@@ -118,6 +118,12 @@ namespace Konscious.Security.Cryptography
                 base.Initialize((byte*)_data.AddrOfPinnedObject() + (memory._offset * 8), 1024, 1024, FileAccess.Read);
             }
 
+            protected override void Dispose(bool isDispose)
+            {
+                base.Dispose(isDispose);
+                _data.Free();
+            }
+
             private GCHandle _data;
         }
 

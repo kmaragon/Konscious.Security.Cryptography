@@ -134,6 +134,10 @@ namespace Konscious.Security.Cryptography
             {
                 _bufferSetupActions.AddFirst(() => BufferSubStream(stream));
             }
+            else
+            {
+                stream.Dispose();
+            }
 
             _bufferAvailable = result;
         }
