@@ -188,6 +188,17 @@ namespace Konscious.Security.Cryptography
             }
         }
 
+        [Fact]
+        public void Magic32MBMemorySize()
+        {
+            var passwordWithSalt = Encoding.UTF8.GetBytes("PasswordWithSalt");
+            var argon2 = new Argon2i(passwordWithSalt);
+            argon2.DegreeOfParallelism = 4;
+            argon2.MemorySize = 32 * 1024;
+            argon2.Iterations = 4;
+            var hash = argon2.GetBytes(128);
+        }
+
         public static byte[] Hash(string password, string salt)
         {
             var saltBytes = Encoding.UTF8.GetBytes(salt);

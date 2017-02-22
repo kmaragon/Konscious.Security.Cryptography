@@ -6,11 +6,6 @@ namespace Konscious.Security.Cryptography
     {
         public Blake2bBase(int hashBytes)
         {
-            if (hashBytes < 8 || hashBytes > 512)
-            {
-                throw new ArgumentException("Hash Size must be between 8 and 512", nameof(hashBytes));
-            }
-
             _hashSize = (uint)hashBytes;
         }
 
