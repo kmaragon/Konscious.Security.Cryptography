@@ -1,6 +1,7 @@
 namespace Konscious.Security.Cryptography
 {
     using System.Text;
+    using System.Threading;
     using Xunit;
 
     public class Argon2Tests
@@ -176,6 +177,38 @@ namespace Konscious.Security.Cryptography
             var actual = subject.GetBytes(47);
             Assert.Equal(47, actual.Length);
             Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void Simualte_SynchronizationContext_deadlock()
+        {
+			var mre = new ManualResetEvent(false);
+            var ctx = new DedicatedThreadSynchronisationContext();
+            bool flag = false;
+            ctx.Post((state) =>
+            {    
+                // TestArgon2WithShortAwkwardSize test
+                var expected = new byte[] {
+                0x0c, 0xdc, 0x03, 0xb1, 0x37, 0xe2, 0xae, 0xb4, 0xa0, 0xa5, 0xab, 0x08, 0x85, 0x4d, 0x5d, 0x2c,
+                0x3a, 0x5e, 0xaf, 0x42, 0x2d, 0x88, 0x7e, 0x15, 0x38, 0xda, 0xdc, 0xdb, 0x15, 0xdb, 0xfe, 0x24,
+                0xa3, 0x29, 0xcb, 0xc4, 0x23, 0xcc, 0x5e, 0xbf, 0xc3, 0x93, 0x60, 0xa0, 0xc8, 0x4e, 0x06
+                };
+
+                var subject = new Argon2i(Encoding.UTF8.GetBytes("#S3cr3t+Ke4$"));
+                subject.DegreeOfParallelism = 5;
+                subject.Iterations = 7;
+                subject.MemorySize = 1024;
+                subject.Salt = _salt;
+
+                var actual = subject.GetBytes(47);
+                Assert.Equal(47, actual.Length);
+                Assert.Equal(expected, actual);
+                flag = true;
+			    mre.Set();
+            }, null);
+			mre.WaitOne(1000);
+            ctx.Dispose();
+            Assert.True(flag);
         }
     }
 }
