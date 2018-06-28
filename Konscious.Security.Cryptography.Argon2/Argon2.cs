@@ -30,7 +30,7 @@ namespace Konscious.Security.Cryptography
         /// </summary>
         public override byte[] GetBytes(int bc)
         {
-            return GetBytesAsync(bc).Result;
+            return GetBytesAsync(bc).ConfigureAwait(false).Result;
         }
 
 
