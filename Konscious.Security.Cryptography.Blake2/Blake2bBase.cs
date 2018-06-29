@@ -19,6 +19,9 @@ namespace Konscious.Security.Cryptography
 
         public void Initialize(byte[] key)
         {
+            if ((key?.Length ?? 0) > _b.Length)
+                throw new ArgumentException($"Blake2 key size is too large. Max size is {_b.Length} bytes", nameof(key));
+            
             Array.Copy(Blake2Constants.IV, _h, 8);
             _h[0] ^= 0x01010000UL ^ (((ulong)(key?.Length ?? 0)) << 8) ^ _hashSize;
 
@@ -34,13 +37,6 @@ namespace Konscious.Security.Cryptography
         {
             while (size > 0)
             {
-                int nextChunk = Math.Min(size, 128 - _c);
-
-                // copy the next batch of data
-                Array.Copy(data, offset, _b, _c, nextChunk);
-                _c += nextChunk;
-                offset += nextChunk;
-
                 if (_c == 128)
                 {
                     _t[0] += (ulong)_c;
@@ -51,6 +47,13 @@ namespace Konscious.Security.Cryptography
                     this.Compress(false);
                     _c = 0;
                 }
+                
+                int nextChunk = Math.Min(size, 128 - _c);
+
+                // copy the next batch of data
+                Array.Copy(data, offset, _b, _c, nextChunk);
+                _c += nextChunk;
+                offset += nextChunk;
 
                 size -= nextChunk;
             }
