@@ -2,8 +2,6 @@ namespace Konscious.Security.Cryptography
 {
     internal static class Blake2Constants
     {
-		private const int NumberOfRounds = 12;
-
 		public static readonly ulong[] IV = {
 			0x6A09E667F3BCC908UL,
 			0xBB67AE8584CAA73BUL,

@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Konscious.Security.Cryptography
 {
     using System;
@@ -31,7 +33,7 @@ namespace Konscious.Security.Cryptography
         // private stuff starts here
         internal async Task<byte[]> Hash(byte[] password)
         {
-            var lanes = await InitializeLanes(password);
+            var lanes = await InitializeLanes(password).ConfigureAwait(false);
 
             var start = 2;
             for (var i = 0; i < Iterations; ++i)
@@ -71,7 +73,7 @@ namespace Konscious.Security.Cryptography
                         }
                     }));
 
-                    await Task.WhenAll(segment);
+                    await Task.WhenAll(segment).ConfigureAwait(false);
                     start = 0;
                 }
             }
@@ -79,7 +81,7 @@ namespace Konscious.Security.Cryptography
             return Finalize(lanes);
         }
 
-        private void XorLanes(Argon2Lane[] lanes)
+        private static void XorLanes(Argon2Lane[] lanes)
         {
             var data = lanes[0][lanes[0].BlockCount - 1];
 
@@ -187,7 +189,7 @@ namespace Konscious.Security.Cryptography
                 });
             }
 
-            await Task.WhenAll(init);
+            await Task.WhenAll(init).ConfigureAwait(false);
 
             Array.Clear(blockHash, 0, blockHash.Length);
             return lanes;
@@ -221,7 +223,7 @@ namespace Konscious.Security.Cryptography
             return blockhash;
         }
 
-        private int IndexAlpha(bool sameLane, uint pseudoRand, int laneLength, int segmentLength, int pass, int slice, int index)
+        private static int IndexAlpha(bool sameLane, uint pseudoRand, int laneLength, int segmentLength, int pass, int slice, int index)
         {
             uint refAreaSize;
             if (pass == 0)

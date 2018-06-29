@@ -41,7 +41,7 @@ namespace Konscious.Security.Cryptography
         {
             if (keyData == null)
             {
-                keyData = new byte[0];
+                keyData = Array.Empty<byte>();
             }
 
             if (keyData.Length > 64)

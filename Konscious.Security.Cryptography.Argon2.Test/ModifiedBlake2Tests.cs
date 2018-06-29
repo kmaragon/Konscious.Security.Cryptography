@@ -1,7 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Konscious.Security.Cryptography.Test
 {
     using Xunit;
 
+    [SuppressMessage("Microsoft.Naming", "CA1707")]
     public class ModifiedBlake2Tests
     {
         [Fact]

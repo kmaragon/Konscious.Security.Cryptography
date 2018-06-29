@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Konscious.Security.Cryptography
 {
     using System.Text;
     using Xunit;
 
+    [SuppressMessage("Microsoft.Naming", "CA1707")]
     public class Argon2CoreTests
     {
         [Fact]
@@ -267,7 +270,7 @@ namespace Konscious.Security.Cryptography
                 0x1d87c04eb73098c2UL, 0xea0d944662c15303UL, 0x24f79172017ffaa1UL, 0x4d855aad955058daUL
             };
 
-            var actual = await subject.InitializeLanes(Encoding.UTF8.GetBytes("P@ssw0rd!$"));
+            var actual = await subject.InitializeLanes(Encoding.UTF8.GetBytes("P@ssw0rd!$")).ConfigureAwait(false);
             Assert.Equal(expected00, actual[0][0]);
             Assert.Equal(expected01, actual[0][1]);
             Assert.Equal(expected10, actual[1][0]);
@@ -300,7 +303,7 @@ namespace Konscious.Security.Cryptography
                 0xdc, 0xa3, 0xe6, 0xc5, 0x99, 0x2a, 0x33, 0x3c, 0x64, 0x07, 0xe1, 0x4f, 0x8e, 0xe1, 0x43, 0xdd
             };
 
-            var actual = await subject.Hash(Encoding.UTF8.GetBytes("P@ssw0rd!$"));
+            var actual = await subject.Hash(Encoding.UTF8.GetBytes("P@ssw0rd!$")).ConfigureAwait(false);
             Assert.Equal(expected, actual);
         }
 
@@ -330,7 +333,7 @@ namespace Konscious.Security.Cryptography
                 0x65, 0x4b, 0xca, 0x04, 0x0f, 0x6e, 0xe5, 0xf7, 0xa2, 0x70, 0x2a, 0x84, 0x4b, 0x3e, 0x2f, 0xcd
             };
 
-            var actual = await subject.Hash(Encoding.UTF8.GetBytes("P@ssw0rd!$"));
+            var actual = await subject.Hash(Encoding.UTF8.GetBytes("P@ssw0rd!$")).ConfigureAwait(false);
             Assert.Equal(expected, actual);
         }
     }

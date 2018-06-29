@@ -71,7 +71,7 @@ namespace Konscious.Security.Cryptography.Test
                 data);
         }
 
-        private void AssertMatch(uint seed, int dataSize, int hashSize, int keySize)
+        private static void AssertMatch(uint seed, int dataSize, int hashSize, int keySize)
         {
             var rand = new Random((int)seed);
             var data = new byte[dataSize];

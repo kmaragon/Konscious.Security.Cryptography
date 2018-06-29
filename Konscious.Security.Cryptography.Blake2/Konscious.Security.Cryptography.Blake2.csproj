@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>An implementation of Blake2 for .NET that integrates with the standard crypto libraries</Description>
+    <Copyright>(c) 2017 Keef Aragon</Copyright>
+    <AssemblyTitle>Konscious.Security.Cryptography.Blake2</AssemblyTitle>
+    <VersionPrefix>1.0.5</VersionPrefix>
+    <Authors>Keef Aragon</Authors>
+    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>portable</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Konscious.Security.Cryptography.Blake2</AssemblyName>
+    <OutputType>Library</OutputType>
+    <PackageId>Konscious.Security.Cryptography.Blake2</PackageId>
+    <PackageTags>crypto;cryptography;hash;blake2;blake2b</PackageTags>
+    <PackageProjectUrl>https://github.com/kmaragon/Konscious.Security.Cryptography</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/kmaragon/Konscious.Security.Cryptography/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/kmaragon/Konscious.Security.Cryptography.git</RepositoryUrl>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">1.1.1</RuntimeFrameworkVersion>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.3' ">$(PackageTargetFallback);net46</PackageTargetFallback>
+    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.3' ">1.6.0</NetStandardImplicitPackageVersion>
+    <TargetFramework>netstandard1.3</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.1">
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+    <PackageReference Include="System.Numerics.Vectors" Version="4.1.1" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
+    <PackageReference Include="System.Numerics.Vectors" Version="4.1.1" />
+  </ItemGroup>
+</Project>

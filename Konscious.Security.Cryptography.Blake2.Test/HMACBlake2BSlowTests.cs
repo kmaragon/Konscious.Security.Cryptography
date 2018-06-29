@@ -238,7 +238,7 @@ namespace Konscious.Security.Cryptography.Test
             0x89, 0x5d, 0x39, 0xe4, 0xe9, 0xd9, 0x95, 0x8f, 0x97, 0xea, 0xd6, 0xab, 0x7d, 0x20, 0xc3, 0x16
         };
 
-        private void PrintHash(byte[] data)
+        private static void PrintHash(byte[] data)
         {
 #if DEBUG
             int byteOffset = 0;
@@ -255,7 +255,7 @@ namespace Konscious.Security.Cryptography.Test
 #endif
         }
 
-        private byte[] ComputeHash(byte[] data, byte[] key, int hashSize)
+        private static byte[] ComputeHash(byte[] data, byte[] key, int hashSize)
         {
             HMACBlake2B hmac = new HMACBlake2B(key, hashSize, () => new Blake2bSlow(hashSize / 8));
             hmac.Initialize();

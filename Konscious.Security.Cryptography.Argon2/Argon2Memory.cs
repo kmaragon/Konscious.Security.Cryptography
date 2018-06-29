@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Konscious.Security.Cryptography
 {
     using System;
@@ -17,6 +19,7 @@ namespace Konscious.Security.Cryptography
             _offset = offset;
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1822")]  
         public int Length
         {
             get
@@ -74,7 +77,7 @@ namespace Konscious.Security.Cryptography
             var off = _offset;
             for (var i = 0; i < 128; i++)
             {
-                _data[off++] = 0;
+                _data[off++] = value;
             }
         }
 
@@ -94,7 +97,7 @@ namespace Konscious.Security.Cryptography
             {
                 if (index < 0 || index > 128)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
                 return _data[_offset + index];
@@ -103,7 +106,7 @@ namespace Konscious.Security.Cryptography
             {
                 if (index < 0 || index > 128)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
                 _data[_offset + index] = value;

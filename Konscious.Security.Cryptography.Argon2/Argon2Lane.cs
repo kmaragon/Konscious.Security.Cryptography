@@ -15,7 +15,7 @@ namespace Konscious.Security.Cryptography
             {
                 if (index < 0 || index > BlockCount)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
                 return new Argon2Memory(_memory, 128 * index);

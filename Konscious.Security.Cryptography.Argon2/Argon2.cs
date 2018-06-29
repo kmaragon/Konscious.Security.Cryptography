@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Konscious.Security.Cryptography
 {
     using System;
@@ -7,6 +9,7 @@ namespace Konscious.Security.Cryptography
     /// <summary>
     /// An implementation of Argon2 https://github.com/P-H-C/phc-winner-argon2
     /// </summary>
+    [SuppressMessage("Microsoft.Performance", "CA1819")]  
     public abstract class Argon2 : DeriveBytes
     {
         /// <summary>
@@ -30,7 +33,8 @@ namespace Konscious.Security.Cryptography
         /// </summary>
         public override byte[] GetBytes(int bc)
         {
-            return GetBytesAsync(bc).ConfigureAwait(false).Result;
+            var task = System.Threading.Tasks.Task.Run(async () => await GetBytesAsync(bc).ConfigureAwait(false) );
+            return task.Result;
         }
 
 
