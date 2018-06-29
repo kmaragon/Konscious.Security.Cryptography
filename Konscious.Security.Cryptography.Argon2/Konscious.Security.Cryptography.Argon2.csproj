@@ -7,7 +7,7 @@ https://password-hashing.net/#argon2
 Usage follows standard types found in System.Security.Cryptography in corefx. Specifically DeriveBytes.</Description>
     <Copyright>(c) 2017 Keef Aragon</Copyright>
     <AssemblyTitle>Konscious.Security.Cryptography.Argon2</AssemblyTitle>
-    <VersionPrefix>1.1.1</VersionPrefix>
+    <VersionPrefix>1.1.2</VersionPrefix>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Authors>Keef Aragon</Authors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
