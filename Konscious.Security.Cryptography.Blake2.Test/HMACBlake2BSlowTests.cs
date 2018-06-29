@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Konscious.Security.Cryptography.Test
 {
     using System;
@@ -238,6 +240,7 @@ namespace Konscious.Security.Cryptography.Test
             0x89, 0x5d, 0x39, 0xe4, 0xe9, 0xd9, 0x95, 0x8f, 0x97, 0xea, 0xd6, 0xab, 0x7d, 0x20, 0xc3, 0x16
         };
 
+        [SuppressMessage("Microsoft.Usage", "CA1801")]    
         private static void PrintHash(byte[] data)
         {
 #if DEBUG
