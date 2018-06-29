@@ -23,8 +23,8 @@ test_script:
 - dotnet test "Konscious.Security.Cryptography.Blake2.Test" -c %CONFIGURATION% 
 - dotnet test "Konscious.Security.Cryptography.Argon2.Test" -c %CONFIGURATION%
 after_build:
-- dotnet pack "Konscious.Security.Cryptography.Blake2" -c %CONFIGURATION% -o artifacts
-- dotnet pack "Konscious.Security.Cryptography.Argon2" -c %CONFIGURATION% -o artifacts
+- dotnet pack "Konscious.Security.Cryptography.Blake2" -c %CONFIGURATION% -o ..\artifacts
+- dotnet pack "Konscious.Security.Cryptography.Argon2" -c %CONFIGURATION% -o ..\artifacts
 artifacts:
 - path: artifacts\*.nupkg
   name: NuGet
