@@ -15,7 +15,7 @@ namespace Konscious.Security.Cryptography
         /// <param name="hashSize">the hash size in bits</param>
         public HMACBlake2B(int hashSize)
         {
-            HashName = "Blake2B";
+            HashName = "Konscious.Security.Cryptography.HMACBlake2B";
 
             if ((hashSize % 8) > 0)
             {
@@ -29,6 +29,7 @@ namespace Konscious.Security.Cryptography
 
             _hashSize = hashSize;
             _createImpl = CreateImplementation;
+            Key = Array.Empty<byte>();
         }
 
         /// <summary>
