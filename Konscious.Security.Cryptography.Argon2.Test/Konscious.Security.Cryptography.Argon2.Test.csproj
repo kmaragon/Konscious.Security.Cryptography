@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <VersionPrefix>1.1.2</VersionPrefix>
+    <VersionPrefix>1.2.0</VersionPrefix>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>portable</DebugType>
     <AssemblyName>Konscious.Security.Cryptography.Argon2.Test</AssemblyName>

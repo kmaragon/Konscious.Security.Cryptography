@@ -7,7 +7,7 @@ namespace Konscious.Security.Cryptography
     /// </summary>
     internal class Argon2dCore : Argon2Core
     {
-        private class PseudoRands : IArgon2PseudoRands
+        internal class PseudoRands : IArgon2PseudoRands
         {
             private Argon2Lane[] _lanes;
 

@@ -9,7 +9,7 @@ namespace Konscious.Security.Cryptography
     {
         private static Argon2Memory _zeroBlock = new Argon2Memory(new ulong[128], 0);
 
-        private class PseudoRands : IArgon2PseudoRands
+        internal class PseudoRands : IArgon2PseudoRands
         {
             private ulong[] _rands;
 
@@ -27,7 +27,6 @@ namespace Konscious.Security.Cryptography
         public Argon2iCore(int hashSize)
             : base(hashSize)
         {
-
         }
 
         public override int Type
@@ -52,7 +51,7 @@ namespace Konscious.Security.Cryptography
             inputBlock[2] = (ulong)slice;
             inputBlock[3] = (ulong)MemorySize;
             inputBlock[4] = (ulong)Iterations;
-            inputBlock[5] = 1UL;
+            inputBlock[5] = (ulong)Type;
 
             for (var i = 0; i < segmentLength; i++)
             {
