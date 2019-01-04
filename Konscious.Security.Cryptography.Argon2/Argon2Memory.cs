@@ -104,7 +104,7 @@ namespace Konscious.Security.Cryptography
             }
             set
             {
-                if (index < 0 || index > 128)
+                if (index < 0 || index >= 128)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
