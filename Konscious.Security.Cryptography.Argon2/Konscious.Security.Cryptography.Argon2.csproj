@@ -6,7 +6,7 @@ https://password-hashing.net/#argon2
 
 Usage follows standard types found in System.Security.Cryptography in corefx. Specifically DeriveBytes.
 
-C# Implementation of the Argon2 1.3 spec with variants for Argon2i and Argon2d
+C# Implementation of the Argon2 1.3 spec with variants for Argon2i, Argon2d, and Argon2id
 
       </Description>
     <Copyright>(c) 2019 Keef Aragon</Copyright>
@@ -20,7 +20,7 @@ C# Implementation of the Argon2 1.3 spec with variants for Argon2i and Argon2d
     <AssemblyName>Konscious.Security.Cryptography.Argon2</AssemblyName>
     <OutputType>Library</OutputType>
     <PackageId>Konscious.Security.Cryptography.Argon2</PackageId>
-    <PackageTags>crypto;cryptography;argon2;argon2i;argon2d;password</PackageTags>
+    <PackageTags>crypto;cryptography;argon2;argon2i;argon2d;argon2id;password</PackageTags>
     <PackageProjectUrl>https://github.com/kmaragon/Konscious.Security.Cryptography</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/kmaragon/Konscious.Security.Cryptography/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
