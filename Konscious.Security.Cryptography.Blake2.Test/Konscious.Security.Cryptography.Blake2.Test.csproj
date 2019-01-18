@@ -13,6 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Blake2Core" Version="1.0.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.3">
       <PrivateAssets>All</PrivateAssets>
