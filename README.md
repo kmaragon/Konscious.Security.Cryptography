@@ -97,7 +97,7 @@ Various attributes can be added to secure the hash:
 | Property           | Type      | Required?   |    Description
 |--------------------|-----------|-------------|-----------------
 |DegreeOfParallelism | int       | REQUIRED    | Argon2 is memory hard and takes advantage of modern processors tendency to be multi-core. It does this by segmenting chunks of memory into lanes. Degree of parallelism specifies how many of these lanes will be used to generate the hash. This value affects the hash itself but can be altered for ideal run time given the processor and number of cores.
-|MemorySize          | int       | REQUIRED    | The amount of memory (in Kilobytes) to use to calculate the hash. This is the property that is used to tweak the memory-hard property of Argon2. Please see the Argon2 documentation for more details about how to tweak this, DegreeOfParallelism, and Iterations to suit your needs
+|MemorySize          | int       | REQUIRED    | The amount of memory (in KiB) to use to calculate the hash. This is the property that is used to tweak the memory-hard property of Argon2. Please see the Argon2 documentation for more details about how to tweak this, DegreeOfParallelism, and Iterations to suit your needs
 |Iterations          | int       | REQUIRED    | The number of iterations to perform to compute the hash. Because of Argon2's higher security, huge values like with PBKDF2 are not as necessary, although multiple iterations are still very much recommended.
 |Salt                | byte[]    | RECOMMENDED | Standard Salt value for the Hash Algorithm
 |AssociatedData      | byte[]    | OPTIONAL    | Additional associated data to use to compute the hash. This adds another layer of inderection for an attacker to reverse engineer the hash
