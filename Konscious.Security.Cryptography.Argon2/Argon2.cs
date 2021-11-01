@@ -37,8 +37,7 @@ namespace Konscious.Security.Cryptography
         public override byte[] GetBytes(int bc)
         {
             ValidateParameters(bc);
-            var task = System.Threading.Tasks.Task.Run(async () => await GetBytesAsyncImpl(bc).ConfigureAwait(false) );
-            return task.Result;
+            return GetBytesAsyncImpl(bc).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
 
