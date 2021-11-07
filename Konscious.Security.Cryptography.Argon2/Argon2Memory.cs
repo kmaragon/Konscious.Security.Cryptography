@@ -3,23 +3,24 @@ using System.Diagnostics.CodeAnalysis;
 namespace Konscious.Security.Cryptography
 {
     using System;
+    using System.Buffers;
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.InteropServices;
 
-    internal class Argon2Memory : IEnumerable<ulong>
+    internal class Argon2Memory
     {
-        private ulong[] _data;
-        private int _offset;
+        private readonly Memory<ulong> _data;
 
-        public Argon2Memory(ulong[] data, int offset)
+        public Argon2Memory(Memory<ulong> data)
         {
             _data = data;
-            _offset = offset;
         }
 
-        [SuppressMessage("Microsoft.Performance", "CA1822")]  
+        public ReadOnlySpan<ulong> Span => _data.Span;
+
+        [SuppressMessage("Microsoft.Performance", "CA1822")]
         public int Length
         {
             get
@@ -74,22 +75,25 @@ namespace Konscious.Security.Cryptography
 
         public void Set(ulong value)
         {
-            var off = _offset;
             for (var i = 0; i < 128; i++)
             {
-                _data[off++] = value;
+                _data.Span[i++] = value;
             }
         }
 
-        public IEnumerator<ulong> GetEnumerator()
-        {
-            return new Enumerator(_data, _offset);
-        }
+        //public IEnumerator<ulong> GetEnumerator()
+        //{
+            
+        //    for (int i = 0; i < _data.Length; i++)
+        //    {
+        //        yield return _data.ToEnumerable();
+        //    }
+        //}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new Enumerator(_data, _offset);
-        }
+        //IEnumerator IEnumerable.GetEnumerator()
+        //{
+        //    return GetEnumerator();
+        //}
 
         public ulong this[int index]
         {
@@ -100,7 +104,7 @@ namespace Konscious.Security.Cryptography
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
-                return _data[_offset + index];
+                return _data.Span[index];
             }
             set
             {
@@ -109,7 +113,7 @@ namespace Konscious.Security.Cryptography
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
-                _data[_offset + index] = value;
+                _data.Span[index] = value;
             }
         }
 
@@ -117,17 +121,19 @@ namespace Konscious.Security.Cryptography
         {
             public Stream(Argon2Memory memory)
             {
-                _data = GCHandle.Alloc(memory._data, GCHandleType.Pinned);
-                base.Initialize((byte*)_data.AddrOfPinnedObject() + (memory._offset * 8), 1024, 1024, FileAccess.Read);
+                _data = memory._data.Pin();
+                base.Initialize((byte*)_data.Pointer, 1024, 1024, FileAccess.Read);
+                //_data = GCHandle.Alloc(memory._data, GCHandleType.Pinned);
+                //base.Initialize((byte*)_data.AddrOfPinnedObject(), 1024, 1024, FileAccess.Read);
             }
 
             protected override void Dispose(bool isDispose)
             {
                 base.Dispose(isDispose);
-                _data.Free();
+                _data.Dispose();
             }
 
-            private GCHandle _data;
+            private MemoryHandle _data;
         }
 
         private class Enumerator : IEnumerator<ulong>

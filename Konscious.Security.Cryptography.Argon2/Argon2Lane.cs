@@ -18,7 +18,7 @@ namespace Konscious.Security.Cryptography
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
-                return new Argon2Memory(_memory, 128 * index);
+                return new Argon2Memory(_memory.AsMemory(128*index, 128));
             }
         }
 

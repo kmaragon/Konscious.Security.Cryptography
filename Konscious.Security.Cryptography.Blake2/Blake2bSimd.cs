@@ -62,7 +62,9 @@ namespace Konscious.Security.Cryptography
 
                 for (var i = 0; i < 12; ++i)
                 {
-                    ulong *sigmaodd = stackalloc ulong[4];
+#pragma warning disable CA2014 // Do not use stackalloc in loops
+                    ulong* sigmaodd = stackalloc ulong[4];
+#pragma warning restore CA2014 // Do not use stackalloc in loops
                     sigmaodd[0] =  m[Blake2Constants.Sigma[i][0]];
                     sigmaodd[1] = m[Blake2Constants.Sigma[i][2]];
                     sigmaodd[2] = m[Blake2Constants.Sigma[i][4]];

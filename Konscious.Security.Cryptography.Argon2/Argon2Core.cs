@@ -254,7 +254,7 @@ namespace Konscious.Security.Cryptography
 #if DEBUG
         private static void DebugWrite(Argon2Memory mem)
         {
-            DebugWrite(mem.ToArray());
+            DebugWrite(mem.Span.ToArray());
         }
 
         private unsafe static void DebugWrite(ulong[] data)
