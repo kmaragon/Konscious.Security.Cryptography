@@ -8,6 +8,7 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using System.Collections.Generic;
 using System.Linq;
+using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
 namespace ArgonBenchmarks
 {
@@ -29,6 +30,7 @@ namespace ArgonBenchmarks
     }
 
     [MemoryDiagnoser, ThreadingDiagnoser]
+    [JsonExporterAttribute.BriefCompressed]
     public class ArgonBenchmarks
     {
         private readonly string _toHash = "iamapasswordthatneedshashing";
@@ -41,7 +43,7 @@ namespace ArgonBenchmarks
             {
                 DegreeOfParallelism = 4,
                 Iterations = Iterations,
-                MemorySize = RamKiloBytes,
+                MemorySize = RamKilobytes,
                 Salt = Guid.NewGuid().ToByteArray()
             };
 
@@ -52,10 +54,19 @@ namespace ArgonBenchmarks
         public int Iterations { get; set; }
 
         [ParamsSource(nameof(RamKilobytesValues))]
-        public int RamKiloBytes { get; set; }
+        public int RamKilobytes { get; set; }
 
-        public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 16).Select(x => x * 1024 * 4 + 65536);
+        //CN - Full
+        //public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 16).Select(x => x * 1024 * 4 + 65536);
 
-        public IEnumerable<int> IterationValues => Enumerable.Range(1, 5).Select(x => x*2);
+        //CN -- Quick
+        public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 4).Select(x => x * 1024 * 8 + 65536);
+
+
+        //CN -- Full
+        //public IEnumerable<int> IterationValues => Enumerable.Range(1, 5).Select(x => x*2);
+
+        //CN -- Quick
+        public IEnumerable<int> IterationValues => Enumerable.Range(1, 2).Select(x => x + (x - 1) * 4);
     }
 }

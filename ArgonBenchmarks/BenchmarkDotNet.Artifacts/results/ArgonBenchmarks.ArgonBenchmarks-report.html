@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>ArgonBenchmarks.ArgonBenchmarks-20211107-163706</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19043.1288 (21H1/May2021Update)
+AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
+.NET SDK=6.0.100-rc.2.21505.57
+  [Host]     : .NET 5.0.11 (5.0.1121.47308), X64 RyuJIT
+  DefaultJob : .NET 5.0.11 (5.0.1121.47308), X64 RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>Iterations</th><th>RamKilobytes</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Completed Work Items</th><th>Lock Contentions</th><th>Gen 0</th><th>Gen 1</th><th>Gen 2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>GetHashAsync</td><td>1</td><td>65536</td><td>61.29 ms</td><td>1.361 ms</td><td>4.013 ms</td><td>24.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>1000.0000</td><td>72 MB</td>
+</tr><tr><td>GetHashAsync</td><td>1</td><td>73728</td><td>83.29 ms</td><td>1.660 ms</td><td>3.353 ms</td><td>24.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>1000.0000</td><td>80 MB</td>
+</tr><tr><td>GetHashAsync</td><td>1</td><td>81920</td><td>80.22 ms</td><td>1.604 ms</td><td>2.679 ms</td><td>24.2857</td><td>-</td><td>1285.7143</td><td>857.1429</td><td>714.2857</td><td>89 MB</td>
+</tr><tr><td>GetHashAsync</td><td>1</td><td>90112</td><td>85.50 ms</td><td>1.644 ms</td><td>1.894 ms</td><td>24.3333</td><td>-</td><td>1000.0000</td><td>500.0000</td><td>500.0000</td><td>98 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>65536</td><td>325.34 ms</td><td>6.331 ms</td><td>8.875 ms</td><td>106.0000</td><td>-</td><td>3000.0000</td><td>1000.0000</td><td>1000.0000</td><td>112 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>73728</td><td>361.23 ms</td><td>7.008 ms</td><td>10.272 ms</td><td>106.0000</td><td>-</td><td>4000.0000</td><td>1000.0000</td><td>1000.0000</td><td>125 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>81920</td><td>412.76 ms</td><td>8.082 ms</td><td>12.097 ms</td><td>106.0000</td><td>-</td><td>4000.0000</td><td>1000.0000</td><td>1000.0000</td><td>139 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>90112</td><td>447.29 ms</td><td>8.638 ms</td><td>9.243 ms</td><td>107.0000</td><td>-</td><td>5000.0000</td><td>1000.0000</td><td>1000.0000</td><td>153 MB</td>
+</tr></tbody></table>
+</body>
+</html>

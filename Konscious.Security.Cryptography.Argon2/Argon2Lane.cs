@@ -6,7 +6,8 @@ namespace Konscious.Security.Cryptography
     {
         public Argon2Lane(int blockCount)
         {
-            _memory = new ulong[128 * blockCount];
+            _memory = new Memory<ulong>(new ulong[128 * blockCount]);
+            BlockCount = blockCount;
         }
 
         public Argon2Memory this[int index]
@@ -18,18 +19,12 @@ namespace Konscious.Security.Cryptography
                     throw new ArgumentOutOfRangeException(nameof(index));
                 }
 
-                return new Argon2Memory(_memory.AsMemory(128*index, 128));
+                return new Argon2Memory(_memory.Slice(128*index, 128));
             }
         }
 
-        public int BlockCount
-        {
-            get
-            {
-                return _memory.Length / 128;
-            }
-        }
+        public int BlockCount { get; }
 
-        private ulong[] _memory;
+        private readonly Memory<ulong> _memory;
     }
 }

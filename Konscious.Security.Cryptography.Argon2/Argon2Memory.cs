@@ -42,43 +42,54 @@ namespace Konscious.Security.Cryptography
                 length = byteLength / 8;
                 remainder = byteLength - (length * 8);
             }
+            //---------------
+            var newSpan = MemoryMarshal.Cast<byte, ulong>(data.AsSpan(srcOffset));
+            newSpan.CopyTo(_data.Span[destOffset..]);
 
-            int readSize = Math.Min((data.Length / 8), length);
-
-            var mstream = new MemoryStream(data);
-            mstream.Seek(srcOffset, SeekOrigin.Begin);
-            var reader = new BinaryReader(mstream);
-
-            readSize += destOffset;
-            int i = destOffset;
-            for (; i < readSize; ++i)
+            if (remainder != 0)
             {
-                this[i] = reader.ReadUInt64();
-            }
+                var remainderSpan = data[^(byteLength % 8)..];
 
-            if (remainder > 0)
-            {
                 ulong extra = 0;
-
-                // get the remainder as a few bytes
-                for (var n = 0; n < remainder; ++n)
-                    extra = extra | ((ulong)reader.ReadByte() << (8 * n));
-
-                this[i++] = extra;
+                for (int i = 0; i < remainderSpan.Length; i++)
+                {
+                    extra |= ((ulong)remainderSpan[i]) << (8 * i);
+                }
+                this[newSpan.Length + destOffset] = extra;
             }
+            //------------
+            //int readSize = Math.Min((data.Length / 8), length);
 
-            for (; i < length; ++i)
-            {
-                this[i] = 0;
-            }
+            //var mstream = new MemoryStream(data);
+            //mstream.Seek(srcOffset, SeekOrigin.Begin);
+            //var reader = new BinaryReader(mstream);
+            //readSize += destOffset;
+            //int i = destOffset;
+            //for (; i < readSize; ++i)
+            //{
+            //    this[i] = reader.ReadUInt64();
+            //}
+
+            //if (remainder > 0)
+            //{
+            //    ulong extra = 0;
+
+            //    // get the remainder as a few bytes                        
+            //    for (var n = 0; n < remainder; ++n)
+            //        extra = extra | ((ulong)reader.ReadByte() << (8 * n));
+
+            //    this[i++] = extra;
+            //}
+
+            //for (; i < length; ++i)
+            //{
+            //    this[i] = 0;
+            //}
         }
 
         public void Set(ulong value)
         {
-            for (var i = 0; i < 128; i++)
-            {
-                _data.Span[i++] = value;
-            }
+            _data.Span.Fill(value);
         }
 
         //public IEnumerator<ulong> GetEnumerator()

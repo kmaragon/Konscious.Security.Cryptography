@@ -1,0 +1,2 @@
+// Validating benchmarks:
+Must be elevated (Admin) to use ETW Kernel Session (required for Hardware Counters and EtwProfiler).
