@@ -17,7 +17,7 @@ namespace ArgonBenchmarks
     {
         public static void Main(string[] args)
         {
-            var summary = BenchmarkRunner.Run<BlitMarks>();
+            var summary = BenchmarkRunner.Run<ArgonBenchmarks>();
         }
     }
 
@@ -40,6 +40,12 @@ namespace ArgonBenchmarks
         [Benchmark]
         public async Task<byte[]> GetHashAsync()
         {
+            return await _argon.GetBytesAsync(128);
+        }
+
+        [IterationSetup]
+        public void IterationSetup()
+        {
             _argon = new Argon2id(Encoding.UTF8.GetBytes(_toHash))
             {
                 DegreeOfParallelism = 4,
@@ -47,8 +53,6 @@ namespace ArgonBenchmarks
                 MemorySize = RamKilobytes,
                 Salt = Guid.NewGuid().ToByteArray()
             };
-
-            return await _argon.GetBytesAsync(128);
         }
 
         [ParamsSource(nameof(IterationValues))]
@@ -58,17 +62,20 @@ namespace ArgonBenchmarks
         public int RamKilobytes { get; set; }
 
         //CN - Full
-        //public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 16).Select(x => x * 1024 * 4 + 65536);
+        public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 16)
+            .Select(x => x * 1024 * 4 + 65536)
+            .Append(1048576)
+            .Append(4* 1048576);
 
         //CN -- Quick
-        public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 4).Select(x => x * 1024 * 8 + 65536);
+        //public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 4).Select(x => x * 1024 * 8 + 65536);
 
 
         //CN -- Full
-        //public IEnumerable<int> IterationValues => Enumerable.Range(1, 5).Select(x => x*2);
+        public IEnumerable<int> IterationValues => Enumerable.Range(1, 5).Select(x => x*2);
 
         //CN -- Quick
-        public IEnumerable<int> IterationValues => Enumerable.Range(1, 2).Select(x => x + (x - 1) * 4);
+        //public IEnumerable<int> IterationValues => Enumerable.Range(1, 2).Select(x => x + (x - 1) * 4);
     }
     
     [MemoryDiagnoser, ThreadingDiagnoser]
@@ -84,7 +91,7 @@ namespace ArgonBenchmarks
         {
             for (var i = 1; i < 100_000_000; i++)
             {
-                _memory.Blit(_toBlitWithBytes);
+                _memory.Span.Blit(_toBlitWithBytes);
             }
         }
 

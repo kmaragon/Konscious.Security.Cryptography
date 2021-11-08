@@ -152,9 +152,9 @@ namespace Konscious.Security.Cryptography.Test
             };
 
             Argon2Core.Compress(
-                new Argon2Memory(nextblock.AsMemory()),
-                new Argon2Memory(refblock.AsMemory()),
-                new Argon2Memory(prev.AsMemory()));
+                nextblock.AsSpan(),
+                refblock.AsSpan(),
+                prev.AsSpan());
 
             Assert.Equal(expected, nextblock);
         }
@@ -208,9 +208,9 @@ namespace Konscious.Security.Cryptography.Test
             };
 
             Argon2Core.Compress(
-                new Argon2Memory(nextblock.AsMemory()),
-                new Argon2Memory(refblock.AsMemory()),
-                new Argon2Memory(prev.AsMemory()));
+                nextblock.AsSpan(),
+                refblock.AsSpan(),
+                prev.AsSpan());
 
             Assert.Equal(expected, nextblock);
         }

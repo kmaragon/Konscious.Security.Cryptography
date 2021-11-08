@@ -65,10 +65,10 @@ namespace Konscious.Security.Cryptography
                             }
 
                             var refIndex = IndexAlpha(l == refLane, (uint)pseudoRand, lane.BlockCount, segmentLength, i, s, c);
-                            var refBlock = lanes[refLane][refIndex];
-                            var curBlock = lane[curOffset];
+                            var refBlock = lanes[refLane][refIndex].Span;
+                            var curBlock = lane[curOffset].Span;
 
-                            Compress(curBlock, refBlock, lanes[prevLane][prevOffset]);
+                            Compress(curBlock, refBlock, lanes[prevLane][prevOffset].Span);
                             prevOffset = curOffset;
                         }
                     }));
@@ -87,7 +87,7 @@ namespace Konscious.Security.Cryptography
             
             foreach (var lane in lanes.Skip(1))
             {
-                var block = lane[lane.BlockCount-1];
+                var block = lane[lane.BlockCount-1].Span;
 
                 for (var b = 0; b < 128; ++b)
                 {
@@ -122,7 +122,7 @@ namespace Konscious.Security.Cryptography
             return result;
         }
 
-        internal unsafe static void Compress(Argon2Memory dest, Argon2Memory refb, Argon2Memory prev)
+        internal unsafe static void Compress(Span<ulong> dest, Span<ulong> refb, Span<ulong> prev)
         {
             var tmpblock = stackalloc ulong[dest.Length];
             for (var n = 0; n < 128; ++n)

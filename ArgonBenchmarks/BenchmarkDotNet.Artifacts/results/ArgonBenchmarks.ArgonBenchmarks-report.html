@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>ArgonBenchmarks.ArgonBenchmarks-20211107-205840</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19043.1288 (21H1/May2021Update)
+AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
+.NET SDK=6.0.100-rc.2.21505.57
+  [Host]     : .NET 5.0.11 (5.0.1121.47308), X64 RyuJIT
+  Job-ZJDBHN : .NET 5.0.11 (5.0.1121.47308), X64 RyuJIT
+</code></pre>
+<pre><code>InvocationCount=1  UnrollFactor=1  
+</code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>Iterations</th><th>RamKilobytes</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Gen 0</th><th>Completed Work Items</th><th>Lock Contentions</th><th>Gen 1</th><th>Gen 2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>GetHashAsync</td><td>2</td><td>65536</td><td>56.40 ms</td><td>1.127 ms</td><td>2.451 ms</td><td>55.88 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>65 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>69632</td><td>59.23 ms</td><td>1.171 ms</td><td>1.858 ms</td><td>58.81 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>69 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>73728</td><td>62.43 ms</td><td>1.249 ms</td><td>2.120 ms</td><td>61.93 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>73 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>77824</td><td>65.89 ms</td><td>1.279 ms</td><td>2.698 ms</td><td>65.43 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>77 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>81920</td><td>68.71 ms</td><td>1.368 ms</td><td>3.032 ms</td><td>67.86 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>81 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>86016</td><td>72.72 ms</td><td>1.454 ms</td><td>2.622 ms</td><td>71.96 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>85 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>90112</td><td>76.19 ms</td><td>1.329 ms</td><td>3.080 ms</td><td>75.38 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>89 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>94208</td><td>78.90 ms</td><td>1.576 ms</td><td>3.775 ms</td><td>77.62 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>93 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>98304</td><td>82.30 ms</td><td>1.637 ms</td><td>2.689 ms</td><td>82.15 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>97 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>102400</td><td>85.04 ms</td><td>1.656 ms</td><td>2.720 ms</td><td>84.15 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>101 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>106496</td><td>87.57 ms</td><td>1.547 ms</td><td>2.169 ms</td><td>86.77 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>105 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>110592</td><td>92.28 ms</td><td>1.757 ms</td><td>3.965 ms</td><td>91.88 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>109 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>114688</td><td>98.42 ms</td><td>1.942 ms</td><td>4.011 ms</td><td>97.29 ms</td><td>1000.0000</td><td>40.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>113 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>118784</td><td>100.20 ms</td><td>1.759 ms</td><td>2.987 ms</td><td>99.71 ms</td><td>1000.0000</td><td>41.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>117 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>122880</td><td>101.53 ms</td><td>1.995 ms</td><td>3.598 ms</td><td>100.50 ms</td><td>1000.0000</td><td>41.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>121 MB</td>
+</tr><tr><td>GetHashAsync</td><td>2</td><td>126976</td><td>107.15 ms</td><td>2.079 ms</td><td>2.310 ms</td><td>106.69 ms</td><td>1000.0000</td><td>41.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>125 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>65536</td><td>103.85 ms</td><td>2.019 ms</td><td>2.895 ms</td><td>103.67 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>65 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>69632</td><td>110.17 ms</td><td>2.136 ms</td><td>3.262 ms</td><td>109.84 ms</td><td>1000.0000</td><td>72.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>69 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>73728</td><td>115.95 ms</td><td>2.186 ms</td><td>4.106 ms</td><td>114.49 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>73 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>77824</td><td>122.80 ms</td><td>2.390 ms</td><td>4.774 ms</td><td>122.07 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>77 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>81920</td><td>131.10 ms</td><td>2.603 ms</td><td>6.085 ms</td><td>131.00 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>81 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>86016</td><td>137.48 ms</td><td>2.597 ms</td><td>2.779 ms</td><td>136.98 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>85 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>90112</td><td>143.53 ms</td><td>2.825 ms</td><td>4.051 ms</td><td>143.36 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>89 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>94208</td><td>148.88 ms</td><td>2.966 ms</td><td>4.790 ms</td><td>149.08 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>93 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>98304</td><td>154.83 ms</td><td>2.944 ms</td><td>4.127 ms</td><td>154.37 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>97 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>102400</td><td>161.91 ms</td><td>3.238 ms</td><td>4.945 ms</td><td>161.49 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>101 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>106496</td><td>172.20 ms</td><td>3.356 ms</td><td>5.699 ms</td><td>170.52 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>105 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>110592</td><td>175.30 ms</td><td>3.472 ms</td><td>5.507 ms</td><td>173.67 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>109 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>114688</td><td>185.64 ms</td><td>3.670 ms</td><td>7.071 ms</td><td>185.14 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>113 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>118784</td><td>187.44 ms</td><td>3.562 ms</td><td>3.332 ms</td><td>188.39 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>117 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>122880</td><td>190.98 ms</td><td>3.797 ms</td><td>5.565 ms</td><td>190.73 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>121 MB</td>
+</tr><tr><td>GetHashAsync</td><td>4</td><td>126976</td><td>200.08 ms</td><td>3.839 ms</td><td>4.421 ms</td><td>199.69 ms</td><td>1000.0000</td><td>73.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>125 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>65536</td><td>149.40 ms</td><td>2.958 ms</td><td>5.103 ms</td><td>148.41 ms</td><td>1000.0000</td><td>105.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>65 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>69632</td><td>166.31 ms</td><td>3.291 ms</td><td>6.100 ms</td><td>165.80 ms</td><td>1000.0000</td><td>105.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>69 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>73728</td><td>167.86 ms</td><td>3.339 ms</td><td>5.098 ms</td><td>166.60 ms</td><td>1000.0000</td><td>105.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>73 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>77824</td><td>177.04 ms</td><td>3.515 ms</td><td>5.970 ms</td><td>175.73 ms</td><td>1000.0000</td><td>105.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>77 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>81920</td><td>193.68 ms</td><td>3.853 ms</td><td>6.438 ms</td><td>193.45 ms</td><td>1000.0000</td><td>105.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>81 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>86016</td><td>196.64 ms</td><td>3.927 ms</td><td>5.506 ms</td><td>196.84 ms</td><td>1000.0000</td><td>105.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>85 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>90112</td><td>205.53 ms</td><td>4.070 ms</td><td>4.524 ms</td><td>205.82 ms</td><td>1000.0000</td><td>105.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>89 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>94208</td><td>216.90 ms</td><td>4.277 ms</td><td>5.561 ms</td><td>216.89 ms</td><td>1000.0000</td><td>105.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>93 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>98304</td><td>223.22 ms</td><td>4.420 ms</td><td>4.913 ms</td><td>222.73 ms</td><td>1000.0000</td><td>106.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>97 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>102400</td><td>238.33 ms</td><td>4.522 ms</td><td>4.008 ms</td><td>237.00 ms</td><td>1000.0000</td><td>106.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>101 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>106496</td><td>247.48 ms</td><td>4.855 ms</td><td>7.840 ms</td><td>246.10 ms</td><td>1000.0000</td><td>106.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>105 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>110592</td><td>257.72 ms</td><td>5.076 ms</td><td>8.620 ms</td><td>254.97 ms</td><td>1000.0000</td><td>106.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>109 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>114688</td><td>267.84 ms</td><td>5.340 ms</td><td>8.470 ms</td><td>266.38 ms</td><td>1000.0000</td><td>106.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>113 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>118784</td><td>275.60 ms</td><td>3.915 ms</td><td>3.269 ms</td><td>275.16 ms</td><td>1000.0000</td><td>106.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>117 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>122880</td><td>285.60 ms</td><td>5.662 ms</td><td>7.558 ms</td><td>284.56 ms</td><td>1000.0000</td><td>106.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>121 MB</td>
+</tr><tr><td>GetHashAsync</td><td>6</td><td>126976</td><td>298.03 ms</td><td>5.800 ms</td><td>7.123 ms</td><td>297.35 ms</td><td>1000.0000</td><td>106.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>125 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>65536</td><td>201.98 ms</td><td>4.034 ms</td><td>10.195 ms</td><td>197.70 ms</td><td>1000.0000</td><td>137.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>65 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>69632</td><td>204.11 ms</td><td>4.075 ms</td><td>3.182 ms</td><td>202.85 ms</td><td>1000.0000</td><td>137.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>69 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>73728</td><td>227.15 ms</td><td>4.519 ms</td><td>10.999 ms</td><td>222.65 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>73 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>77824</td><td>240.86 ms</td><td>4.637 ms</td><td>7.999 ms</td><td>240.29 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>77 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>81920</td><td>249.79 ms</td><td>4.950 ms</td><td>8.405 ms</td><td>246.64 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>81 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>86016</td><td>266.37 ms</td><td>5.290 ms</td><td>10.924 ms</td><td>263.61 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>85 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>90112</td><td>274.75 ms</td><td>4.824 ms</td><td>7.071 ms</td><td>275.14 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>89 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>94208</td><td>284.32 ms</td><td>5.566 ms</td><td>6.186 ms</td><td>283.75 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>93 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>98304</td><td>300.81 ms</td><td>5.933 ms</td><td>9.913 ms</td><td>301.13 ms</td><td>1000.0000</td><td>139.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>97 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>102400</td><td>313.21 ms</td><td>6.058 ms</td><td>8.492 ms</td><td>312.46 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>101 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>106496</td><td>331.29 ms</td><td>6.548 ms</td><td>11.120 ms</td><td>331.76 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>105 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>110592</td><td>348.92 ms</td><td>6.756 ms</td><td>9.904 ms</td><td>347.23 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>109 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>114688</td><td>352.74 ms</td><td>6.987 ms</td><td>8.836 ms</td><td>353.35 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>113 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>118784</td><td>355.33 ms</td><td>6.810 ms</td><td>7.569 ms</td><td>356.94 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>117 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>122880</td><td>378.78 ms</td><td>7.440 ms</td><td>7.307 ms</td><td>380.23 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>121 MB</td>
+</tr><tr><td>GetHashAsync</td><td>8</td><td>126976</td><td>387.99 ms</td><td>7.760 ms</td><td>12.749 ms</td><td>384.67 ms</td><td>1000.0000</td><td>138.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>125 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>65536</td><td>245.75 ms</td><td>4.726 ms</td><td>5.443 ms</td><td>246.15 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>65 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>69632</td><td>260.99 ms</td><td>5.189 ms</td><td>11.819 ms</td><td>257.89 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>69 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>73728</td><td>282.76 ms</td><td>5.650 ms</td><td>9.284 ms</td><td>282.22 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>73 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>77824</td><td>296.28 ms</td><td>5.669 ms</td><td>11.322 ms</td><td>294.37 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>77 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>81920</td><td>315.14 ms</td><td>6.210 ms</td><td>10.375 ms</td><td>313.32 ms</td><td>1000.0000</td><td>171.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>81 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>86016</td><td>324.95 ms</td><td>6.423 ms</td><td>13.264 ms</td><td>322.34 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>85 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>90112</td><td>347.32 ms</td><td>6.861 ms</td><td>12.546 ms</td><td>348.90 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>89 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>94208</td><td>364.04 ms</td><td>7.229 ms</td><td>14.100 ms</td><td>363.24 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>93 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>98304</td><td>379.00 ms</td><td>7.567 ms</td><td>13.451 ms</td><td>374.59 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>97 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>102400</td><td>394.62 ms</td><td>7.249 ms</td><td>10.162 ms</td><td>394.26 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>101 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>106496</td><td>408.30 ms</td><td>7.908 ms</td><td>10.001 ms</td><td>406.96 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>105 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>110592</td><td>428.56 ms</td><td>8.502 ms</td><td>13.485 ms</td><td>426.60 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>109 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>114688</td><td>436.72 ms</td><td>8.470 ms</td><td>11.594 ms</td><td>435.03 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>113 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>118784</td><td>452.13 ms</td><td>8.977 ms</td><td>14.999 ms</td><td>453.61 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>117 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>122880</td><td>474.92 ms</td><td>9.418 ms</td><td>13.508 ms</td><td>474.92 ms</td><td>1000.0000</td><td>170.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>121 MB</td>
+</tr><tr><td>GetHashAsync</td><td>10</td><td>126976</td><td>491.41 ms</td><td>9.723 ms</td><td>13.944 ms</td><td>491.59 ms</td><td>1000.0000</td><td>171.0000</td><td>-</td><td>1000.0000</td><td>1000.0000</td><td>125 MB</td>
+</tr></tbody></table>
+</body>
+</html>
