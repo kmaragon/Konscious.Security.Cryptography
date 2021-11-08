@@ -1,5 +1,0 @@
-// Validating benchmarks:
-// ***** BenchmarkRunner: Start   *****
-// ***** Found 1 benchmark(s) in total *****
-// ***** Building 1 exe(s) in Parallel: Start   *****
-// start dotnet restore  /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true in F:\BeyondTrust\dragon-platform\Konscious.Security.Cryptography\ArgonBenchmarks\bin\release\net5.0\b830dcd2-7971-4ea1-99b9-9c54b714dbad
