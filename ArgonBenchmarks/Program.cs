@@ -9,6 +9,7 @@ using BenchmarkDotNet.Diagnosers;
 using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
+using System.Runtime.InteropServices;
 
 namespace ArgonBenchmarks
 {
@@ -16,7 +17,7 @@ namespace ArgonBenchmarks
     {
         public static void Main(string[] args)
         {
-            var summary = BenchmarkRunner.Run<ArgonBenchmarks>();
+            var summary = BenchmarkRunner.Run<BlitMarks>();
         }
     }
 
@@ -68,5 +69,34 @@ namespace ArgonBenchmarks
 
         //CN -- Quick
         public IEnumerable<int> IterationValues => Enumerable.Range(1, 2).Select(x => x + (x - 1) * 4);
+    }
+    
+    [MemoryDiagnoser, ThreadingDiagnoser]
+    public class BlitMarks
+    {
+        private Argon2Memory _memory;
+        private byte[] _toBlitWithBytes = new byte[64];
+
+        private static readonly Random _random = new Random();
+
+        [Benchmark]
+        public void Blit()
+        {
+            for (var i = 1; i < 100_000_000; i++)
+            {
+                _memory.Blit(_toBlitWithBytes);
+            }
+        }
+
+
+        [IterationSetup]
+        public void IterationSetup()
+        {
+            var bytes = new byte[128 * 8 * 1024];
+            _random.NextBytes(bytes);
+            var longs = MemoryMarshal.Cast<byte, ulong>(bytes).ToArray();
+            _random.NextBytes(_toBlitWithBytes);
+            _memory = new Argon2Memory(longs);
+        }
     }
 }

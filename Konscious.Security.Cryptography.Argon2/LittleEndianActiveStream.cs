@@ -3,6 +3,7 @@ namespace Konscious.Security.Cryptography
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Runtime.InteropServices;
 
     // this could be refactored to support either endianness
     // but I only need little endian for this
@@ -48,6 +49,12 @@ namespace Konscious.Security.Cryptography
             }
         }
 
+        public void Expose(ReadOnlySpan<ulong> span)
+        {
+            var arr =  span.ToArray();
+            _bufferSetupActions.AddLast(() => BufferSpan(arr));
+        }
+
         public void Expose(Stream subStream)
         {
             if (subStream != null)
@@ -56,13 +63,13 @@ namespace Konscious.Security.Cryptography
             }
         }
 
-        public void Expose(Argon2Memory memory)
-        {
-            if (memory != null)
-            {
-                Expose(new Argon2Memory.Stream(memory));
-            }
-        }
+        //public void Expose(Argon2Memory memory)
+        //{
+        //    if (memory != null)
+        //    {
+        //        Expose(new Argon2Memory.Stream(memory));
+        //    }
+        //}
 
         public void ClearBuffer()
         {
@@ -152,6 +159,14 @@ namespace Konscious.Security.Cryptography
         {
             ReserveBuffer(value.Length);
             Array.Copy(value, offset, _buffer, 0, length);
+        }
+
+        private void BufferSpan(ReadOnlySpan<ulong> span)
+        {
+            ReserveBuffer(1024);
+            var cast = MemoryMarshal.Cast<ulong, byte>(span);
+            ReserveBuffer(cast.Length);
+            cast.CopyTo(_buffer.AsSpan(0, cast.Length));
         }
 
         private void BufferShort(ushort value)

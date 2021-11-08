@@ -1,0 +1,27 @@
+// Validating benchmarks:
+// ***** BenchmarkRunner: Start   *****
+// ***** Found 1 benchmark(s) in total *****
+// ***** Building 1 exe(s) in Parallel: Start   *****
+// start dotnet restore  /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true in F:\BeyondTrust\dragon-platform\Konscious.Security.Cryptography\ArgonBenchmarks\bin\release\net5.0\42a48f70-7531-495e-90cf-3e5bb8b8c6d7
+// command took 1.37s and exited with 0
+// start dotnet build -c Release  --no-restore /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true in F:\BeyondTrust\dragon-platform\Konscious.Security.Cryptography\ArgonBenchmarks\bin\release\net5.0\42a48f70-7531-495e-90cf-3e5bb8b8c6d7
+// command took 13.8s and exited with 1
+// start dotnet build -c Release  --no-restore --no-dependencies /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true in F:\BeyondTrust\dragon-platform\Konscious.Security.Cryptography\ArgonBenchmarks\bin\release\net5.0\42a48f70-7531-495e-90cf-3e5bb8b8c6d7
+// command took 1.92s and exited with 0
+// ***** Done, took 00:00:17 (17.16 sec)   *****
+// Found 1 benchmarks:
+//   BlitMarks.Blit: Job-DFAUUT(InvocationCount=1, UnrollFactor=1)
+
+// **************************
+// Benchmark: BlitMarks.Blit: Job-DFAUUT(InvocationCount=1, UnrollFactor=1)
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet "42a48f70-7531-495e-90cf-3e5bb8b8c6d7.dll" --benchmarkName "ArgonBenchmarks.BlitMarks.Blit" --job "InvocationCount=1, UnrollFactor=1" --benchmarkId 0 in F:\BeyondTrust\dragon-platform\Konscious.Security.Cryptography\ArgonBenchmarks\bin\release\net5.0\42a48f70-7531-495e-90cf-3e5bb8b8c6d7\bin\Release\net5.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// Runtime=.NET 5.0.11 (5.0.1121.47308), X64 RyuJIT
+// GC=Concurrent Workstation
+// Job: Job-ONPNLL(InvocationCount=1, UnrollFactor=1)
+
+OverheadJitting  1: 1 op, 175300.00 ns, 175.3000 us/op

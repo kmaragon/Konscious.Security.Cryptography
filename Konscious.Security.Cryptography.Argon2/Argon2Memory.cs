@@ -9,6 +9,11 @@ namespace Konscious.Security.Cryptography
     using System.IO;
     using System.Runtime.InteropServices;
 
+    //public static class MemoryExtensions
+    //{
+    //    public
+    //}
+
     internal class Argon2Memory
     {
         private readonly Memory<ulong> _data;
@@ -18,7 +23,7 @@ namespace Konscious.Security.Cryptography
             _data = data;
         }
 
-        public ReadOnlySpan<ulong> Span => _data.Span;
+        public Span<ulong> Span => _data.Span;
 
         [SuppressMessage("Microsoft.Performance", "CA1822")]
         public int Length
@@ -29,34 +34,35 @@ namespace Konscious.Security.Cryptography
             }
         }
 
-        public void Blit(byte[] data, int destOffset = 0, int srcOffset = 0, int byteLength = -1)
+        public void Blit(ReadOnlySpan<byte> data, int destOffset = 0, int srcOffset = 0, int byteLength = -1)
         {
-            int remainder = 0;
-            int length;
-            if (byteLength < 0)
-            {
-                length = Length;
-            }
-            else
-            {
-                length = byteLength / 8;
-                remainder = byteLength - (length * 8);
-            }
-            //---------------
-            var newSpan = MemoryMarshal.Cast<byte, ulong>(data.AsSpan(srcOffset));
-            newSpan.CopyTo(_data.Span[destOffset..]);
+            _data.Span.Blit(data, destOffset, srcOffset, byteLength);
+            //int remainder = 0;
+            //int length;
+            //if (byteLength < 0)
+            //{
+            //    length = Length;
+            //}
+            //else
+            //{
+            //    length = byteLength / 8;
+            //    remainder = byteLength - (length * 8);
+            //}
+            ////---------------
+            //var newSpan = MemoryMarshal.Cast<byte, ulong>(data[srcOffset..]);
+            //newSpan.CopyTo(_data.Span[destOffset..]);
 
-            if (remainder != 0)
-            {
-                var remainderSpan = data[^(byteLength % 8)..];
+            //if (remainder != 0)
+            //{
+            //    var remainderSpan = data[^(byteLength % 8)..];
 
-                ulong extra = 0;
-                for (int i = 0; i < remainderSpan.Length; i++)
-                {
-                    extra |= ((ulong)remainderSpan[i]) << (8 * i);
-                }
-                this[newSpan.Length + destOffset] = extra;
-            }
+            //    ulong extra = 0;
+            //    for (int i = 0; i < remainderSpan.Length; i++)
+            //    {
+            //        extra |= ((ulong)remainderSpan[i]) << (8 * i);
+            //    }
+            //    this[newSpan.Length + destOffset] = extra;
+            //}
             //------------
             //int readSize = Math.Min((data.Length / 8), length);
 
@@ -87,10 +93,10 @@ namespace Konscious.Security.Cryptography
             //}
         }
 
-        public void Set(ulong value)
-        {
-            _data.Span.Fill(value);
-        }
+        //public void Set(ulong value)
+        //{
+        //    _data.Span.Fill(value);
+        //}
 
         //public IEnumerator<ulong> GetEnumerator()
         //{
@@ -128,24 +134,26 @@ namespace Konscious.Security.Cryptography
             }
         }
 
-        internal unsafe class Stream : UnmanagedMemoryStream
-        {
-            public Stream(Argon2Memory memory)
-            {
-                _data = memory._data.Pin();
-                base.Initialize((byte*)_data.Pointer, 1024, 1024, FileAccess.Read);
-                //_data = GCHandle.Alloc(memory._data, GCHandleType.Pinned);
-                //base.Initialize((byte*)_data.AddrOfPinnedObject(), 1024, 1024, FileAccess.Read);
-            }
+        //internal unsafe class Stream : UnmanagedMemoryStream
+        //{
+        //    public Stream(Argon2Memory memory)
+        //    {
+        //        _data = GCHandle.Alloc(memory._data.ToArray(), GCHandleType.Pinned);
+        //        //_data = memory._data.ToArray();
+        //        base.Initialize((byte*)_data.AddrOfPinnedObject(), 1024, 1024, FileAccess.Read);
+                
+        //        //base.Initialize((byte*)_data.AddrOfPinnedObject(), 1024, 1024, FileAccess.Read);
+        //    }
 
-            protected override void Dispose(bool isDispose)
-            {
-                base.Dispose(isDispose);
-                _data.Dispose();
-            }
+        //    protected override void Dispose(bool isDispose)
+        //    {
+        //        base.Dispose(isDispose);
+        //        _data.Free();
+        //        //_data.Dispose();
+        //    }
 
-            private MemoryHandle _data;
-        }
+        //    private GCHandle _data;
+        //}
 
         private class Enumerator : IEnumerator<ulong>
         {

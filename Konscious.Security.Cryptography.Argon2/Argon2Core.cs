@@ -83,8 +83,8 @@ namespace Konscious.Security.Cryptography
 
         private static void XorLanes(Argon2Lane[] lanes)
         {
-            var data = lanes[0][lanes[0].BlockCount - 1];
-
+            var data = lanes[0][lanes[0].BlockCount - 1].Span;
+            
             foreach (var lane in lanes.Skip(1))
             {
                 var block = lane[lane.BlockCount-1];
@@ -113,16 +113,12 @@ namespace Konscious.Security.Cryptography
             XorLanes(lanes);
 
             var ds = new LittleEndianActiveStream();
-            ds.Expose(lanes[0][lanes[0].BlockCount - 1]);
+            ds.Expose(lanes[0][lanes[0].BlockCount - 1].Span);
 
             ModifiedBlake2.Blake2Prime(lanes[0][1], ds, _tagLine);
             var result = new byte[_tagLine];
-
-            using (var stream = new Argon2Memory.Stream(lanes[0][1]))
-            {
-                stream.Read(result, 0, _tagLine);
-            }
-
+            var tmp = MemoryMarshal.Cast<ulong, byte>(lanes[0][1].Span)[..result.Length]; 
+            tmp.CopyTo(result);
             return result;
         }
 

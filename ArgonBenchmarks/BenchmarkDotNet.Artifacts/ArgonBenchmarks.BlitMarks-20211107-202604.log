@@ -1,0 +1,168 @@
+// Validating benchmarks:
+// ***** BenchmarkRunner: Start   *****
+// ***** Found 1 benchmark(s) in total *****
+// ***** Building 1 exe(s) in Parallel: Start   *****
+// start dotnet restore  /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true in F:\BeyondTrust\dragon-platform\Konscious.Security.Cryptography\ArgonBenchmarks\bin\release\net5.0\3cfa1113-7844-406d-b6eb-044e14700431
+// command took 1.29s and exited with 0
+// start dotnet build -c Release  --no-restore /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true in F:\BeyondTrust\dragon-platform\Konscious.Security.Cryptography\ArgonBenchmarks\bin\release\net5.0\3cfa1113-7844-406d-b6eb-044e14700431
+// command took 13.75s and exited with 1
+// start dotnet build -c Release  --no-restore --no-dependencies /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true in F:\BeyondTrust\dragon-platform\Konscious.Security.Cryptography\ArgonBenchmarks\bin\release\net5.0\3cfa1113-7844-406d-b6eb-044e14700431
+// command took 1.86s and exited with 0
+// ***** Done, took 00:00:16 (16.97 sec)   *****
+// Found 1 benchmarks:
+//   BlitMarks.Blit: Job-UITLIS(InvocationCount=1, UnrollFactor=1)
+
+// **************************
+// Benchmark: BlitMarks.Blit: Job-UITLIS(InvocationCount=1, UnrollFactor=1)
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet "3cfa1113-7844-406d-b6eb-044e14700431.dll" --benchmarkName "ArgonBenchmarks.BlitMarks.Blit" --job "InvocationCount=1, UnrollFactor=1" --benchmarkId 0 in F:\BeyondTrust\dragon-platform\Konscious.Security.Cryptography\ArgonBenchmarks\bin\release\net5.0\3cfa1113-7844-406d-b6eb-044e14700431\bin\Release\net5.0
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// Runtime=.NET 5.0.11 (5.0.1121.47308), X64 RyuJIT
+// GC=Concurrent Workstation
+// Job: Job-BTBAOY(InvocationCount=1, UnrollFactor=1)
+
+OverheadJitting  1: 1 op, 154200.00 ns, 154.2000 us/op
+WorkloadJitting  1: 1 op, 7482900.00 ns, 7.4829 ms/op
+
+OverheadWarmup   1: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadWarmup   2: 1 op, 300.00 ns, 300.0000 ns/op
+OverheadWarmup   3: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadWarmup   4: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadWarmup   5: 1 op, 200.00 ns, 200.0000 ns/op
+
+OverheadActual   1: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual   2: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual   3: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual   4: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual   5: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual   6: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual   7: 1 op, 100.00 ns, 100.0000 ns/op
+OverheadActual   8: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual   9: 1 op, 100.00 ns, 100.0000 ns/op
+OverheadActual  10: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual  11: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual  12: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual  13: 1 op, 100.00 ns, 100.0000 ns/op
+OverheadActual  14: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual  15: 1 op, 100.00 ns, 100.0000 ns/op
+OverheadActual  16: 1 op, 100.00 ns, 100.0000 ns/op
+OverheadActual  17: 1 op, 100.00 ns, 100.0000 ns/op
+OverheadActual  18: 1 op, 200.00 ns, 200.0000 ns/op
+OverheadActual  19: 1 op, 100.00 ns, 100.0000 ns/op
+OverheadActual  20: 1 op, 100.00 ns, 100.0000 ns/op
+
+WorkloadWarmup   1: 1 op, 6024800.00 ns, 6.0248 ms/op
+WorkloadWarmup   2: 1 op, 5972300.00 ns, 5.9723 ms/op
+WorkloadWarmup   3: 1 op, 6260600.00 ns, 6.2606 ms/op
+WorkloadWarmup   4: 1 op, 5964000.00 ns, 5.9640 ms/op
+WorkloadWarmup   5: 1 op, 5963500.00 ns, 5.9635 ms/op
+WorkloadWarmup   6: 1 op, 5978800.00 ns, 5.9788 ms/op
+WorkloadWarmup   7: 1 op, 5978100.00 ns, 5.9781 ms/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 5990200.00 ns, 5.9902 ms/op
+WorkloadActual   2: 1 op, 5969800.00 ns, 5.9698 ms/op
+WorkloadActual   3: 1 op, 5970000.00 ns, 5.9700 ms/op
+WorkloadActual   4: 1 op, 5971500.00 ns, 5.9715 ms/op
+WorkloadActual   5: 1 op, 5983100.00 ns, 5.9831 ms/op
+WorkloadActual   6: 1 op, 5965300.00 ns, 5.9653 ms/op
+WorkloadActual   7: 1 op, 5967100.00 ns, 5.9671 ms/op
+WorkloadActual   8: 1 op, 5982500.00 ns, 5.9825 ms/op
+WorkloadActual   9: 1 op, 5966800.00 ns, 5.9668 ms/op
+WorkloadActual  10: 1 op, 5964100.00 ns, 5.9641 ms/op
+WorkloadActual  11: 1 op, 5965100.00 ns, 5.9651 ms/op
+WorkloadActual  12: 1 op, 5971100.00 ns, 5.9711 ms/op
+WorkloadActual  13: 1 op, 6269800.00 ns, 6.2698 ms/op
+WorkloadActual  14: 1 op, 5963200.00 ns, 5.9632 ms/op
+WorkloadActual  15: 1 op, 6707800.00 ns, 6.7078 ms/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 5990000.00 ns, 5.9900 ms/op
+WorkloadResult   2: 1 op, 5969600.00 ns, 5.9696 ms/op
+WorkloadResult   3: 1 op, 5969800.00 ns, 5.9698 ms/op
+WorkloadResult   4: 1 op, 5971300.00 ns, 5.9713 ms/op
+WorkloadResult   5: 1 op, 5982900.00 ns, 5.9829 ms/op
+WorkloadResult   6: 1 op, 5965100.00 ns, 5.9651 ms/op
+WorkloadResult   7: 1 op, 5966900.00 ns, 5.9669 ms/op
+WorkloadResult   8: 1 op, 5982300.00 ns, 5.9823 ms/op
+WorkloadResult   9: 1 op, 5966600.00 ns, 5.9666 ms/op
+WorkloadResult  10: 1 op, 5963900.00 ns, 5.9639 ms/op
+WorkloadResult  11: 1 op, 5964900.00 ns, 5.9649 ms/op
+WorkloadResult  12: 1 op, 5970900.00 ns, 5.9709 ms/op
+WorkloadResult  13: 1 op, 5963000.00 ns, 5.9630 ms/op
+GC:  0 0 0 0 1
+Threading:  0 0 1
+
+// AfterAll
+// Benchmark Process 65900 has exited with code 0.
+
+Mean = 5.971 ms, StdErr = 0.002 ms (0.04%), N = 13, StdDev = 0.008 ms
+Min = 5.963 ms, Q1 = 5.965 ms, Median = 5.970 ms, Q3 = 5.971 ms, Max = 5.990 ms
+IQR = 0.006 ms, LowerFence = 5.956 ms, UpperFence = 5.981 ms
+ConfidenceInterval = [5.961 ms; 5.981 ms] (CI 99.9%), Margin = 0.010 ms (0.17% of Mean)
+Skewness = 0.98, Kurtosis = 2.52, MValue = 2
+
+// ***** BenchmarkRunner: Finish  *****
+
+// * Export *
+  BenchmarkDotNet.Artifacts\results\ArgonBenchmarks.BlitMarks-report.csv
+  BenchmarkDotNet.Artifacts\results\ArgonBenchmarks.BlitMarks-report-github.md
+  BenchmarkDotNet.Artifacts\results\ArgonBenchmarks.BlitMarks-report.html
+
+// * Detailed results *
+BlitMarks.Blit: Job-UITLIS(InvocationCount=1, UnrollFactor=1)
+Runtime = .NET 5.0.11 (5.0.1121.47308), X64 RyuJIT; GC = Concurrent Workstation
+Mean = 5.971 ms, StdErr = 0.002 ms (0.04%), N = 13, StdDev = 0.008 ms
+Min = 5.963 ms, Q1 = 5.965 ms, Median = 5.970 ms, Q3 = 5.971 ms, Max = 5.990 ms
+IQR = 0.006 ms, LowerFence = 5.956 ms, UpperFence = 5.981 ms
+ConfidenceInterval = [5.961 ms; 5.981 ms] (CI 99.9%), Margin = 0.010 ms (0.17% of Mean)
+Skewness = 0.98, Kurtosis = 2.52, MValue = 2
+-------------------- Histogram --------------------
+[5.958 ms ; 5.995 ms) | @@@@@@@@@@@@@
+---------------------------------------------------
+
+// * Summary *
+
+BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19043.1288 (21H1/May2021Update)
+AMD Ryzen 9 5900X, 1 CPU, 24 logical and 12 physical cores
+.NET SDK=6.0.100-rc.2.21505.57
+  [Host]     : .NET 5.0.11 (5.0.1121.47308), X64 RyuJIT
+  Job-UITLIS : .NET 5.0.11 (5.0.1121.47308), X64 RyuJIT
+
+InvocationCount=1  UnrollFactor=1  
+
+| Method |     Mean |     Error |    StdDev | Completed Work Items | Lock Contentions | Allocated |
+|------- |---------:|----------:|----------:|---------------------:|-----------------:|----------:|
+|   Blit | 5.971 ms | 0.0101 ms | 0.0084 ms |                    - |                - |         - |
+
+// * Warnings *
+MinIterationTime
+  BlitMarks.Blit: InvocationCount=1, UnrollFactor=1 -> The minimum observed iteration time is 5.9632 ms which is very small. It's recommended to increase it to at least 100.0000 ms using more operations.
+
+// * Hints *
+Outliers
+  BlitMarks.Blit: InvocationCount=1, UnrollFactor=1 -> 2 outliers were removed (6.27 ms, 6.71 ms)
+
+// * Legends *
+  Mean                 : Arithmetic mean of all measurements
+  Error                : Half of 99.9% confidence interval
+  StdDev               : Standard deviation of all measurements
+  Completed Work Items : The number of work items that have been processed in ThreadPool (per single operation)
+  Lock Contentions     : The number of times there was contention upon trying to take a Monitor's lock (per single operation)
+  Allocated            : Allocated memory per single operation (managed only, inclusive, 1KB = 1024B)
+  1 ms                 : 1 Millisecond (0.001 sec)
+
+// * Diagnostic Output - ThreadingDiagnoser *
+
+// * Diagnostic Output - MemoryDiagnoser *
+
+
+// ***** BenchmarkRunner: End *****
+// ** Remained 0 benchmark(s) to run **
+Run time: 00:00:00 (0.98 sec), executed benchmarks: 1
+
+Global total time: 00:00:17 (17.95 sec), executed benchmarks: 1
+// * Artifacts cleanup *
