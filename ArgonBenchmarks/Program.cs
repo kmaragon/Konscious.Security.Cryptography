@@ -31,7 +31,7 @@ namespace ArgonBenchmarks
     }
 
     [MemoryDiagnoser, ThreadingDiagnoser]
-    [JsonExporterAttribute.BriefCompressed]
+    [JsonExporterAttribute.BriefCompressed, CsvExporter(BenchmarkDotNet.Exporters.Csv.CsvSeparator.CurrentCulture)]
     public class ArgonBenchmarks
     {
         private readonly string _toHash = "iamapasswordthatneedshashing";
@@ -94,7 +94,6 @@ namespace ArgonBenchmarks
                 _memory.Span.Blit(_toBlitWithBytes);
             }
         }
-
 
         [IterationSetup]
         public void IterationSetup()
