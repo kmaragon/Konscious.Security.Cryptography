@@ -81,8 +81,9 @@ namespace ArgonBenchmarks
     [MemoryDiagnoser, ThreadingDiagnoser]
     public class BlitMarks
     {
-        private Argon2Memory _memory;
         private byte[] _toBlitWithBytes = new byte[64];
+        private byte[] _bytes = new byte[128 * 8 * 1024];
+        private ulong[] _longs;
 
         private static readonly Random _random = new Random();
 
@@ -91,18 +92,16 @@ namespace ArgonBenchmarks
         {
             for (var i = 1; i < 100_000_000; i++)
             {
-                _memory.Span.Blit(_toBlitWithBytes);
+                _longs.AsSpan().Blit(_toBlitWithBytes);
             }
         }
 
         [IterationSetup]
         public void IterationSetup()
         {
-            var bytes = new byte[128 * 8 * 1024];
-            _random.NextBytes(bytes);
-            var longs = MemoryMarshal.Cast<byte, ulong>(bytes).ToArray();
+            _random.NextBytes(_bytes);
+            _longs = MemoryMarshal.Cast<byte, ulong>(_bytes).ToArray();
             _random.NextBytes(_toBlitWithBytes);
-            _memory = new Argon2Memory(longs);
         }
     }
 }

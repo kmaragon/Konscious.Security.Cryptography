@@ -49,10 +49,9 @@ namespace Konscious.Security.Cryptography
             }
         }
 
-        public void Expose(ReadOnlySpan<ulong> span)
+        public void Expose(Memory<ulong> mem)
         {
-            var arr =  span.ToArray();
-            _bufferSetupActions.AddLast(() => BufferSpan(arr));
+            _bufferSetupActions.AddLast(() => BufferSpan(mem.Span));
         }
 
         public void Expose(Stream subStream)
@@ -62,14 +61,6 @@ namespace Konscious.Security.Cryptography
                 _bufferSetupActions.AddLast(() => BufferSubStream(subStream));
             }
         }
-
-        //public void Expose(Argon2Memory memory)
-        //{
-        //    if (memory != null)
-        //    {
-        //        Expose(new Argon2Memory.Stream(memory));
-        //    }
-        //}
 
         public void ClearBuffer()
         {
@@ -163,7 +154,7 @@ namespace Konscious.Security.Cryptography
 
         private void BufferSpan(ReadOnlySpan<ulong> span)
         {
-            ReserveBuffer(1024);
+            ReserveBuffer(span.Length);
             var cast = MemoryMarshal.Cast<ulong, byte>(span);
             ReserveBuffer(cast.Length);
             cast.CopyTo(_buffer.AsSpan(0, cast.Length));

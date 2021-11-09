@@ -1,12 +1,8 @@
-using System.Runtime.CompilerServices;
-
 namespace Konscious.Security.Cryptography
 {
     using System;
-    using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
-    using System.Threading;
     using System.Threading.Tasks;
 
     internal abstract class Argon2Core
@@ -84,10 +80,10 @@ namespace Konscious.Security.Cryptography
         private static void XorLanes(Argon2Lane[] lanes)
         {
             var data = lanes[0][lanes[0].BlockCount - 1].Span;
-            
+
             foreach (var lane in lanes.Skip(1))
             {
-                var block = lane[lane.BlockCount-1].Span;
+                var block = lane[lane.BlockCount - 1].Span;
 
                 for (var b = 0; b < 128; ++b)
                 {
@@ -113,11 +109,11 @@ namespace Konscious.Security.Cryptography
             XorLanes(lanes);
 
             var ds = new LittleEndianActiveStream();
-            ds.Expose(lanes[0][lanes[0].BlockCount - 1].Span);
+            ds.Expose(lanes[0][lanes[0].BlockCount - 1]);
 
             ModifiedBlake2.Blake2Prime(lanes[0][1], ds, _tagLine);
             var result = new byte[_tagLine];
-            var tmp = MemoryMarshal.Cast<ulong, byte>(lanes[0][1].Span)[..result.Length]; 
+            var tmp = MemoryMarshal.Cast<ulong, byte>(lanes[0][1].Span)[..result.Length];
             tmp.CopyTo(result);
             return result;
         }
@@ -166,7 +162,8 @@ namespace Konscious.Security.Cryptography
 
                 int taskIndex = i * 2;
                 int iClosure = i;
-                init[taskIndex] = Task.Run(() => {
+                init[taskIndex] = Task.Run(() =>
+                {
                     var stream = new LittleEndianActiveStream();
                     stream.Expose(blockHash);
                     stream.Expose(0);
@@ -175,7 +172,8 @@ namespace Konscious.Security.Cryptography
                     ModifiedBlake2.Blake2Prime(lanes[iClosure][0], stream);
                 });
 
-                init[taskIndex + 1] = Task.Run(() => {
+                init[taskIndex + 1] = Task.Run(() =>
+                {
                     var stream = new LittleEndianActiveStream();
                     stream.Expose(blockHash);
                     stream.Expose(1);
@@ -248,27 +246,14 @@ namespace Konscious.Security.Cryptography
         }
 
 #if DEBUG
-        private static void DebugWrite(Argon2Memory mem)
-        {
-            DebugWrite(mem.Span.ToArray());
-        }
-
-        private unsafe static void DebugWrite(ulong[] data)
-        {
-            fixed (ulong *dat = &data[0])
-            {
-                DebugWrite(dat, data.Length);
-            }
-        }
-
-        private unsafe static void DebugWrite(ulong *data, int len)
+        private static void DebugWrite(Span<ulong> data)
         {
             int offset = 0;
-            while (offset < len)
+            while (offset < data.Length)
             {
                 for (int i = 0; i < 8; i++, offset++)
                 {
-                    if (offset == len)
+                    if (offset == data.Length)
                         break;
 
                     Console.Write("0x{0:x16} ", data[offset]);
@@ -280,6 +265,6 @@ namespace Konscious.Security.Cryptography
         }
 #endif
 
-        private int _tagLine;
+        private readonly int _tagLine;
     }
 }
