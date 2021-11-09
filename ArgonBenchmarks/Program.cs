@@ -48,7 +48,7 @@ namespace ArgonBenchmarks
         {
             _argon = new Argon2id(Encoding.UTF8.GetBytes(_toHash))
             {
-                DegreeOfParallelism = 4,
+                DegreeOfParallelism = 1,
                 Iterations = Iterations,
                 MemorySize = RamKilobytes,
                 Salt = Guid.NewGuid().ToByteArray()
@@ -62,17 +62,17 @@ namespace ArgonBenchmarks
         public int RamKilobytes { get; set; }
 
         //CN - Full
-        public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 16)
-            .Select(x => x * 1024 * 4 + 65536)
-            .Append(1048576)
-            .Append(4* 1048576);
+        //public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 16)
+        //    .Select(x => x * 1024 * 4 + 65536)
+        //    .Append(1048576)
+        //    .Append(4* 1048576);
 
         //CN -- Quick
-        //public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 4).Select(x => x * 1024 * 8 + 65536);
+        public IEnumerable<int> RamKilobytesValues => new List<int> { 1048576 };//Enumerable.Range(0, 4).Select(x => x * 1024 * 8 + 65536);
 
 
         //CN -- Full
-        public IEnumerable<int> IterationValues => Enumerable.Range(1, 5).Select(x => x*2);
+        public IEnumerable<int> IterationValues => Enumerable.Range(1, 5).Select(x => (x-1)*2 +1);
 
         //CN -- Quick
         //public IEnumerable<int> IterationValues => Enumerable.Range(1, 2).Select(x => x + (x - 1) * 4);

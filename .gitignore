@@ -6,3 +6,4 @@ project.lock.json
 /Konscious.Security.Cryptography.Argon2/Properties/PublishProfiles
 /Konscious.Security.Cryptography.Blake2/Properties/PublishProfiles
 /publish
+/**/BenchmarkDotNet.Artifacts/
