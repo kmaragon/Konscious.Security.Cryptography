@@ -5,21 +5,15 @@
 
     internal static class SpanExtensions
     {
-        public static void Blit(this Span<ulong> toBlit, ReadOnlySpan<byte> bytes, int destOffset = 0, int srcOffset = 0, int byteLength = -1)
+        public static void Blit(this Span<ulong> toBlit, ReadOnlySpan<byte> bytes, int destOffset = 0)
         {
-            int remainder = 0;
-            int length;
-            if (byteLength < 0)
+            if (bytes.Length/8 > toBlit.Length - destOffset)
             {
-                length = 128;
-            }
-            else
-            {
-                length = byteLength / 8;
-                remainder = byteLength % 8;
+                throw new ArgumentException("Cannot write more than remaining space");
             }
 
-            var newSpan = MemoryMarshal.Cast<byte, ulong>(bytes[srcOffset..]);
+            var remainder = bytes.Length % 8;
+            var newSpan = MemoryMarshal.Cast<byte, ulong>(bytes);
             newSpan.CopyTo(toBlit[destOffset..]);
 
             if (remainder != 0)
