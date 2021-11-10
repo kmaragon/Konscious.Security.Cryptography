@@ -154,7 +154,6 @@ namespace Konscious.Security.Cryptography
 
         private void BufferSpan(ReadOnlySpan<ulong> span)
         {
-            ReserveBuffer(span.Length);
             var cast = MemoryMarshal.Cast<ulong, byte>(span);
             ReserveBuffer(cast.Length);
             cast.CopyTo(_buffer.AsSpan(0, cast.Length));
