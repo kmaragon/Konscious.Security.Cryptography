@@ -10,14 +10,15 @@ using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
 using System.Runtime.InteropServices;
+using BenchmarkDotNet.Jobs;
 
 namespace ArgonBenchmarks
 {
     internal class Program
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
-            var summary = BenchmarkRunner.Run<ArgonBenchmarks>();
+            var _ = BenchmarkRunner.Run<ArgonBenchmarks>();
         }
     }
 
@@ -26,11 +27,12 @@ namespace ArgonBenchmarks
         public ArgonConfig()
         {
             AddDiagnoser(MemoryDiagnoser.Default);
-            AddDiagnoser(ThreadingDiagnoser.Default);
         }
     }
 
-    [MemoryDiagnoser, ThreadingDiagnoser]
+    [MemoryDiagnoser]
+    [SimpleJob(RuntimeMoniker.Net462)]
+    [SimpleJob(RuntimeMoniker.Net60)]
     [JsonExporterAttribute.BriefCompressed, CsvExporter(BenchmarkDotNet.Exporters.Csv.CsvSeparator.CurrentCulture)]
     public class ArgonBenchmarks
     {
@@ -62,17 +64,16 @@ namespace ArgonBenchmarks
         public int RamKilobytes { get; set; }
 
         //CN - Full
-        //public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 16)
-        //    .Select(x => x * 1024 * 4 + 65536)
-        //    .Append(1048576)
-        //    .Append(4* 1048576);
+        public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 16)
+            .Select(x => x * 1024 * 4 + 65536)
+            .Concat(new[] { 1048576, 4 * 1048576 });
 
         //CN -- Quick
-        public IEnumerable<int> RamKilobytesValues => new List<int> { 1048576 };//Enumerable.Range(0, 4).Select(x => x * 1024 * 8 + 65536);
+        //public IEnumerable<int> RamKilobytesValues => Enumerable.Range(0, 4).Select(x => x * 1024 * 8 + 65536);
 
 
         //CN -- Full
-        public IEnumerable<int> IterationValues => Enumerable.Range(1, 5).Select(x => (x-1)*2 +1);
+        public IEnumerable<int> IterationValues => Enumerable.Range(1, 5).Select(x => 2*x - 1);
 
         //CN -- Quick
         //public IEnumerable<int> IterationValues => Enumerable.Range(1, 2).Select(x => x + (x - 1) * 4);
@@ -81,8 +82,8 @@ namespace ArgonBenchmarks
     [MemoryDiagnoser, ThreadingDiagnoser]
     public class BlitMarks
     {
-        private byte[] _toBlitWithBytes = new byte[64];
-        private byte[] _bytes = new byte[128 * 8 * 1024];
+        private readonly byte[] _toBlitWithBytes = new byte[64];
+        private readonly byte[] _bytes = new byte[128 * 8 * 1024];
         private ulong[] _longs;
 
         private static readonly Random _random = new Random();

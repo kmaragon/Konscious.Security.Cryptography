@@ -14,11 +14,11 @@
 
             var remainder = bytes.Length % 8;
             var newSpan = MemoryMarshal.Cast<byte, ulong>(bytes);
-            newSpan.CopyTo(toBlit[destOffset..]);
+            newSpan.CopyTo(toBlit.Slice(destOffset));
 
             if (remainder != 0)
             {
-                var remainderSpan = bytes[^remainder..];
+                var remainderSpan = bytes.Slice(bytes.Length-remainder);//CN:Here
 
                 ulong extra = 0;
                 for (int i = 0; i < remainderSpan.Length; i++)

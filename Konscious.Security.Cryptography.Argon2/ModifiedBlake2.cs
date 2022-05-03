@@ -78,7 +78,7 @@ namespace Konscious.Security.Cryptography
             {
                 var blake2 = new HMACBlake2B(8 * size);
                 blake2.Initialize();
-                memory.Span.Blit(blake2.ComputeHash(hashStream).AsSpan()[0..size], 0);
+                memory.Span.Blit(blake2.ComputeHash(hashStream).AsSpan().Slice(0,size), 0);
             }
             else
             {
@@ -88,7 +88,7 @@ namespace Konscious.Security.Cryptography
                 int offset = 0;
                 var chunk = blake2.ComputeHash(hashStream);
 
-                memory.Span.Blit(chunk.AsSpan()[0..32], offset); // copy half of the chunk
+                memory.Span.Blit(chunk.AsSpan().Slice(0,32), offset); // copy half of the chunk
                 offset += 4;
                 size -= 32;
 
@@ -96,7 +96,7 @@ namespace Konscious.Security.Cryptography
                 {
                     blake2.Initialize();
                     chunk = blake2.ComputeHash(chunk);
-                    memory.Span.Blit(chunk.AsSpan()[0..32], offset); // half again
+                    memory.Span.Blit(chunk.AsSpan().Slice(0,32), offset); // half again
 
                     offset += 4;
                     size -= 32;
@@ -104,7 +104,7 @@ namespace Konscious.Security.Cryptography
 
                 blake2 = new HMACBlake2B(size * 8);
                 blake2.Initialize();
-                memory.Span.Blit(blake2.ComputeHash(chunk).AsSpan()[0..size], offset); // copy the rest
+                memory.Span.Blit(blake2.ComputeHash(chunk).AsSpan().Slice(0,size), offset); // copy the rest
             }
         }
     }

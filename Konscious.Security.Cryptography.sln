@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konscious.Security.Cryptogr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konscious.Security.Cryptography.Blake2.Test", "Konscious.Security.Cryptography.Blake2.Test\Konscious.Security.Cryptography.Blake2.Test.csproj", "{D44BDCA1-0E9A-4E60-AE68-A2A9AC3CA847}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgonBenchmarks", "ArgonBenchmarks\ArgonBenchmarks.csproj", "{FF8ADBD8-B155-414A-9DCD-DD5E843303BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgonBenchmarks", "ArgonBenchmarks\ArgonBenchmarks.csproj", "{FF8ADBD8-B155-414A-9DCD-DD5E843303BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

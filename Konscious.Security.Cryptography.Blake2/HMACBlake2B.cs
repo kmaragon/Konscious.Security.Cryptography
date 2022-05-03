@@ -96,7 +96,7 @@ namespace Konscious.Security.Cryptography
         /// </summary>
         public override void Initialize()
         {
-            _implementation = CreateImplementation();
+            _implementation = _createImpl();
             _implementation.Initialize(Key);
         }
 
@@ -132,7 +132,7 @@ namespace Konscious.Security.Cryptography
         }
 
         Blake2bBase _implementation;
-        int _hashSize;
-        private Func<Blake2bBase> _createImpl;
+        private readonly int _hashSize;
+        private readonly Func<Blake2bBase> _createImpl;
     }
 }

@@ -42,9 +42,9 @@ namespace Konscious.Security.Cryptography
             var rands = new ulong[segmentLength];
 
             var ulongRaw = new Memory<ulong>(new ulong[384]);
-            var inputBlock = ulongRaw[..128].Span;
-            var addressBlock = ulongRaw[128..256].Span;
-            var tmpBlock = ulongRaw[256..384].Span;
+            var inputBlock = ulongRaw.Slice(0,128).Span;
+            var addressBlock = ulongRaw.Slice(128,128).Span;
+            var tmpBlock = ulongRaw.Slice(256,128).Span;
 
             inputBlock[0] = (ulong)pass;
             inputBlock[1] = (ulong)lane;

@@ -5,6 +5,8 @@ namespace Konscious.Security.Cryptography
     using System.Runtime.InteropServices;
     using System.Threading.Tasks;
 
+
+
     internal abstract class Argon2Core
     {
         public Argon2Core(int hashSize)
@@ -113,7 +115,7 @@ namespace Konscious.Security.Cryptography
 
             ModifiedBlake2.Blake2Prime(lanes[0][1], ds, _tagLine);
             var result = new byte[_tagLine];
-            var tmp = MemoryMarshal.Cast<ulong, byte>(lanes[0][1].Span)[..result.Length];
+            var tmp = MemoryMarshal.Cast<ulong, byte>(lanes[0][1].Span).Slice(0,result.Length);
             tmp.CopyTo(result);
             return result;
         }
