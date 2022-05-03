@@ -4,7 +4,6 @@ using System.Text;
 using BenchmarkDotNet.Attributes;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,15 +17,7 @@ namespace ArgonBenchmarks
     {
         public static void Main()
         {
-            var _ = BenchmarkRunner.Run<ArgonBenchmarks>();
-        }
-    }
-
-    public class ArgonConfig : ManualConfig
-    {
-        public ArgonConfig()
-        {
-            AddDiagnoser(MemoryDiagnoser.Default);
+            BenchmarkRunner.Run<ArgonBenchmarks>();
         }
     }
 
