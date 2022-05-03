@@ -41,7 +41,7 @@ namespace ArgonBenchmarks
         {
             _argon = new Argon2id(Encoding.UTF8.GetBytes(_toHash))
             {
-                DegreeOfParallelism = 1,
+                DegreeOfParallelism = 4,
                 Iterations = Iterations,
                 MemorySize = RamKilobytes,
                 Salt = Guid.NewGuid().ToByteArray()
