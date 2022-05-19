@@ -3,7 +3,7 @@
     <Description>An implementation of Blake2 for .NET that integrates with the standard crypto libraries</Description>
     <Copyright>(c) 2019 Keef Aragon</Copyright>
     <AssemblyTitle>Konscious.Security.Cryptography.Blake2</AssemblyTitle>
-    <VersionPrefix>1.0.9</VersionPrefix>
+    <VersionPrefix>1.1.0</VersionPrefix>
     <Authors>Keef Aragon</Authors>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -23,7 +23,7 @@
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.3' ">1.6.1</NetStandardImplicitPackageVersion>
     <TargetFrameworks>netstandard1.3;net46;net6.0</TargetFrameworks>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Version>1.0.9</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
