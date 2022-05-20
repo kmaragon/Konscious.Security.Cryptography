@@ -23,7 +23,7 @@ C# Implementation of the Argon2 1.3 spec with variants for Argon2i, Argon2d, and
     <PackageId>Konscious.Security.Cryptography.Argon2</PackageId>
     <PackageTags>crypto;cryptography;argon2;argon2i;argon2d;argon2id;password</PackageTags>
     <PackageProjectUrl>https://github.com/kmaragon/Konscious.Security.Cryptography</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/kmaragon/Konscious.Security.Cryptography/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/kmaragon/Konscious.Security.Cryptography.git</RepositoryUrl>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
