@@ -9,7 +9,7 @@ namespace Konscious.Security.Cryptography
     {
         internal class PseudoRands : IArgon2PseudoRands
         {
-            private Argon2Lane[] _lanes;
+            private readonly Argon2Lane[] _lanes;
 
             public PseudoRands(Argon2Lane[] lanes)
             {
@@ -18,7 +18,7 @@ namespace Konscious.Security.Cryptography
 
             public ulong PseudoRand(int segment, int prevLane, int prevOffset)
             {
-                return _lanes[prevLane][prevOffset][0];
+                return _lanes[prevLane][prevOffset].Span[0];
             }
         }
 

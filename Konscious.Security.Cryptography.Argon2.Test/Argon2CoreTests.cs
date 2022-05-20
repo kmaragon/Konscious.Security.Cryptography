@@ -271,10 +271,10 @@ namespace Konscious.Security.Cryptography
             };
 
             var actual = await subject.InitializeLanes(Encoding.UTF8.GetBytes("P@ssw0rd!$")).ConfigureAwait(false);
-            Assert.Equal(expected00, actual[0][0]);
-            Assert.Equal(expected01, actual[0][1]);
-            Assert.Equal(expected10, actual[1][0]);
-            Assert.Equal(expected11, actual[1][1]);
+            Assert.Equal(expected00, actual[0][0].Span.ToArray());
+            Assert.Equal(expected01, actual[0][1].Span.ToArray());
+            Assert.Equal(expected10, actual[1][0].Span.ToArray());
+            Assert.Equal(expected11, actual[1][1].Span.ToArray());
         }
 
         [Fact]

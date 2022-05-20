@@ -1,3 +1,5 @@
+using System;
+
 namespace Konscious.Security.Cryptography
 {
     internal static class ModifiedBlake2
@@ -59,7 +61,7 @@ namespace Konscious.Security.Cryptography
             ModifiedG(v, i + 17, i + 32, i + 65, i + 112);
         }
 
-        public static void Blake2Prime(Argon2Memory memory, LittleEndianActiveStream dataStream, int size = -1)
+        public static void Blake2Prime(Memory<ulong> memory, LittleEndianActiveStream dataStream, int size = -1)
         {
             var hashStream = new LittleEndianActiveStream();
 
@@ -76,8 +78,7 @@ namespace Konscious.Security.Cryptography
             {
                 var blake2 = new HMACBlake2B(8 * size);
                 blake2.Initialize();
-
-                memory.Blit(blake2.ComputeHash(hashStream), 0, 0, size);
+                memory.Span.Blit(blake2.ComputeHash(hashStream).AsSpan().Slice(0,size), 0);
             }
             else
             {
@@ -87,7 +88,7 @@ namespace Konscious.Security.Cryptography
                 int offset = 0;
                 var chunk = blake2.ComputeHash(hashStream);
 
-                memory.Blit(chunk, offset, 0, 32); // copy half of the chunk
+                memory.Span.Blit(chunk.AsSpan().Slice(0,32), offset); // copy half of the chunk
                 offset += 4;
                 size -= 32;
 
@@ -95,7 +96,7 @@ namespace Konscious.Security.Cryptography
                 {
                     blake2.Initialize();
                     chunk = blake2.ComputeHash(chunk);
-                    memory.Blit(chunk, offset, 0, 32); // half again
+                    memory.Span.Blit(chunk.AsSpan().Slice(0,32), offset); // half again
 
                     offset += 4;
                     size -= 32;
@@ -103,7 +104,7 @@ namespace Konscious.Security.Cryptography
 
                 blake2 = new HMACBlake2B(size * 8);
                 blake2.Initialize();
-                memory.Blit(blake2.ComputeHash(chunk), offset, 0, size); // copy the rest
+                memory.Span.Blit(blake2.ComputeHash(chunk).AsSpan().Slice(0,size), offset); // copy the rest
             }
         }
     }

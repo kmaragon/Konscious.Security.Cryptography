@@ -7,7 +7,7 @@ namespace Konscious.Security.Cryptography
     /// </summary>
     internal class Argon2iCore : Argon2Core
     {
-        private static Argon2Memory _zeroBlock = new Argon2Memory(new ulong[128], 0);
+        private readonly static Memory<ulong> _zeroBlock = new Memory<ulong>(new ulong[128]);
 
         internal class PseudoRands : IArgon2PseudoRands
         {
@@ -41,10 +41,10 @@ namespace Konscious.Security.Cryptography
         {
             var rands = new ulong[segmentLength];
 
-            var ulongRaw = new ulong[384];
-            var inputBlock = new Argon2Memory(ulongRaw, 0);
-            var addressBlock = new Argon2Memory(ulongRaw, 128);
-            var tmpBlock = new Argon2Memory(ulongRaw, 256);
+            var ulongRaw = new Memory<ulong>(new ulong[384]);
+            var inputBlock = ulongRaw.Slice(0,128).Span;
+            var addressBlock = ulongRaw.Slice(128,128).Span;
+            var tmpBlock = ulongRaw.Slice(256,128).Span;
 
             inputBlock[0] = (ulong)pass;
             inputBlock[1] = (ulong)lane;
@@ -59,11 +59,11 @@ namespace Konscious.Security.Cryptography
                 if (ival == 0)
                 {
                     inputBlock[6]++;
-                    tmpBlock.Set(0);
-                    addressBlock.Set(0);
+                    tmpBlock.Fill(0);
+                    addressBlock.Fill(0);
 
-                    Compress(tmpBlock, inputBlock, _zeroBlock);
-                    Compress(addressBlock, tmpBlock, _zeroBlock);
+                    Compress(tmpBlock, inputBlock, _zeroBlock.Span);
+                    Compress(addressBlock, tmpBlock, _zeroBlock.Span);
                 }
 
                 rands[i] = addressBlock[ival];

@@ -1,15 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konscious.Security.Cryptography.Argon2", "Konscious.Security.Cryptography.Argon2\Konscious.Security.Cryptography.Argon2.csproj", "{FBDEA76A-81E3-4B19-B7FB-736895046D78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konscious.Security.Cryptography.Argon2", "Konscious.Security.Cryptography.Argon2\Konscious.Security.Cryptography.Argon2.csproj", "{FBDEA76A-81E3-4B19-B7FB-736895046D78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konscious.Security.Cryptography.Argon2.Test", "Konscious.Security.Cryptography.Argon2.Test\Konscious.Security.Cryptography.Argon2.Test.csproj", "{F9373017-7117-407C-A693-92EAFB0E3463}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konscious.Security.Cryptography.Argon2.Test", "Konscious.Security.Cryptography.Argon2.Test\Konscious.Security.Cryptography.Argon2.Test.csproj", "{F9373017-7117-407C-A693-92EAFB0E3463}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konscious.Security.Cryptography.Blake2", "Konscious.Security.Cryptography.Blake2\Konscious.Security.Cryptography.Blake2.csproj", "{C37E33E7-F1AC-459F-8C13-1BB4BB791676}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konscious.Security.Cryptography.Blake2", "Konscious.Security.Cryptography.Blake2\Konscious.Security.Cryptography.Blake2.csproj", "{C37E33E7-F1AC-459F-8C13-1BB4BB791676}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Konscious.Security.Cryptography.Blake2.Test", "Konscious.Security.Cryptography.Blake2.Test\Konscious.Security.Cryptography.Blake2.Test.csproj", "{D44BDCA1-0E9A-4E60-AE68-A2A9AC3CA847}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Konscious.Security.Cryptography.Blake2.Test", "Konscious.Security.Cryptography.Blake2.Test\Konscious.Security.Cryptography.Blake2.Test.csproj", "{D44BDCA1-0E9A-4E60-AE68-A2A9AC3CA847}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgonBenchmarks", "ArgonBenchmarks\ArgonBenchmarks.csproj", "{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComparisonHarness", "ComparisonHarness\ComparisonHarness.csproj", "{6A43B604-F49B-49E1-88CC-310E55BC8F18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,9 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FBDEA76A-81E3-4B19-B7FB-736895046D78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -72,5 +73,35 @@ Global
 		{D44BDCA1-0E9A-4E60-AE68-A2A9AC3CA847}.Release|x64.Build.0 = Release|Any CPU
 		{D44BDCA1-0E9A-4E60-AE68-A2A9AC3CA847}.Release|x86.ActiveCfg = Release|Any CPU
 		{D44BDCA1-0E9A-4E60-AE68-A2A9AC3CA847}.Release|x86.Build.0 = Release|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Debug|x64.Build.0 = Debug|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Debug|x86.Build.0 = Debug|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Release|x64.ActiveCfg = Release|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Release|x64.Build.0 = Release|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Release|x86.ActiveCfg = Release|Any CPU
+		{4BA60B55-CF4F-46A8-8C94-EEE4EDE13916}.Release|x86.Build.0 = Release|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Debug|x64.Build.0 = Debug|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Debug|x86.Build.0 = Debug|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Release|x64.ActiveCfg = Release|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Release|x64.Build.0 = Release|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Release|x86.ActiveCfg = Release|Any CPU
+		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BAAA29C5-A00A-4004-8BF0-8F0204225B2B}
 	EndGlobalSection
 EndGlobal

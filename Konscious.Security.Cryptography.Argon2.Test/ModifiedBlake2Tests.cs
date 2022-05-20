@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Konscious.Security.Cryptography.Test
 {
+    using System;
     using Xunit;
 
     [SuppressMessage("Microsoft.Naming", "CA1707")]
@@ -150,7 +151,11 @@ namespace Konscious.Security.Cryptography.Test
                 0x9d0a939c6d3bb46cUL, 0xb046a0941c1b092dUL, 0x87c31932d2543161UL, 0x355040650606e96dUL
             };
 
-            Argon2Core.Compress(new Argon2Memory(nextblock, 0), new Argon2Memory(refblock, 0), new Argon2Memory(prev, 0));
+            Argon2Core.Compress(
+                nextblock.AsSpan(),
+                refblock.AsSpan(),
+                prev.AsSpan());
+
             Assert.Equal(expected, nextblock);
         }
 
@@ -202,7 +207,11 @@ namespace Konscious.Security.Cryptography.Test
                 0xa69e24c9d96b2caaUL, 0xfa50d0f8d81bfa0cUL, 0x282732bba6f10ad1UL, 0x4de0ea71122db92aUL
             };
 
-            Argon2Core.Compress(new Argon2Memory(nextblock, 0), new Argon2Memory(refblock, 0), new Argon2Memory(prev, 0));
+            Argon2Core.Compress(
+                nextblock.AsSpan(),
+                refblock.AsSpan(),
+                prev.AsSpan());
+
             Assert.Equal(expected, nextblock);
         }
     }

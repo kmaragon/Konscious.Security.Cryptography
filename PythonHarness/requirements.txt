@@ -1,0 +1,6 @@
+argon2-cffi==21.1.0
+autopep8==1.6.0
+cffi==1.15.0
+pycodestyle==2.8.0
+pycparser==2.21
+toml==0.10.2

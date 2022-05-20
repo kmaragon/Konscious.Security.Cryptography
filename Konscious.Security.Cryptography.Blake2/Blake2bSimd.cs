@@ -16,13 +16,13 @@ namespace Konscious.Security.Cryptography
                 ulong* v = stackalloc ulong[16];
                 ulong* m = stackalloc ulong[16];
 
-                fixed (ulong *hash = &Hash[0])
+                fixed (ulong* hash = &Hash[0])
                 {
                     for (var i = 0; i < 8; i++)
                         v[i] = hash[i];
                 }
 
-                fixed (ulong *iv = &Blake2Constants.IV[0])
+                fixed (ulong* iv = &Blake2Constants.IV[0])
                 {
                     for (var i = 0; i < 8; i++)
                         v[i + 8] = Blake2Constants.IV[i];
@@ -34,9 +34,9 @@ namespace Konscious.Security.Cryptography
                 if (isFinal)
                     v[14] = ~v[14];
 
-                fixed (byte *dataBuffer = &DataBuffer[0])
+                fixed (byte* dataBuffer = &DataBuffer[0])
                 {
-                    ulong *buffer = (ulong*)dataBuffer;
+                    ulong* buffer = (ulong*)dataBuffer;
                     for (var i = 0; i < 16; i++)
                     {
                         m[i] = buffer[i];
@@ -62,13 +62,15 @@ namespace Konscious.Security.Cryptography
 
                 for (var i = 0; i < 12; ++i)
                 {
-                    ulong *sigmaodd = stackalloc ulong[4];
-                    sigmaodd[0] =  m[Blake2Constants.Sigma[i][0]];
+#pragma warning disable CA2014 // Do not use stackalloc in loops
+                    ulong* sigmaodd = stackalloc ulong[4];
+#pragma warning restore CA2014 // Do not use stackalloc in loops
+                    sigmaodd[0] = m[Blake2Constants.Sigma[i][0]];
                     sigmaodd[1] = m[Blake2Constants.Sigma[i][2]];
                     sigmaodd[2] = m[Blake2Constants.Sigma[i][4]];
                     sigmaodd[3] = m[Blake2Constants.Sigma[i][6]];
 
-                    ulong *u = &v[4];
+                    ulong* u = &v[4];
                     // these guys should get JIT optimized into SIMD instructions
                     for (var x = 0; x < 4; x++)
                         v[x] += u[x];
