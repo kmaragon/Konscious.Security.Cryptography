@@ -14,7 +14,7 @@
     <PackageId>Konscious.Security.Cryptography.Blake2</PackageId>
     <PackageTags>crypto;cryptography;hash;blake2;blake2b</PackageTags>
     <PackageProjectUrl>https://github.com/kmaragon/Konscious.Security.Cryptography</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/kmaragon/Konscious.Security.Cryptography/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/kmaragon/Konscious.Security.Cryptography.git</RepositoryUrl>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
