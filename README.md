@@ -17,10 +17,10 @@ You can use Blake2B interchangeably with any code that uses [`System.Security.Cr
 
 In the project.json:
 ```JSON
-  "dependencies":
-  {
-      "Konscious.Security.Cryptography.Blake2": "1.0.*"
-  }
+"dependencies":
+{
+  "Konscious.Security.Cryptography.Blake2": "1.0.*"
+}
 ```
 Create an instance of the algorithm:
 
@@ -104,9 +104,9 @@ Various attributes can be added to secure the hash:
 |KnownSecret         | byte[]    | OPTIONAL    | An additional secret to use for the hash for extra security
 
 And the primary hash method:
-```
+````csharp
 byte[] GetBytes(int)
-```
+````
 Which takes the number of bytes to generate. This implementation will accept only up to 1024 bytes as input.
 
 ```C#
