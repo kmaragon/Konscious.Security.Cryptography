@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net6.0</TargetFrameworks>
+		<DebugType>embedded</DebugType>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Konscious.Security.Cryptography.Blake2\Konscious.Security.Cryptography.Blake2.csproj" />
+	</ItemGroup>
+</Project>

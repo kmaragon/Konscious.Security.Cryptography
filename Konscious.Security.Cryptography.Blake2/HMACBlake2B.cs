@@ -1,7 +1,6 @@
 namespace Konscious.Security.Cryptography
 {
     using System;
-    using System.Numerics;
     using System.Security.Cryptography;
 
     /// <summary>
@@ -125,8 +124,10 @@ namespace Konscious.Security.Cryptography
 
         private Blake2bBase CreateImplementation()
         {
-            if (Vector.IsHardwareAccelerated)
+#if NET6_0_OR_GREATER
+            if (System.Runtime.Intrinsics.X86.Avx2.IsSupported && BitConverter.IsLittleEndian)
                 return new Blake2bSimd(_hashSize / 8);
+#endif
 
             return new Blake2bNormal(_hashSize / 8);
         }

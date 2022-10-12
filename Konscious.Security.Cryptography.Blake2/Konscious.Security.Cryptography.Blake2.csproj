@@ -31,11 +31,6 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.3">
-      <PrivateAssets>All</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <Reference Include="System" />

@@ -1,10 +1,12 @@
 using Blake2Core;
 using Xunit.Abstractions;
 
+#if NET6_0_OR_GREATER
 namespace Konscious.Security.Cryptography.Test
 {
     using System;
-    using System.Text;
+    using System.Linq;
+    using System.Runtime.InteropServices;
     using Xunit;
 
     /// <summary>
@@ -78,6 +80,17 @@ namespace Konscious.Security.Cryptography.Test
         {
             AssertMatch(_output, 0x1947850, 1024*1024*10, 128, 128);
         }
+
+        [Fact]
+        public void Order()
+        {
+            var simd = new Blake2bSimd(256 / 8);
+            var data = Enumerable.Range(0, 16).Select(d => (ulong)d).ToArray();
+            var key = new byte[128];
+            simd.Initialize(key);
+            simd.Update(MemoryMarshal.Cast<ulong,byte>(data).ToArray(), 0, 128);
+
+        }
         
         private static void AssertMatch(ITestOutputHelper output, uint seed, int dataSize, int hashSize, int keySize)
         {
@@ -117,3 +130,4 @@ namespace Konscious.Security.Cryptography.Test
         }
     }
 }
+#endif

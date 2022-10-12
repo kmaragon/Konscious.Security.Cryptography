@@ -2,28 +2,19 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netstandard2.0;net462;net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <DebugType>embedded</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.1" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Konscious.Security.Cryptography.Argon2\Konscious.Security.Cryptography.Argon2.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
-    <PackageReference Include="BenchmarkDotNet">
-      <Version>0.13.*</Version>
-    </PackageReference>
-  </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="BenchmarkDotNet">
-      <Version>0.13.*</Version>
-    </PackageReference>
-  </ItemGroup>
 
 </Project>
