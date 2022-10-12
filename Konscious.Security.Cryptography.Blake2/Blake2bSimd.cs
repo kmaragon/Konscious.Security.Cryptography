@@ -1,6 +1,7 @@
 namespace Konscious.Security.Cryptography
 {
     using System;
+    using System.Numerics;
 
     internal class Blake2bSimd : Blake2bBase
     {

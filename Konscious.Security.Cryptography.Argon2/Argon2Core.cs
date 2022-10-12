@@ -4,8 +4,10 @@ namespace Konscious.Security.Cryptography
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Threading.Tasks;
-
-
+#if NETCOREAPP3_0_OR_GREATER
+    using System.Runtime.Intrinsics.X86;
+    using System.Runtime.Intrinsics;
+#endif
 
     internal abstract class Argon2Core
     {
@@ -115,13 +117,20 @@ namespace Konscious.Security.Cryptography
 
             ModifiedBlake2.Blake2Prime(lanes[0][1], ds, _tagLine);
             var result = new byte[_tagLine];
-            var tmp = MemoryMarshal.Cast<ulong, byte>(lanes[0][1].Span).Slice(0,result.Length);
+            var tmp = MemoryMarshal.Cast<ulong, byte>(lanes[0][1].Span).Slice(0, result.Length);
             tmp.CopyTo(result);
             return result;
         }
 
-        internal unsafe static void Compress(Span<ulong> dest, Span<ulong> refb, Span<ulong> prev)
+        internal static unsafe void Compress(Span<ulong> dest, ReadOnlySpan<ulong> refb, ReadOnlySpan<ulong> prev)
         {
+#if NETCOREAPP3_0_OR_GREATER
+            if (Avx2.IsSupported)
+            {
+                Argon2CoreIntrinsics.Compress(dest, refb, prev);
+                return;
+            }
+#endif
             var tmpblock = stackalloc ulong[dest.Length];
             for (var n = 0; n < 128; ++n)
             {
@@ -248,6 +257,7 @@ namespace Konscious.Security.Cryptography
         }
 
 #if DEBUG
+
         private static void DebugWrite(Span<ulong> data)
         {
             int offset = 0;
@@ -265,6 +275,7 @@ namespace Konscious.Security.Cryptography
             Console.WriteLine();
             Console.WriteLine();
         }
+
 #endif
 
         private readonly int _tagLine;
