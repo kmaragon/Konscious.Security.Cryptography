@@ -186,46 +186,34 @@ internal static class ModifiedBlake2Intrinsics
         vectors[23 + offset] = x_15;
     }
 
-    //public unsafe static void DoRoundColumns(ulong *v, int i)
-    //{
-    //    i *= 16;
-    //    ModifiedG(v,     i, i + 4,  i + 8, i + 12);
-    //    ModifiedG(v, i + 1, i + 5,  i + 9, i + 13);
-    //    ModifiedG(v, i + 2, i + 6, i + 10, i + 14);
-    //    ModifiedG(v, i + 3, i + 7, i + 11, i + 15);
-    //    ModifiedG(v,     i, i + 5, i + 10, i + 15);
-    //    ModifiedG(v, i + 1, i + 6, i + 11, i + 12);
-    //    ModifiedG(v, i + 2, i + 7,  i + 8, i + 13);
-    //    ModifiedG(v, i + 3, i + 4,  i + 9, i + 14);
-    //}
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public unsafe static void Reshuffle(Span<Vector256<ulong>> data)
+    {
+        Span<Vector256<ulong>> buffer = stackalloc Vector256<ulong>[data.Length];
+        fixed (Vector256<ulong>* buff = &buffer[0], source = &data[0])
+        {
+            Interweave(source + 0, buff + 0);
+            Interweave(source + 8, buff + 2);
+            Interweave(source + 2, buff + 4);
+            Interweave(source + 10, buff + 6);
 
-    //public unsafe static void DoRoundRows(ulong *v, int i)
-    //{
-    //    i *= 2;
-    //    ModifiedG(v,      i, i + 32, i + 64, i +  96);
-    //    ModifiedG(v, i +  1, i + 33, i + 65, i +  97);
-    //    ModifiedG(v, i + 16, i + 48, i + 80, i + 112);
-    //    ModifiedG(v, i + 17, i + 49, i + 81, i + 113);
-    //    ModifiedG(v,      i, i + 33, i + 80, i + 113);
-    //    ModifiedG(v, i +  1, i + 48, i + 81, i +  96);
-    //    ModifiedG(v, i + 16, i + 49, i + 64, i +  97);
-    //    ModifiedG(v, i + 17, i + 32, i + 65, i + 112);
-    //}
+            Interweave(source + 4, buff + 8);
+            Interweave(source + 12, buff + 10);
+            Interweave(source + 6, buff + 12);
+            Interweave(source + 14, buff + 14);
+
+            buffer.CopyTo(data);
+        }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Reshuffle(Span<Vector256<ulong>> data)
+    private unsafe static void Interweave(Vector256<ulong>* source, Vector256<ulong>* destination)
     {
-        Span<Vector256<ulong>> arr = stackalloc Vector256<ulong>[data.Length];
-        data[..2].CopyTo(arr);
-        data[2..4].CopyTo(arr[4..6]);
-        data[4..6].CopyTo(arr[8..10]);
-        data[6..8].CopyTo(arr[12..14]);
+        Vector256<ulong> low = Avx2.UnpackLow(*source, *(source + 1));
+        Vector256<ulong> high = Avx2.UnpackHigh(*source, *(source + 1));
 
-        data[8..10].CopyTo(arr[2..4]);
-        data[10..12].CopyTo(arr[6..8]);
-        data[12..14].CopyTo(arr[10..12]);
-        data[14..16].CopyTo(arr[14..16]);
-        arr.CopyTo(data);
+        *destination = Avx2.Permute2x128(low, high, 0b_00_10_00_00);
+        *(destination + 1) = Avx2.Permute2x128(low, high, 0b_00_11_00_01);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
