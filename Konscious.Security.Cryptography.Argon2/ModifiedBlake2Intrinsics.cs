@@ -130,28 +130,41 @@ internal static class ModifiedBlake2Intrinsics
         vectors[15] = x_15;
     }
 
+    //public unsafe static void DoRoundRows(ulong *v, int i)
+    //{
+    //    i *= 2;
+    //    ModifiedG(v,      i, i + 32, i + 64, i +  96);
+    //    ModifiedG(v, i +  1, i + 33, i + 65, i +  97);
+    //    ModifiedG(v, i + 16, i + 48, i + 80, i + 112);
+    //    ModifiedG(v, i + 17, i + 49, i + 81, i + 113);
+    //    ModifiedG(v,      i, i + 33, i + 80, i + 113);
+    //    ModifiedG(v, i +  1, i + 48, i + 81, i +  96);
+    //    ModifiedG(v, i + 16, i + 49, i + 64, i +  97);
+    //    ModifiedG(v, i + 17, i + 32, i + 65, i + 112);
+    //}
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void DoRoundRows(Span<Vector256<ulong>> vectors, int offset)
+    public static unsafe void DoRoundRows(Span<Vector256<ulong>> vectors)
     {
-        Vector256<ulong> x_0 = vectors[0 + offset];
-        Vector256<ulong> x_2 = vectors[2 + offset];
-        Vector256<ulong> x_4 = vectors[4 + offset];
-        Vector256<ulong> x_6 = vectors[6 + offset];
+        Vector256<ulong> x_0 = vectors[0];
+        Vector256<ulong> x_2 = vectors[2];
+        Vector256<ulong> x_4 = vectors[4];
+        Vector256<ulong> x_6 = vectors[6];
 
-        Vector256<ulong> x_1 = vectors[1 + offset];
-        Vector256<ulong> x_3 = vectors[3 + offset];
-        Vector256<ulong> x_5 = vectors[5 + offset];
-        Vector256<ulong> x_7 = vectors[7 + offset];
+        Vector256<ulong> x_1 = vectors[1];
+        Vector256<ulong> x_3 = vectors[3];
+        Vector256<ulong> x_5 = vectors[5];
+        Vector256<ulong> x_7 = vectors[7];
 
-        Vector256<ulong> x_8 = vectors[16 + offset];
-        Vector256<ulong> x_10 = vectors[18 + offset];
-        Vector256<ulong> x_12 = vectors[20 + offset];
-        Vector256<ulong> x_14 = vectors[22 + offset];
+        Vector256<ulong> x_8 = vectors[16];
+        Vector256<ulong> x_10 = vectors[18];
+        Vector256<ulong> x_12 = vectors[20];
+        Vector256<ulong> x_14 = vectors[22];
 
-        Vector256<ulong> x_9 = vectors[17 + offset];
-        Vector256<ulong> x_11 = vectors[19 + offset];
-        Vector256<ulong> x_13 = vectors[21 + offset];
-        Vector256<ulong> x_15 = vectors[23 + offset];
+        Vector256<ulong> x_9 = vectors[17];
+        Vector256<ulong> x_11 = vectors[19];
+        Vector256<ulong> x_13 = vectors[21];
+        Vector256<ulong> x_15 = vectors[23];
 
         Transpose(ref x_0, ref x_2, ref x_4, ref x_6);
         Transpose(ref x_1, ref x_3, ref x_5, ref x_7);
@@ -168,22 +181,22 @@ internal static class ModifiedBlake2Intrinsics
         ModifiedG(ref x_2, ref x_7, ref x_8, ref x_13);
         ModifiedG(ref x_3, ref x_4, ref x_9, ref x_14);
 
-        vectors[0 + offset] = x_0;
-        vectors[1 + offset] = x_1;
-        vectors[2 + offset] = x_2;
-        vectors[3 + offset] = x_3;
-        vectors[4 + offset] = x_4;
-        vectors[5 + offset] = x_5;
-        vectors[6 + offset] = x_6;
-        vectors[7 + offset] = x_7;
-        vectors[16 + offset] = x_8;
-        vectors[17 + offset] = x_9;
-        vectors[18 + offset] = x_10;
-        vectors[19 + offset] = x_11;
-        vectors[20 + offset] = x_12;
-        vectors[21 + offset] = x_13;
-        vectors[22 + offset] = x_14;
-        vectors[23 + offset] = x_15;
+        vectors[0] = x_0;
+        vectors[1] = x_1;
+        vectors[2] = x_2;
+        vectors[3] = x_3;
+        vectors[4] = x_4;
+        vectors[5] = x_5;
+        vectors[6] = x_6;
+        vectors[7] = x_7;
+        vectors[16] = x_8;
+        vectors[17] = x_9;
+        vectors[18] = x_10;
+        vectors[19] = x_11;
+        vectors[20] = x_12;
+        vectors[21] = x_13;
+        vectors[22] = x_14;
+        vectors[23] = x_15;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

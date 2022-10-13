@@ -73,8 +73,8 @@ internal static class Argon2CoreIntrinsics
             ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
             ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
 
-            ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 0);
-            ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 8);
+            ModifiedBlake2Intrinsics.DoRoundRows(stateVectors);
+            ModifiedBlake2Intrinsics.DoRoundRows(stateVectors[8..]);
 
             for (int i = 0; i < stateVectors.Length; i+=2)
             {
