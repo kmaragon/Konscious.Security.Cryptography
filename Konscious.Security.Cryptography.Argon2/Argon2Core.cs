@@ -91,6 +91,7 @@ namespace Konscious.Security.Cryptography
 
                 for (var b = 0; b < 128; ++b)
                 {
+                    // TODO Is System.Buffers BinaryConverter faster? / SIMD
                     if (!BitConverter.IsLittleEndian)
                     {
                         block[b] = (block[b] >> 56) ^

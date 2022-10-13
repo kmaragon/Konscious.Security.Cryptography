@@ -76,15 +76,6 @@ internal static class Argon2CoreIntrinsics
             ModifiedBlake2Intrinsics.DoRoundRows(stateVectors);
             ModifiedBlake2Intrinsics.DoRoundRows(stateVectors[8..]);
 
-            for (int i = 0; i < stateVectors.Length; i+=2)
-            {
-                var low = Avx2.UnpackLow(stateVectors[i], stateVectors[i+1]);
-                var high = Avx2.UnpackHigh(stateVectors[i], stateVectors[i+1]);
-
-                stateVectors[i] = Avx2.Permute2x128(low, high, 0b_00_10_00_00);
-                stateVectors[i +1] = Avx2.Permute2x128(low, high, 0b_00_11_00_01);
-            }
-
             ModifiedBlake2Intrinsics.Reshuffle(stateVectors[..16]);
             ModifiedBlake2Intrinsics.Reshuffle(stateVectors[16..]);
 
@@ -92,42 +83,6 @@ internal static class Argon2CoreIntrinsics
             {
                 destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
             }
-
-            //for (var i = 0; i < 8; ++i)
-            //    ModifiedBlake2.DoRoundColumns(state, i);
-            //for (var i = 0; i < 8; ++i)
-            //    ModifiedBlake2.DoRoundRows(state, i);
-
-            //for (int i = 0; i < stateVectors.Length; i++)
-            //{
-            //    destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
-            //}
-
-            ////for (var n = 0; n < 128; ++n)
-            ////    dest[n] ^= state[n];
-
-            ////ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
-            ////ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
-
-            ////ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 0);
-            ////ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 8);
-
-            ////for (int i = 0; i < stateVectors.Length; i+=2)
-            ////{
-            ////    var low = Avx2.UnpackLow(stateVectors[i], stateVectors[i+1]);
-            ////    var high = Avx2.UnpackHigh(stateVectors[i], stateVectors[i+1]);
-
-            ////    stateVectors[i] = Avx2.Permute2x128(low, high, 0b_00_10_00_00);
-            ////    stateVectors[i +1] = Avx2.Permute2x128(low, high, 0b_00_11_00_01);
-            ////}
-
-            ////ModifiedBlake2Intrinsics.Reshuffle(stateVectors[..16]);
-            ////ModifiedBlake2Intrinsics.Reshuffle(stateVectors[16..]);
-
-            ////for (int i = 0; i < stateVectors.Length; i++)
-            ////{
-            ////    destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
-            ////}
         }
     }
 }

@@ -16,10 +16,6 @@ internal static class ModifiedBlake2Intrinsics
 			2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9  //r16
 		};
 
-    private static ulong Rotate(ulong x, int y)
-    {
-        return (((x) >> (y)) ^ ((x) << (64 - (y))));
-    }
     //private unsafe static void ModifiedG(ulong* v, int a, int b, int c, int d)
     //{
     //    var t = (v[a] & 0xffffffff) * (v[b] & 0xffffffff);
@@ -74,6 +70,19 @@ internal static class ModifiedBlake2Intrinsics
         b = Avx2.Or(Avx2.ShiftLeftLogical(b, 1), Avx2.ShiftRightLogical(b, 63));
     }
 
+    //public unsafe static void DoRoundColumns(ulong *v, int i)
+    //{
+    //    i *= 16;
+    //    ModifiedG(v,     i, i + 4,  i + 8, i + 12);
+    //    ModifiedG(v, i + 1, i + 5,  i + 9, i + 13);
+    //    ModifiedG(v, i + 2, i + 6, i + 10, i + 14);
+    //    ModifiedG(v, i + 3, i + 7, i + 11, i + 15);
+    //    ModifiedG(v,     i, i + 5, i + 10, i + 15);
+    //    ModifiedG(v, i + 1, i + 6, i + 11, i + 12);
+    //    ModifiedG(v, i + 2, i + 7,  i + 8, i + 13);
+    //    ModifiedG(v, i + 3, i + 4,  i + 9, i + 14);
+    //}
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void DoRoundColumns(Span<Vector256<ulong>> vectors)
     {
@@ -87,8 +96,8 @@ internal static class ModifiedBlake2Intrinsics
         Vector256<ulong> x_6 = vectors[9];
         Vector256<ulong> x_7 = vectors[13];
 
-        Vector256<ulong> x_8  = vectors[2];
-        Vector256<ulong> x_9  = vectors[6];
+        Vector256<ulong> x_8 = vectors[2];
+        Vector256<ulong> x_9 = vectors[6];
         Vector256<ulong> x_10 = vectors[10];
         Vector256<ulong> x_11 = vectors[14];
 
@@ -241,53 +250,6 @@ internal static class ModifiedBlake2Intrinsics
         b = Avx2.Permute2x128(w_1, w_3, 0b_00_10_00_00);
         c = Avx2.Permute2x128(w_0, w_2, 0b_00_11_00_01);
         d = Avx2.Permute2x128(w_1, w_3, 0b_00_11_00_01);
-    }
-
-    public static void Blake2Prime(Memory<ulong> memory, LittleEndianActiveStream dataStream, int size = -1)
-    {
-        var hashStream = new LittleEndianActiveStream();
-
-        if (size < 0 || size > (memory.Length * 8))
-        {
-            size = memory.Length * 8;
-        }
-
-        hashStream.Expose(size);
-        hashStream.Expose(dataStream);
-
-
-        if (size <= 64)
-        {
-            var blake2 = new HMACBlake2B(8 * size);
-            blake2.Initialize();
-            memory.Span.Blit(blake2.ComputeHash(hashStream).AsSpan().Slice(0,size), 0);
-        }
-        else
-        {
-            var blake2 = new HMACBlake2B(512);
-            blake2.Initialize();
-
-            int offset = 0;
-            var chunk = blake2.ComputeHash(hashStream);
-
-            memory.Span.Blit(chunk.AsSpan().Slice(0,32), offset); // copy half of the chunk
-            offset += 4;
-            size -= 32;
-
-            while (size > 64)
-            {
-                blake2.Initialize();
-                chunk = blake2.ComputeHash(chunk);
-                memory.Span.Blit(chunk.AsSpan().Slice(0,32), offset); // half again
-
-                offset += 4;
-                size -= 32;
-            }
-
-            blake2 = new HMACBlake2B(size * 8);
-            blake2.Initialize();
-            memory.Span.Blit(blake2.ComputeHash(chunk).AsSpan().Slice(0,size), offset); // copy the rest
-        }
     }
 }
 #endif
