@@ -57,8 +57,7 @@ internal static class Argon2CoreIntrinsics
         {
             fixed (ulong* state = new ulong[dest.Length])
             {
-
-                var stateVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(new Span<ulong>(state, dest.Length));
+                Span<Vector256<ulong>> stateVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(new Span<ulong>(state, dest.Length));
                 var refbVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(refb);
                 var prevVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(prev);
                 var destVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(dest);
@@ -69,17 +68,25 @@ internal static class Argon2CoreIntrinsics
                     destVectors[n] = Avx2.Xor(stateVectors[n], destVectors[n]);
                 }
 
-                for (var i = 0; i < 8; ++i)
-                {
+                ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
+                ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
 
-                    ModifiedBlake2Intrinsics.DoRoundColumns(state, i);
+                ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 0);
+                ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 8);
+
+                for (int i = 0; i < stateVectors.Length; i+=2)
+                {
+                    var low = Avx2.UnpackLow(stateVectors[i], stateVectors[i+1]);
+                    var high = Avx2.UnpackHigh(stateVectors[i], stateVectors[i+1]);
+
+                    stateVectors[i] = low;
+                    stateVectors[i+1] = high;
                 }
 
-                for (var i = 0; i < 8; ++i)
-                    ModifiedBlake2Intrinsics.DoRoundRows(state, i);
-
-                for (var n = 0; n < 128; ++n)
-                    dest[n] ^= state[n];
+                for (int i = 0; i < stateVectors.Length; i++)
+                {
+                    destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
+                }
             }
         }
     }
