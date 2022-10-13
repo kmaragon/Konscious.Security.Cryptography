@@ -53,41 +53,81 @@ internal static class Argon2CoreIntrinsics
 
     public static unsafe void Compress(Span<ulong> dest, ReadOnlySpan<ulong> refb, ReadOnlySpan<ulong> prev)
     {
-        if (Avx2.IsSupported)
+        if (!Avx2.IsSupported)
         {
-            fixed (ulong* state = new ulong[dest.Length])
+            throw new NotSupportedException($"Avx2 is not supported on this device {nameof(Avx2)}");
+        }
+        fixed (ulong* state = stackalloc ulong[dest.Length])
+        {
+            Span<Vector256<ulong>> stateVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(new Span<ulong>(state, dest.Length));
+            ReadOnlySpan<Vector256<ulong>> refbVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(refb);
+            ReadOnlySpan<Vector256<ulong>> prevVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(prev);
+            Span<Vector256<ulong>> destVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(dest);
+
+            for (var n = 0; n < stateVectors.Length; ++n)
             {
-                Span<Vector256<ulong>> stateVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(new Span<ulong>(state, dest.Length));
-                var refbVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(refb);
-                var prevVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(prev);
-                var destVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(dest);
-
-                for (var n = 0; n < stateVectors.Length; ++n)
-                {
-                    stateVectors[n] = Avx2.Xor(refbVectors[n], prevVectors[n]);
-                    destVectors[n] = Avx2.Xor(stateVectors[n], destVectors[n]);
-                }
-
-                ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
-                ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
-
-                ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 0);
-                ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 8);
-
-                for (int i = 0; i < stateVectors.Length; i+=2)
-                {
-                    var low = Avx2.UnpackLow(stateVectors[i], stateVectors[i+1]);
-                    var high = Avx2.UnpackHigh(stateVectors[i], stateVectors[i+1]);
-
-                    stateVectors[i] = low;
-                    stateVectors[i+1] = high;
-                }
-
-                for (int i = 0; i < stateVectors.Length; i++)
-                {
-                    destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
-                }
+                stateVectors[n] = Avx2.Xor(refbVectors[n], prevVectors[n]);
+                destVectors[n] = Avx2.Xor(stateVectors[n], destVectors[n]);
             }
+
+            ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
+            ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
+
+            ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 0);
+            ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 8);
+
+            for (int i = 0; i < stateVectors.Length; i+=2)
+            {
+                var low = Avx2.UnpackLow(stateVectors[i], stateVectors[i+1]);
+                var high = Avx2.UnpackHigh(stateVectors[i], stateVectors[i+1]);
+
+                stateVectors[i] = Avx2.Permute2x128(low, high, 0b_00_10_00_00);
+                stateVectors[i +1] = Avx2.Permute2x128(low, high, 0b_00_11_00_01);
+            }
+
+            ModifiedBlake2Intrinsics.Reshuffle(stateVectors[..16]);
+            ModifiedBlake2Intrinsics.Reshuffle(stateVectors[16..]);
+
+            for (int i = 0; i < stateVectors.Length; i++)
+            {
+                destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
+            }
+
+            //for (var i = 0; i < 8; ++i)
+            //    ModifiedBlake2.DoRoundColumns(state, i);
+            //for (var i = 0; i < 8; ++i)
+            //    ModifiedBlake2.DoRoundRows(state, i);
+
+            //for (int i = 0; i < stateVectors.Length; i++)
+            //{
+            //    destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
+            //}
+
+            ////for (var n = 0; n < 128; ++n)
+            ////    dest[n] ^= state[n];
+
+            ////ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
+            ////ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
+
+            ////ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 0);
+            ////ModifiedBlake2Intrinsics.DoRoundRows(stateVectors, 8);
+
+            ////for (int i = 0; i < stateVectors.Length; i+=2)
+            ////{
+            ////    var low = Avx2.UnpackLow(stateVectors[i], stateVectors[i+1]);
+            ////    var high = Avx2.UnpackHigh(stateVectors[i], stateVectors[i+1]);
+
+            ////    stateVectors[i] = Avx2.Permute2x128(low, high, 0b_00_10_00_00);
+            ////    stateVectors[i +1] = Avx2.Permute2x128(low, high, 0b_00_11_00_01);
+            ////}
+
+            ////ModifiedBlake2Intrinsics.Reshuffle(stateVectors[..16]);
+            ////ModifiedBlake2Intrinsics.Reshuffle(stateVectors[16..]);
+
+            ////for (int i = 0; i < stateVectors.Length; i++)
+            ////{
+            ////    destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
+            ////}
         }
     }
 }

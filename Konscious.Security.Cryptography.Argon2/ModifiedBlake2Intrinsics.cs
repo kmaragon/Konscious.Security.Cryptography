@@ -44,7 +44,7 @@ internal static class ModifiedBlake2Intrinsics
     //    v[b] = Rotate(v[b] ^ v[c], 63);
     //}
 
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private unsafe static void ModifiedG(ref Vector256<ulong> a, ref Vector256<ulong> b, ref Vector256<ulong> c, ref Vector256<ulong> d)
     {
         byte* prm = (byte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(rormask));
@@ -53,14 +53,14 @@ internal static class ModifiedBlake2Intrinsics
 
         //var t = (v[a] & 0xffffffff) * (v[b] & 0xffffffff);
         Vector256<ulong> t = Avx2.Multiply(a.AsUInt32(), b.AsUInt32());
-        a = Avx2.Add(Avx2.Add(a, b), Avx2.Add(t,t));
+        a = Avx2.Add(Avx2.Add(a, b), Avx2.Add(t, t));
 
-        d = Avx2.Shuffle((Avx2.Xor(d,a)).AsUInt32(), 0b_10_11_00_01).AsUInt64();
+        d = Avx2.Shuffle((Avx2.Xor(d, a)).AsUInt32(), 0b_10_11_00_01).AsUInt64();
 
         t = Avx2.Multiply(c.AsUInt32(), d.AsUInt32());
         c = Avx2.Add(Avx2.Add(c, d), Avx2.Add(t, t));
 
-        b = Avx2.Shuffle(Avx2.Xor(b,c).AsByte(), r24).AsUInt64();
+        b = Avx2.Shuffle(Avx2.Xor(b, c).AsByte(), r24).AsUInt64();
 
         t = Avx2.Multiply(a.AsUInt32(), b.AsUInt32());
         a = Avx2.Add(Avx2.Add(a, b), Avx2.Add(t, t));
@@ -74,6 +74,7 @@ internal static class ModifiedBlake2Intrinsics
         b = Avx2.Or(Avx2.ShiftLeftLogical(b, 1), Avx2.ShiftRightLogical(b, 63));
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void DoRoundColumns(Span<Vector256<ulong>> vectors)
     {
         Vector256<ulong> x_0 = vectors[0];
@@ -129,12 +130,13 @@ internal static class ModifiedBlake2Intrinsics
         vectors[15] = x_15;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void DoRoundRows(Span<Vector256<ulong>> vectors, int offset)
     {
         Vector256<ulong> x_0 = vectors[0 + offset];
         Vector256<ulong> x_2 = vectors[2 + offset];
         Vector256<ulong> x_4 = vectors[4 + offset];
-        Vector256<ulong> x_6 = vectors[8 + offset];
+        Vector256<ulong> x_6 = vectors[6 + offset];
 
         Vector256<ulong> x_1 = vectors[1 + offset];
         Vector256<ulong> x_3 = vectors[3 + offset];
@@ -209,6 +211,22 @@ internal static class ModifiedBlake2Intrinsics
     //    ModifiedG(v, i + 16, i + 49, i + 64, i +  97);
     //    ModifiedG(v, i + 17, i + 32, i + 65, i + 112);
     //}
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Reshuffle(Span<Vector256<ulong>> data)
+    {
+        Span<Vector256<ulong>> arr = stackalloc Vector256<ulong>[data.Length];
+        data[..2].CopyTo(arr);
+        data[2..4].CopyTo(arr[4..6]);
+        data[4..6].CopyTo(arr[8..10]);
+        data[6..8].CopyTo(arr[12..14]);
+
+        data[8..10].CopyTo(arr[2..4]);
+        data[10..12].CopyTo(arr[6..8]);
+        data[12..14].CopyTo(arr[10..12]);
+        data[14..16].CopyTo(arr[14..16]);
+        arr.CopyTo(data);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void Transpose(ref Vector256<ulong> a, ref Vector256<ulong> b, ref Vector256<ulong> c, ref Vector256<ulong> d)
