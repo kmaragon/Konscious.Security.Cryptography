@@ -4,7 +4,6 @@ namespace Konscious.Security.Cryptography;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Runtime.Intrinsics.X86;
 using System.Runtime.Intrinsics;
 
@@ -76,8 +75,8 @@ internal static class Argon2CoreIntrinsics
             ModifiedBlake2Intrinsics.DoRoundRows(stateVectors);
             ModifiedBlake2Intrinsics.DoRoundRows(stateVectors[8..]);
 
-            ModifiedBlake2Intrinsics.Reshuffle(stateVectors[..16]);
-            ModifiedBlake2Intrinsics.Reshuffle(stateVectors[16..]);
+            ModifiedBlake2Intrinsics.ReOrder(stateVectors[..16]);
+            ModifiedBlake2Intrinsics.ReOrder(stateVectors[16..]);
 
             for (int i = 0; i < stateVectors.Length; i++)
             {

@@ -126,7 +126,7 @@ namespace Konscious.Security.Cryptography
         internal static unsafe void Compress(Span<ulong> dest, ReadOnlySpan<ulong> refb, ReadOnlySpan<ulong> prev)
         {
 #if NETCOREAPP3_0_OR_GREATER
-            if (Avx2.IsSupported)
+            if (Avx2.IsSupported && BitConverter.IsLittleEndian)
             {
                 Argon2CoreIntrinsics.Compress(dest, refb, prev);
                 return;

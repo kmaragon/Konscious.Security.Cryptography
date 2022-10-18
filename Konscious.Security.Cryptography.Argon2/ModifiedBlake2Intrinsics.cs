@@ -86,6 +86,12 @@ internal static class ModifiedBlake2Intrinsics
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void DoRoundColumns(Span<Vector256<ulong>> vectors)
     {
+        // Takes vectors in the form
+        // [<0,1,2,3>, <4,5,6,7>, <8,9...]
+        // Takes groups of 4 and transposes them to
+        // [<0,16,32,48>, <1,17,33,49>, <2,18...]
+        // Shuffles them and returns the Vector span.
+
         Vector256<ulong> x_0 = vectors[0];
         Vector256<ulong> x_1 = vectors[4];
         Vector256<ulong> x_2 = vectors[8];
@@ -155,6 +161,14 @@ internal static class ModifiedBlake2Intrinsics
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe void DoRoundRows(Span<Vector256<ulong>> vectors)
     {
+        // Takes vectors in the form
+        // [<0,16,32,48>, <1,17,33,49>, <2,18...] ...
+        // Takes every other vector for 0-6, 1-7, 16-22, 17-23 and transposes them to
+        // [<0,2,4,6>, <16,18,20,22>, <32,34...],
+        // [<1,3,5,7>, <17,19,21,23>, <33,35..],
+        // [<64,66,68,70>, <80,82,84,86>, <96,98...] ...
+        // Shuffles the vectors and then returns them.
+
         Vector256<ulong> x_0 = vectors[0];
         Vector256<ulong> x_2 = vectors[2];
         Vector256<ulong> x_4 = vectors[4];
@@ -209,8 +223,14 @@ internal static class ModifiedBlake2Intrinsics
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe static void Reshuffle(Span<Vector256<ulong>> data)
+    public unsafe static void ReOrder(Span<Vector256<ulong>> data)
     {
+        // Takes vectors in the form
+        // data[0..8] = [<0,2,4,6>, <1,3,5,7>, <16,18,20,22>, <17,19,21,23>, <32,34,36,38>,  <33,35,37,39>, <48..., <49...]
+        // data[8..16] = [<8,10,12,14>, <9,11,13,15>, <24..., <25..., <40..., <41..., <56..., <57...]
+        // Interweave takes two vectors, re packs the numbers, store them in the buffer.
+        // Buffer is then recopied to data.
+
         Span<Vector256<ulong>> buffer = stackalloc Vector256<ulong>[data.Length];
         fixed (Vector256<ulong>* buff = &buffer[0], source = &data[0])
         {
