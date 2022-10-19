@@ -22,143 +22,102 @@ namespace Konscious.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe override void Compress(bool isFinal)
         {
-            Span<ulong> v = stackalloc ulong[16];
-            Span<ulong> m = stackalloc ulong[16];
-
-            for (var i = 0; i < 8; ++i)
-                v[i] = Hash[i];
-            for (var i = 0; i < 8; ++i)
-                v[i + 8] = Blake2Constants.IV[i];
-
-            v[12] ^= TotalSegmentsLow;
-            v[13] ^= TotalSegmentsHigh;
-
-            if (isFinal)
-                v[14] = ~v[14];
-
-            for (var i = 0; i < 16; ++i)
+            unchecked
             {
-                int DataBufferOffset = 8 * i;
+                byte* prm = (byte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(rormask));
+                Vector256<byte> r24 = Avx2.BroadcastVector128ToVector256(prm);
+                var r16 = Avx2.BroadcastVector128ToVector256(prm + Vector128<byte>.Count);
 
-                m[i] = ((ulong)DataBuffer[DataBufferOffset]) ^
-                    (((ulong)DataBuffer[DataBufferOffset + 1]) << 8) ^
-                    (((ulong)DataBuffer[DataBufferOffset + 2]) << 16) ^
-                    (((ulong)DataBuffer[DataBufferOffset + 3]) << 24) ^
-                    (((ulong)DataBuffer[DataBufferOffset + 4]) << 32) ^
-                    (((ulong)DataBuffer[DataBufferOffset + 5]) << 40) ^
-                    (((ulong)DataBuffer[DataBufferOffset + 6]) << 48) ^
-                    (((ulong)DataBuffer[DataBufferOffset + 7]) << 56);
+                ulong* m = stackalloc ulong[16];
+
+                Vector256<ulong> v_0;
+                Vector256<ulong> v_1;
+                Vector256<ulong> v_2;
+                Vector256<ulong> v_3;
+
+                fixed (ulong* hash = &Hash[0])
+                fixed (ulong* iv = &Blake2Constants.IV[0])
+                {
+                    v_0 = Avx2.LoadVector256(hash);
+                    v_1 = Avx2.LoadVector256(hash + 4);
+                    v_2 = Avx2.LoadVector256(iv);
+                    v_3 = Avx2.LoadVector256(iv + 4);
+
+                    var r_14 = isFinal ? ulong.MaxValue : 0;
+                    var t_0 = Vector256.Create(TotalSegmentsLow, TotalSegmentsHigh, r_14, 0);
+                    v_3 = Avx2.Xor(v_3, t_0);
+                }
+
+                fixed (byte* dataBuffer = &DataBuffer[0])
+                {
+                    ulong* buffer = (ulong*)dataBuffer;
+                    for (var i = 0; i < 16; i++)
+                    {
+                        m[i] = buffer[i];
+                    }
+
+                    // this is necessary for proper function
+                    // but definitely not ideal
+                    if (!BitConverter.IsLittleEndian)
+                    {
+                        for (var i = 0; i < 16; i++)
+                        {
+                            m[i] = (m[i] >> 56) ^
+                                ((m[i] >> 40) & 0xff00UL) ^
+                                ((m[i] >> 24) & 0xff0000UL) ^
+                                ((m[i] >> 8) & 0xff000000UL) ^
+                                ((m[i] << 8) & 0xff00000000UL) ^
+                                ((m[i] << 24) & 0xff0000000000UL) ^
+                                ((m[i] << 40) & 0xff000000000000UL) ^
+                                ((m[i] << 56) & 0xff00000000000000UL);
+                        }
+                    }
+                }
+
+                Vector256<ulong> orig_0 = v_0;
+                Vector256<ulong> orig_1 = v_1;
+                Vector256<ulong> orig_2 = v_2;
+                Vector256<ulong> orig_3 = v_3;
+
+                for (var i = 0; i < 12; ++i)
+                {
+                    Vector256<ulong> x_0;
+                    Vector256<ulong> x_1;
+                    Vector256<ulong> y_0;
+                    Vector256<ulong> y_1;
+                    fixed (int* sig = &Blake2Constants.Sigma[i][0])
+                    {
+                        x_0= Vector256.Create(m[sig[0]], m[sig[2]], m[sig[4]], m[sig[6]]);
+                        y_0= Vector256.Create(m[sig[1]], m[sig[3]], m[sig[5]], m[sig[7]]);
+
+                        x_1= Vector256.Create(m[sig[8]], m[sig[10]], m[sig[12]], m[sig[14]]);
+                        y_1= Vector256.Create(m[sig[9]], m[sig[11]], m[sig[13]], m[sig[15]]);
+                    }
+
+                    Mix(r24, r16, ref v_0, ref v_1, ref v_2, ref v_3, x_0, y_0);
+
+                    v_1 = Avx2.Permute4x64(v_1, 0b_00_11_10_01);
+                    v_2 = Avx2.Permute4x64(v_2, 0b_01_00_11_10);
+                    v_3 = Avx2.Permute4x64(v_3, 0b_10_01_00_11);
+
+                    Mix(r24, r16, ref v_0, ref v_1, ref v_2, ref v_3, x_1, y_1);
+
+                    v_1 = Avx2.Permute4x64(v_1, 0b_10_01_00_11);
+                    v_2 = Avx2.Permute4x64(v_2, 0b_01_00_11_10);
+                    v_3 = Avx2.Permute4x64(v_3, 0b_00_11_10_01);
+                }
+
+                v_0 = Avx2.Xor(v_0, orig_0);
+                v_0 = Avx2.Xor(v_0, v_2);
+                v_1 = Avx2.Xor(v_1, orig_1);
+                v_1 = Avx2.Xor(v_1, v_3);
+
+                fixed (ulong* hash = &Hash[0])
+                {
+                    Avx.Store(hash, v_0);
+                    Avx.Store(hash + 4, v_1);
+                }
             }
-
-            for (var i = 0; i < 12; ++i)
-            {
-                v[0] = v[0] + v[4] + m[Blake2Constants.Sigma[i][0]];
-                var temp = v[12] ^ v[0];
-                v[12] = (temp >> 32) ^ (temp << 32);
-                v[8] = v[8] + v[12];
-                temp = v[4] ^ v[8];
-                v[4] = (temp >> 24) ^ (temp << 40);
-                v[0] = v[0] + v[4] + m[Blake2Constants.Sigma[i][1]];
-                temp = v[12] ^ v[0];
-                v[12] = (temp >> 16) ^ (temp << 48);
-                v[8] = v[8] + v[12];
-                temp = v[4] ^ v[8];
-                v[4] = (temp >> 63) ^ (temp << 1);
-
-                v[1] = v[1] + v[5] + m[Blake2Constants.Sigma[i][2]];
-                temp = v[13] ^ v[1];
-                v[13] = (temp >> 32) ^ (temp << 32);
-                v[9] = v[9] + v[13];
-                temp = v[5] ^ v[9];
-                v[5] = (temp >> 24) ^ (temp << 40);
-                v[1] = v[1] + v[5] + m[Blake2Constants.Sigma[i][3]];
-                temp = v[13] ^ v[1];
-                v[13] = (temp >> 16) ^ (temp << 48);
-                v[9] = v[9] + v[13];
-                temp = v[5] ^ v[9];
-                v[5] = (temp >> 63) ^ (temp << 1);
-
-                v[2] = v[2] + v[6] + m[Blake2Constants.Sigma[i][4]];
-                temp = v[14] ^ v[2];
-                v[14] = (temp >> 32) ^ (temp << 32);
-                v[10] = v[10] + v[14];
-                temp = v[6] ^ v[10];
-                v[6] = (temp >> 24) ^ (temp << 40);
-                v[2] = v[2] + v[6] + m[Blake2Constants.Sigma[i][5]];
-                temp = v[14] ^ v[2];
-                v[14] = (temp >> 16) ^ (temp << 48);
-                v[10] = v[10] + v[14];
-                temp = v[6] ^ v[10];
-                v[6] = (temp >> 63) ^ (temp << 1);
-
-                v[3] = v[3] + v[7] + m[Blake2Constants.Sigma[i][6]];
-                temp = v[15] ^ v[3];
-                v[15] = (temp >> 32) ^ (temp << 32);
-                v[11] = v[11] + v[15];
-                temp = v[7] ^ v[11];
-                v[7] = (temp >> 24) ^ (temp << 40);
-                v[3] = v[3] + v[7] + m[Blake2Constants.Sigma[i][7]];
-                temp = v[15] ^ v[3];
-                v[15] = (temp >> 16) ^ (temp << 48);
-                v[11] = v[11] + v[15];
-                temp = v[7] ^ v[11];
-                v[7] = (temp >> 63) ^ (temp << 1);
-
-                v[0] = v[0] + v[5] + m[Blake2Constants.Sigma[i][8]];
-                temp = v[15] ^ v[0];
-                v[15] = (temp >> 32) ^ (temp << 32);
-                v[10] = v[10] + v[15];
-                temp = v[5] ^ v[10];
-                v[5] = (temp >> 24) ^ (temp << 40);
-                v[0] = v[0] + v[5] + m[Blake2Constants.Sigma[i][9]];
-                temp = v[15] ^ v[0];
-                v[15] = (temp >> 16) ^ (temp << 48);
-                v[10] = v[10] + v[15];
-                temp = v[5] ^ v[10];
-                v[5] = (temp >> 63) ^ (temp << 1);
-
-                v[1] = v[1] + v[6] + m[Blake2Constants.Sigma[i][10]];
-                temp = v[12] ^ v[1];
-                v[12] = (temp >> 32) ^ (temp << 32);
-                v[11] = v[11] + v[12];
-                temp = v[6] ^ v[11];
-                v[6] = (temp >> 24) ^ (temp << 40);
-                v[1] = v[1] + v[6] + m[Blake2Constants.Sigma[i][11]];
-                temp = v[12] ^ v[1];
-                v[12] = (temp >> 16) ^ (temp << 48);
-                v[11] = v[11] + v[12];
-                temp = v[6] ^ v[11];
-                v[6] = (temp >> 63) ^ (temp << 1);
-
-                v[2] = v[2] + v[7] + m[Blake2Constants.Sigma[i][12]];
-                temp = v[13] ^ v[2];
-                v[13] = (temp >> 32) ^ (temp << 32);
-                v[8] = v[8] + v[13];
-                temp = v[7] ^ v[8];
-                v[7] = (temp >> 24) ^ (temp << 40);
-                v[2] = v[2] + v[7] + m[Blake2Constants.Sigma[i][13]];
-                temp = v[13] ^ v[2];
-                v[13] = (temp >> 16) ^ (temp << 48);
-                v[8] = v[8] + v[13];
-                temp = v[7] ^ v[8];
-                v[7] = (temp >> 63) ^ (temp << 1);
-
-                v[3] = v[3] + v[4] + m[Blake2Constants.Sigma[i][14]];
-                temp = v[14] ^ v[3];
-                v[14] = (temp >> 32) ^ (temp << 32);
-                v[9] = v[9] + v[14];
-                temp = v[4] ^ v[9];
-                v[4] = (temp >> 24) ^ (temp << 40);
-                v[3] = v[3] + v[4] + m[Blake2Constants.Sigma[i][15]];
-                temp = v[14] ^ v[3];
-                v[14] = (temp >> 16) ^ (temp << 48);
-                v[9] = v[9] + v[14];
-                temp = v[4] ^ v[9];
-                v[4] = (temp >> 63) ^ (temp << 1);
-            }
-
-            for (var i = 0; i < 8; ++i)
-                Hash[i] ^= v[i] ^ v[i + 8];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

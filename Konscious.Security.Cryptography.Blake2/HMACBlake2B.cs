@@ -125,8 +125,10 @@ namespace Konscious.Security.Cryptography
 
         private Blake2bBase CreateImplementation()
         {
+#if NETCOREAPP3_1_OR_GREATER
             if (Vector.IsHardwareAccelerated)
                 return new Blake2bSimd(_hashSize / 8);
+#endif
 
             return new Blake2bNormal(_hashSize / 8);
         }
