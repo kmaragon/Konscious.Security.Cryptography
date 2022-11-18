@@ -9,29 +9,21 @@ namespace Konscious.Security.Cryptography
 
     internal class Blake2bSimd : Blake2bBase
     {
-        private static ReadOnlySpan<byte> rormask => new byte[] {
-            3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10, 3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10, //r24
-			2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9, 2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9  //r16
-		};
-
         public Blake2bSimd(int HashBytes)
             : base(HashBytes)
         {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //[SkipLocalsInit]
         public override void Compress(bool isFinal)
         {
             unchecked
             {
-                // TODO inline
-                ref byte prm = ref MemoryMarshal.GetReference(rormask);
-
-                Vector256<byte> r24 = VectorExtensions.LoadUnsafeVector256(ref prm);
-                Vector256<byte> r16 = VectorExtensions.LoadUnsafeVector256(ref prm, (nuint)Vector256<byte>.Count);
-
+                Vector256<byte> r24 = Vector256.Create((byte)3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10, 3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10);
+                Vector256<byte> r16 = Vector256.Create((byte)2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9, 2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9);
+               
                 Span<ulong> internalState = stackalloc ulong[16];
+                MemoryMarshal.Cast<byte, ulong>(DataBuffer).CopyTo(internalState);
                 ref ulong m = ref MemoryMarshal.GetReference(internalState);
                 
                 Vector256<ulong> row1;
@@ -50,8 +42,6 @@ namespace Konscious.Security.Cryptography
                 var r_14 = isFinal ? ulong.MaxValue : 0;
                 var t_0 = Vector256.Create(TotalSegmentsLow, TotalSegmentsHigh, r_14, 0);
                 row4 = Avx2.Xor(row4, t_0);
-
-                MemoryMarshal.Cast<byte, ulong>(DataBuffer).CopyTo(internalState);
 
                 Vector256<ulong> orig_1 = row1;
                 Vector256<ulong> orig_2 = row2;
@@ -431,9 +421,25 @@ namespace Konscious.Security.Cryptography
         {
             unchecked
             {
+                //     +-------------------+
+                //     |  0 |  1 |  2 |  3 |
+                //     +-------------------+
+                //     |  8 |  9 | 10 | 11 |
+                //     +-------------------+
+                //     | 12 | 13 | 14 | 15 |
+                //     +-------------------+
+                //         --->
+                //     +-------------------+
+                //     |  3 |  0 |  1 |  2 |
+                //     +-------------------+
+                //     |  9 | 10 | 11 |  8 |
+                //     +-------------------+
+                //     | 14 | 15 | 12 | 13 |
+                //     +-------------------+
+
                 row1 = Avx2.Permute4x64(row1, 0b_10_01_00_11);
-                row4 = Avx2.Permute4x64(row4, 0b_01_00_11_10);
                 row3 = Avx2.Permute4x64(row3, 0b_00_11_10_01);
+                row4 = Avx2.Permute4x64(row4, 0b_01_00_11_10);
             }
         }
 
@@ -472,9 +478,25 @@ namespace Konscious.Security.Cryptography
         {
             unchecked
             {
+                //     +-------------------+
+                //     |  3 |  0 |  1 |  2 |
+                //     +-------------------+
+                //     |  9 | 10 | 11 |  8 |
+                //     +-------------------+
+                //     | 14 | 15 | 12 | 13 |
+                //     +-------------------+
+                //         --->
+                //     +-------------------+
+                //     |  0 |  1 |  2 |  3 |
+                //     +-------------------+
+                //     |  8 |  9 | 10 | 11 |
+                //     +-------------------+
+                //     | 12 | 13 | 14 | 15 |
+                //     +-------------------+
+
                 row1 = Avx2.Permute4x64(row1, 0b_00_11_10_01);
-                row4 = Avx2.Permute4x64(row4, 0b_01_00_11_10);
                 row3 = Avx2.Permute4x64(row3, 0b_10_01_00_11);
+                row4 = Avx2.Permute4x64(row4, 0b_01_00_11_10);
             }
         }
     }

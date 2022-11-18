@@ -59,29 +59,28 @@ internal static class Argon2CoreIntrinsics
 
         Span<ulong> state = stackalloc ulong[dest.Length];
         Span<Vector256<ulong>> stateVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(state);
-            ReadOnlySpan<Vector256<ulong>> refbVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(refb);
-            ReadOnlySpan<Vector256<ulong>> prevVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(prev);
-            Span<Vector256<ulong>> destVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(dest);
+        ReadOnlySpan<Vector256<ulong>> refbVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(refb);
+        ReadOnlySpan<Vector256<ulong>> prevVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(prev);
+        Span<Vector256<ulong>> destVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(dest);
 
-            for (var n = 0; n < stateVectors.Length; ++n)
-            {
-                stateVectors[n] = Avx2.Xor(refbVectors[n], prevVectors[n]);
-                destVectors[n] = Avx2.Xor(stateVectors[n], destVectors[n]);
-            }
+        for (var n = 0; n < stateVectors.Length; ++n)
+        {
+            stateVectors[n] = Avx2.Xor(refbVectors[n], prevVectors[n]);
+            destVectors[n] = Avx2.Xor(stateVectors[n], destVectors[n]);
+        }
 
-            ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
-            ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
+        ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
+        ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
 
-            ModifiedBlake2Intrinsics.DoRoundRows(stateVectors);
-            ModifiedBlake2Intrinsics.DoRoundRows(stateVectors[8..]);
+        ModifiedBlake2Intrinsics.DoRoundRows(stateVectors);
+        ModifiedBlake2Intrinsics.DoRoundRows(stateVectors[8..]);
 
-            ModifiedBlake2Intrinsics.ReOrder(stateVectors[..16]);
-            ModifiedBlake2Intrinsics.ReOrder(stateVectors[16..]);
+        ModifiedBlake2Intrinsics.ReOrder(stateVectors[..16]);
+        ModifiedBlake2Intrinsics.ReOrder(stateVectors[16..]);
 
-            for (int i = 0; i < stateVectors.Length; i++)
-            {
-                destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
-            }
+        for (int i = 0; i < stateVectors.Length; i++)
+        {
+            destVectors[i] = Avx2.Xor(destVectors[i], stateVectors[i]);
         }
     }
 }
