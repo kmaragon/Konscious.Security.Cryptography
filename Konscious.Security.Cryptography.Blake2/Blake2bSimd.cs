@@ -1,7 +1,11 @@
 #if NETCOREAPP3_1_OR_GREATER
+using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics;
+
 namespace Konscious.Security.Cryptography
 {
     using System;
+    using System.Buffers.Binary;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using System.Runtime.Intrinsics;
@@ -10,80 +14,58 @@ namespace Konscious.Security.Cryptography
     internal class Blake2bSimd : Blake2bBase
     {
         private static ReadOnlySpan<byte> rormask => new byte[] {
-            3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10, //r24
-			2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9  //r16
+            3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10, 3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10, //r24
+			2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9, 2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9  //r16
 		};
 
         public Blake2bSimd(int HashBytes)
             : base(HashBytes)
         {
         }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe override void Compress(bool isFinal)
+        //[SkipLocalsInit]
+        public override void Compress(bool isFinal)
         {
             unchecked
             {
-                byte* prm = (byte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(rormask));
-                Vector256<byte> r24 = Avx2.BroadcastVector128ToVector256(prm);
-                var r16 = Avx2.BroadcastVector128ToVector256(prm + Vector128<byte>.Count);
+                // TODO inline
+                ref byte prm = ref MemoryMarshal.GetReference(rormask);
 
-                ulong* m = stackalloc ulong[16];
+                Vector256<byte> r24 = VectorExtensions.LoadUnsafeVector256(ref prm);
+                Vector256<byte> r16 = VectorExtensions.LoadUnsafeVector256(ref prm, (nuint)Vector256<byte>.Count);
 
+                Span<ulong> internalState = stackalloc ulong[16];
+                ref ulong m = ref MemoryMarshal.GetReference(internalState);
+                
                 Vector256<ulong> row1;
                 Vector256<ulong> row2;
                 Vector256<ulong> row3;
                 Vector256<ulong> row4;
 
-                fixed (ulong* hash = &Hash[0])
-                fixed (ulong* iv = &Blake2Constants.IV[0])
-                {
-                    row1 = Avx2.LoadVector256(hash);
-                    row2 = Avx2.LoadVector256(hash + 4);
-                    row3 = Avx2.LoadVector256(iv);
-                    row4 = Avx2.LoadVector256(iv + 4);
+                ref ulong hash = ref MemoryMarshal.GetReference<ulong>(Hash);
+                ref ulong iv = ref MemoryMarshal.GetReference<ulong>(Blake2Constants.IV);
 
-                    var r_14 = isFinal ? ulong.MaxValue : 0;
-                    var t_0 = Vector256.Create(TotalSegmentsLow, TotalSegmentsHigh, r_14, 0);
-                    row4 = Avx2.Xor(row4, t_0);
-                }
+                row1 = VectorExtensions.LoadUnsafeVector256(ref hash);
+                row2 = VectorExtensions.LoadUnsafeVector256(ref hash, (nuint)Vector256<ulong>.Count);
+                row3 = VectorExtensions.LoadUnsafeVector256(ref iv);
+                row4 = VectorExtensions.LoadUnsafeVector256(ref iv, (nuint)Vector256<ulong>.Count);
 
-                fixed (byte* dataBuffer = &DataBuffer[0])
-                {
-                    ulong* buffer = (ulong*)dataBuffer;
-                    for (var i = 0; i < 16; i++)
-                    {
-                        m[i] = buffer[i];
-                    }
+                var r_14 = isFinal ? ulong.MaxValue : 0;
+                var t_0 = Vector256.Create(TotalSegmentsLow, TotalSegmentsHigh, r_14, 0);
+                row4 = Avx2.Xor(row4, t_0);
 
-                    // this is necessary for proper function
-                    // but definitely not ideal
-                    if (!BitConverter.IsLittleEndian)
-                    {
-                        for (var i = 0; i < 16; i++)
-                        {
-                            m[i] = (m[i] >> 56) ^
-                                ((m[i] >> 40) & 0xff00UL) ^
-                                ((m[i] >> 24) & 0xff0000UL) ^
-                                ((m[i] >> 8) & 0xff000000UL) ^
-                                ((m[i] << 8) & 0xff00000000UL) ^
-                                ((m[i] << 24) & 0xff0000000000UL) ^
-                                ((m[i] << 40) & 0xff000000000000UL) ^
-                                ((m[i] << 56) & 0xff00000000000000UL);
-                        }
-                    }
-                }
+                MemoryMarshal.Cast<byte, ulong>(DataBuffer).CopyTo(internalState);
 
-                Vector256<ulong> orig_0 = row1;
-                Vector256<ulong> orig_1 = row2;
-                Vector256<ulong> orig_2 = row3;
-                Vector256<ulong> orig_3 = row4;
+                Vector256<ulong> orig_1 = row1;
+                Vector256<ulong> orig_2 = row2;
 
                 #region Rounds
                 //ROUND 1
-                var m0 = Avx2.BroadcastVector128ToVector256(m);
-                var m1 = Avx2.BroadcastVector128ToVector256(m + Vector128<ulong>.Count);
-                var m2 = Avx2.BroadcastVector128ToVector256(m + Vector128<ulong>.Count * 2);
-                var m3 = Avx2.BroadcastVector128ToVector256(m + Vector128<ulong>.Count * 3);
+                var m0 = VectorExtensions.BroadcastVector128ToVector256(ref m);
+                var m1 = VectorExtensions.BroadcastVector128ToVector256(ref Unsafe.Add(ref m, Vector128<ulong>.Count));
+                var m2 = VectorExtensions.BroadcastVector128ToVector256(ref Unsafe.Add(ref m, Vector128<ulong>.Count * 2));
+                var m3 = VectorExtensions.BroadcastVector128ToVector256(ref Unsafe.Add(ref m, Vector128<ulong>.Count * 3));
 
                 var t0 = Avx2.UnpackLow(m0, m1);
                 var t1 = Avx2.UnpackLow(m2, m3);
@@ -99,10 +81,10 @@ namespace Konscious.Security.Cryptography
 
                 Diagonalize(ref row1, ref row3, ref row4);
 
-                var m4 = Avx2.BroadcastVector128ToVector256(m + Vector128<ulong>.Count * 4);
-                var m5 = Avx2.BroadcastVector128ToVector256(m + Vector128<ulong>.Count * 5);
-                var m6 = Avx2.BroadcastVector128ToVector256(m + Vector128<ulong>.Count * 6);
-                var m7 = Avx2.BroadcastVector128ToVector256(m + Vector128<ulong>.Count * 7);
+                var m4 = VectorExtensions.BroadcastVector128ToVector256(ref Unsafe.Add(ref m, Vector128<ulong>.Count * 4));
+                var m5 = VectorExtensions.BroadcastVector128ToVector256(ref Unsafe.Add(ref m, Vector128<ulong>.Count * 5));
+                var m6 = VectorExtensions.BroadcastVector128ToVector256(ref Unsafe.Add(ref m, Vector128<ulong>.Count * 6));
+                var m7 = VectorExtensions.BroadcastVector128ToVector256(ref Unsafe.Add(ref m, Vector128<ulong>.Count * 7));
 
                 t0 = Avx2.UnpackLow(m7, m4);
                 t1 = Avx2.UnpackLow(m5, m6);
@@ -438,17 +420,13 @@ namespace Konscious.Security.Cryptography
                 Undiagonalize(ref row1, ref row3, ref row4);
                 #endregion
 
+                row1 = Avx2.Xor(row1, row3);
+                row2 = Avx2.Xor(row2, row4);
+                row1 = Avx2.Xor(row1, orig_1);
+                row2 = Avx2.Xor(row2, orig_2);
 
-                fixed (ulong* hash = &Hash[0])
-                {
-                    row1 = Avx2.Xor(row1, row3);
-                    row2 = Avx2.Xor(row2, row4);
-                    row1 = Avx2.Xor(row1, Avx.LoadVector256(hash));
-                    row2 = Avx2.Xor(row2, Avx.LoadVector256(hash + Vector256<ulong>.Count));
-
-                    Avx.Store(hash, row1);
-                    Avx.Store(hash + Vector256<ulong>.Count, row2);
-                }
+                row1.StoreUnsafe(ref hash);
+                row2.StoreUnsafe(ref hash, (nuint)Vector256<ulong>.Count);
             }
         }
 
@@ -502,6 +480,54 @@ namespace Konscious.Security.Cryptography
                 row4 = Avx2.Permute4x64(row4, 0b_01_00_11_10);
                 row3 = Avx2.Permute4x64(row3, 0b_10_01_00_11);
             }
+        }
+    }
+
+    internal static class VectorExtensions
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector128<T> LoadUnsafeVector128<T>(ref T source)
+                where T : struct
+        {
+            return Unsafe.ReadUnaligned<Vector128<T>>(ref Unsafe.As<T, byte>(ref source));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector256<T> LoadUnsafeVector256<T>(ref T source)
+                where T : struct
+        {
+            return Unsafe.ReadUnaligned<Vector256<T>>(ref Unsafe.As<T, byte>(ref source));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector256<T> LoadUnsafeVector256<T>(ref T source, nuint elementOffset)
+            where T : struct
+        {
+            source = ref Unsafe.Add(ref source, (nint)elementOffset);
+            return Unsafe.ReadUnaligned<Vector256<T>>(ref Unsafe.As<T, byte>(ref source));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StoreUnsafe<T>(this Vector256<T> source, ref T destination)
+                where T : struct
+        {
+            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination), source);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void StoreUnsafe<T>(this Vector256<T> source, ref T destination, nuint elementOffset)
+            where T : struct
+        {
+            destination = ref Unsafe.Add(ref destination, (nint)elementOffset);
+            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination), source);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector256<T> BroadcastVector128ToVector256<T>(ref T ptr) where T : struct
+        {
+            var vector = Unsafe.ReadUnaligned<Vector128<T>>(ref Unsafe.As<T, byte>(ref ptr));
+            Vector256<T> result = vector.ToVector256Unsafe();
+            return result.WithUpper(vector);
         }
     }
 }
