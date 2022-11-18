@@ -1,11 +1,7 @@
 #if NETCOREAPP3_1_OR_GREATER
-using System.Runtime.CompilerServices;
-using System.Runtime.Intrinsics;
-
 namespace Konscious.Security.Cryptography
 {
     using System;
-    using System.Buffers.Binary;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using System.Runtime.Intrinsics;
