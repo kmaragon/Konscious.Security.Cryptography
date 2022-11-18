@@ -56,9 +56,9 @@ internal static class Argon2CoreIntrinsics
         {
             throw new NotSupportedException($"Avx2 is not supported on this device {nameof(Avx2)}");
         }
-        fixed (ulong* state = stackalloc ulong[dest.Length])
-        {
-            Span<Vector256<ulong>> stateVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(new Span<ulong>(state, dest.Length));
+
+        Span<ulong> state = stackalloc ulong[dest.Length];
+        Span<Vector256<ulong>> stateVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(state);
             ReadOnlySpan<Vector256<ulong>> refbVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(refb);
             ReadOnlySpan<Vector256<ulong>> prevVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(prev);
             Span<Vector256<ulong>> destVectors = MemoryMarshal.Cast<ulong, Vector256<ulong>>(dest);

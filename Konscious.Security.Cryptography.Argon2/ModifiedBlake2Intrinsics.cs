@@ -225,6 +225,8 @@ internal static class ModifiedBlake2Intrinsics
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe static void ReOrder(Span<Vector256<ulong>> data)
     {
+        Debug.Assert(data.Length == 16);
+
         // Takes vectors in the form
         // data[0..8] = [<0,2,4,6>, <1,3,5,7>, <16,18,20,22>, <17,19,21,23>, <32,34,36,38>,  <33,35,37,39>, <48..., <49...]
         // data[8..16] = [<8,10,12,14>, <9,11,13,15>, <24..., <25..., <40..., <41..., <56..., <57...]
