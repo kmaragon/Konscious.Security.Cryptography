@@ -32,8 +32,8 @@ public class BlakeSimdBenchmark
         (int)3,
    (int)1E+2,  // 100 bytes
    (int)1E+3,  // 1 000 bytes = 1 KB
-   (int)1E+4,  // 10 000 bytes = 10 KB
-   (int)1E+6 )]
+   (int)1E+4  // 10 000 bytes = 10 KB
+   )]
     public int Size { get; set; }
 
     [Benchmark]

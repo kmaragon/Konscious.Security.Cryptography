@@ -2,6 +2,7 @@
 namespace Konscious.Security.Cryptography
 {
     using System;
+    using System.Diagnostics;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
     using System.Runtime.Intrinsics;
@@ -17,30 +18,33 @@ namespace Konscious.Security.Cryptography
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void Compress(bool isFinal)
         {
+            Compress(isFinal, Hash, DataBuffer, TotalSegmentsLow, TotalSegmentsHigh);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Compress(bool isFinal, Span<ulong> hashBuffer, ReadOnlySpan<byte> dataBuffer, ulong totalSegmentsLow, ulong totalSegmentsHigh)
+        {
+            Debug.Assert(dataBuffer.Length >= 128);
+            Debug.Assert(hashBuffer.Length >= 8);
+
             unchecked
             {
                 Vector256<byte> r24 = Vector256.Create((byte)3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10, 3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10);
                 Vector256<byte> r16 = Vector256.Create((byte)2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9, 2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9);
                
-                Span<ulong> internalState = stackalloc ulong[16];
-                MemoryMarshal.Cast<byte, ulong>(DataBuffer).CopyTo(internalState);
-                ref ulong m = ref MemoryMarshal.GetReference(internalState);
-                
-                Vector256<ulong> row1;
-                Vector256<ulong> row2;
-                Vector256<ulong> row3;
-                Vector256<ulong> row4;
+                // TODO: moving this to the bottom causes a 2x slow down?
+                ref ulong m = ref Unsafe.As<byte,ulong>(ref MemoryMarshal.GetReference(dataBuffer));
 
-                ref ulong hash = ref MemoryMarshal.GetReference<ulong>(Hash);
+                ref ulong hash = ref MemoryMarshal.GetReference<ulong>(hashBuffer);
                 ref ulong iv = ref MemoryMarshal.GetReference<ulong>(Blake2Constants.IV);
 
-                row1 = VectorExtensions.LoadUnsafeVector256(ref hash);
-                row2 = VectorExtensions.LoadUnsafeVector256(ref hash, (nuint)Vector256<ulong>.Count);
-                row3 = VectorExtensions.LoadUnsafeVector256(ref iv);
-                row4 = VectorExtensions.LoadUnsafeVector256(ref iv, (nuint)Vector256<ulong>.Count);
-
                 var r_14 = isFinal ? ulong.MaxValue : 0;
-                var t_0 = Vector256.Create(TotalSegmentsLow, TotalSegmentsHigh, r_14, 0);
+                var t_0 = Vector256.Create(totalSegmentsLow, totalSegmentsHigh, r_14, 0);
+
+                Vector256<ulong> row1 = VectorExtensions.LoadUnsafeVector256(ref hash);
+                Vector256<ulong> row2 = VectorExtensions.LoadUnsafeVector256(ref hash, (nuint)Vector256<ulong>.Count);
+                Vector256<ulong> row3 = VectorExtensions.LoadUnsafeVector256(ref iv);
+                Vector256<ulong> row4 = VectorExtensions.LoadUnsafeVector256(ref iv, (nuint)Vector256<ulong>.Count);
                 row4 = Avx2.Xor(row4, t_0);
 
                 Vector256<ulong> orig_1 = row1;
