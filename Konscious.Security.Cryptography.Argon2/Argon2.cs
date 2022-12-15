@@ -112,7 +112,7 @@ namespace Konscious.Security.Cryptography
             n.Iterations = Iterations;
             n.MemorySize = MemorySize;
             n.DegreeOfParallelism = DegreeOfParallelism;
-
+            n.SingleThreaded = SingleThreaded;
             return n.Hash(_password);
         }
 
