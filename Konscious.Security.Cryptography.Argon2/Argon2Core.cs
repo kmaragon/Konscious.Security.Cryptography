@@ -159,35 +159,72 @@ namespace Konscious.Security.Cryptography
                 throw new InvalidOperationException($"Memory should be enough to provide at least 4 blocks per {nameof(DegreeOfParallelism)}");
             }
 
-            Task[] init = new Task[lanes.Length * 2];
-            for (var i = 0; i < lanes.Length; ++i)
+            if (SingleThreaded) { 
+                 Action[] init = new Action[lanes.Length * 2];
+                for (var i = 0; i < lanes.Length; ++i)
+                {
+                    lanes[i] = new Argon2Lane(blocksPerLane);
+
+                    int taskIndex = i * 2;
+                    int iClosure = i;
+                    init[taskIndex] = () =>
+                    {
+                        var stream = new LittleEndianActiveStream();
+                        stream.Expose(blockHash);
+                        stream.Expose(0);
+                        stream.Expose(iClosure);
+
+                        ModifiedBlake2.Blake2Prime(lanes[iClosure][0], stream);
+                    };
+
+                    init[taskIndex + 1] = () =>
+                    {
+                        var stream = new LittleEndianActiveStream();
+                        stream.Expose(blockHash);
+                        stream.Expose(1);
+                        stream.Expose(iClosure);
+
+                        ModifiedBlake2.Blake2Prime(lanes[iClosure][1], stream);
+                    };
+                }
+
+                for (int i = 0; i < init.Length; i++)
+                {
+                    init[i]();
+                }
+            } 
+            else
             {
-                lanes[i] = new Argon2Lane(blocksPerLane);
-
-                int taskIndex = i * 2;
-                int iClosure = i;
-                init[taskIndex] = Task.Run(() =>
+                Task[] init = new Task[lanes.Length * 2];
+                for (var i = 0; i < lanes.Length; ++i)
                 {
-                    var stream = new LittleEndianActiveStream();
-                    stream.Expose(blockHash);
-                    stream.Expose(0);
-                    stream.Expose(iClosure);
+                    lanes[i] = new Argon2Lane(blocksPerLane);
 
-                    ModifiedBlake2.Blake2Prime(lanes[iClosure][0], stream);
-                });
+                    int taskIndex = i * 2;
+                    int iClosure = i;
+                    init[taskIndex] = Task.Run(() =>
+                    {
+                        var stream = new LittleEndianActiveStream();
+                        stream.Expose(blockHash);
+                        stream.Expose(0);
+                        stream.Expose(iClosure);
 
-                init[taskIndex + 1] = Task.Run(() =>
-                {
-                    var stream = new LittleEndianActiveStream();
-                    stream.Expose(blockHash);
-                    stream.Expose(1);
-                    stream.Expose(iClosure);
+                        ModifiedBlake2.Blake2Prime(lanes[iClosure][0], stream);
+                    });
 
-                    ModifiedBlake2.Blake2Prime(lanes[iClosure][1], stream);
-                });
+                    init[taskIndex + 1] = Task.Run(() =>
+                    {
+                        var stream = new LittleEndianActiveStream();
+                        stream.Expose(blockHash);
+                        stream.Expose(1);
+                        stream.Expose(iClosure);
+
+                        ModifiedBlake2.Blake2Prime(lanes[iClosure][1], stream);
+                    });
+                }
+
+                await Task.WhenAll(init).ConfigureAwait(false);
             }
-
-            await Task.WhenAll(init).ConfigureAwait(false);
 
             Array.Clear(blockHash, 0, blockHash.Length);
             return lanes;
