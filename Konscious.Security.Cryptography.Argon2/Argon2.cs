@@ -13,6 +13,11 @@ namespace Konscious.Security.Cryptography
     public abstract class Argon2 : DeriveBytes
     {
         /// <summary>
+        /// Sets whether this class should run Task operations as single threaded or multy threaded
+        /// </summary>
+        public bool SingleThreaded { get; set;  }
+
+        /// <summary>
         /// Create an Argon2 for encrypting the given password
         /// </summary>
         /// <param name="password"></param>
