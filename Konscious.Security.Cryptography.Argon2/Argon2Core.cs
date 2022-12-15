@@ -14,6 +14,8 @@ namespace Konscious.Security.Cryptography
             _tagLine = hashSize;
         }
 
+        public bool SingleThreaded { get; set; }
+
         public int DegreeOfParallelism { get; set; }
 
         public int MemorySize { get; set; }
@@ -38,40 +40,83 @@ namespace Konscious.Security.Cryptography
             {
                 for (var s = 0; s < 4; s++)
                 {
-                    var segment = Enumerable.Range(0, lanes.Length).Select(l => Task.Run(() =>
+                    if (SingleThreaded)
                     {
-                        var lane = lanes[l];
-                        var segmentLength = lane.BlockCount / 4;
-                        var curOffset = s * segmentLength + start;
-
-                        var prevLane = l;
-                        var prevOffset = curOffset - 1;
-                        if (curOffset == 0)
+                        var segment = Enumerable.Range(0, lanes.Length).Select(l => (Action)(() =>
                         {
-                            prevOffset = lane.BlockCount - 1;
-                        }
+                            var lane = lanes[l];
+                            var segmentLength = lane.BlockCount / 4;
+                            var curOffset = s * segmentLength + start;
 
-                        var state = GenerateState(lanes, segmentLength, i, l, s);
-                        for (var c = start; c < segmentLength; ++c, curOffset++)
-                        {
-                            var pseudoRand = state.PseudoRand(c, prevLane, prevOffset);
-                            var refLane = (uint)(pseudoRand >> 32) % lanes.Length;
-
-                            if (i == 0 && s == 0)
+                            var prevLane = l;
+                            var prevOffset = curOffset - 1;
+                            if (curOffset == 0)
                             {
-                                refLane = l;
+                                prevOffset = lane.BlockCount - 1;
                             }
 
-                            var refIndex = IndexAlpha(l == refLane, (uint)pseudoRand, lane.BlockCount, segmentLength, i, s, c);
-                            var refBlock = lanes[refLane][refIndex].Span;
-                            var curBlock = lane[curOffset].Span;
+                            var state = GenerateState(lanes, segmentLength, i, l, s);
+                            for (var c = start; c < segmentLength; ++c, curOffset++)
+                            {
+                                var pseudoRand = state.PseudoRand(c, prevLane, prevOffset);
+                                var refLane = (uint)(pseudoRand >> 32) % lanes.Length;
 
-                            Compress(curBlock, refBlock, lanes[prevLane][prevOffset].Span);
-                            prevOffset = curOffset;
+                                if (i == 0 && s == 0)
+                                {
+                                    refLane = l;
+                                }
+
+                                var refIndex = IndexAlpha(l == refLane, (uint)pseudoRand, lane.BlockCount, segmentLength, i, s, c);
+                                var refBlock = lanes[refLane][refIndex].Span;
+                                var curBlock = lane[curOffset].Span;
+
+                                Compress(curBlock, refBlock, lanes[prevLane][prevOffset].Span);
+                                prevOffset = curOffset;
+                            }
+                        }));
+
+                        foreach (var seg in segment)
+                        {
+                            seg();
                         }
-                    }));
+                    }
+                    else
+                    {
+                        var segment = Enumerable.Range(0, lanes.Length).Select(l => Task.Run(() =>
+                        {
+                            var lane = lanes[l];
+                            var segmentLength = lane.BlockCount / 4;
+                            var curOffset = s * segmentLength + start;
 
-                    await Task.WhenAll(segment).ConfigureAwait(false);
+                            var prevLane = l;
+                            var prevOffset = curOffset - 1;
+                            if (curOffset == 0)
+                            {
+                                prevOffset = lane.BlockCount - 1;
+                            }
+
+                            var state = GenerateState(lanes, segmentLength, i, l, s);
+                            for (var c = start; c < segmentLength; ++c, curOffset++)
+                            {
+                                var pseudoRand = state.PseudoRand(c, prevLane, prevOffset);
+                                var refLane = (uint)(pseudoRand >> 32) % lanes.Length;
+
+                                if (i == 0 && s == 0)
+                                {
+                                    refLane = l;
+                                }
+
+                                var refIndex = IndexAlpha(l == refLane, (uint)pseudoRand, lane.BlockCount, segmentLength, i, s, c);
+                                var refBlock = lanes[refLane][refIndex].Span;
+                                var curBlock = lane[curOffset].Span;
+
+                                Compress(curBlock, refBlock, lanes[prevLane][prevOffset].Span);
+                                prevOffset = curOffset;
+                            }
+                        }));
+
+                        await Task.WhenAll(segment).ConfigureAwait(false);
+                    }
                     start = 0;
                 }
             }
@@ -157,35 +202,72 @@ namespace Konscious.Security.Cryptography
                 throw new InvalidOperationException($"Memory should be enough to provide at least 4 blocks per {nameof(DegreeOfParallelism)}");
             }
 
-            Task[] init = new Task[lanes.Length * 2];
-            for (var i = 0; i < lanes.Length; ++i)
+            if (SingleThreaded) { 
+                 Action[] init = new Action[lanes.Length * 2];
+                for (var i = 0; i < lanes.Length; ++i)
+                {
+                    lanes[i] = new Argon2Lane(blocksPerLane);
+
+                    int taskIndex = i * 2;
+                    int iClosure = i;
+                    init[taskIndex] = () =>
+                    {
+                        var stream = new LittleEndianActiveStream();
+                        stream.Expose(blockHash);
+                        stream.Expose(0);
+                        stream.Expose(iClosure);
+
+                        ModifiedBlake2.Blake2Prime(lanes[iClosure][0], stream);
+                    };
+
+                    init[taskIndex + 1] = () =>
+                    {
+                        var stream = new LittleEndianActiveStream();
+                        stream.Expose(blockHash);
+                        stream.Expose(1);
+                        stream.Expose(iClosure);
+
+                        ModifiedBlake2.Blake2Prime(lanes[iClosure][1], stream);
+                    };
+                }
+
+                for (int i = 0; i < init.Length; i++)
+                {
+                    init[i]();
+                }
+            } 
+            else
             {
-                lanes[i] = new Argon2Lane(blocksPerLane);
-
-                int taskIndex = i * 2;
-                int iClosure = i;
-                init[taskIndex] = Task.Run(() =>
+                Task[] init = new Task[lanes.Length * 2];
+                for (var i = 0; i < lanes.Length; ++i)
                 {
-                    var stream = new LittleEndianActiveStream();
-                    stream.Expose(blockHash);
-                    stream.Expose(0);
-                    stream.Expose(iClosure);
+                    lanes[i] = new Argon2Lane(blocksPerLane);
 
-                    ModifiedBlake2.Blake2Prime(lanes[iClosure][0], stream);
-                });
+                    int taskIndex = i * 2;
+                    int iClosure = i;
+                    init[taskIndex] = Task.Run(() =>
+                    {
+                        var stream = new LittleEndianActiveStream();
+                        stream.Expose(blockHash);
+                        stream.Expose(0);
+                        stream.Expose(iClosure);
 
-                init[taskIndex + 1] = Task.Run(() =>
-                {
-                    var stream = new LittleEndianActiveStream();
-                    stream.Expose(blockHash);
-                    stream.Expose(1);
-                    stream.Expose(iClosure);
+                        ModifiedBlake2.Blake2Prime(lanes[iClosure][0], stream);
+                    });
 
-                    ModifiedBlake2.Blake2Prime(lanes[iClosure][1], stream);
-                });
+                    init[taskIndex + 1] = Task.Run(() =>
+                    {
+                        var stream = new LittleEndianActiveStream();
+                        stream.Expose(blockHash);
+                        stream.Expose(1);
+                        stream.Expose(iClosure);
+
+                        ModifiedBlake2.Blake2Prime(lanes[iClosure][1], stream);
+                    });
+                }
+
+                await Task.WhenAll(init).ConfigureAwait(false);
             }
-
-            await Task.WhenAll(init).ConfigureAwait(false);
 
             Array.Clear(blockHash, 0, blockHash.Length);
             return lanes;

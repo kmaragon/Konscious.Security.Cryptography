@@ -13,6 +13,11 @@ namespace Konscious.Security.Cryptography
     public abstract class Argon2 : DeriveBytes
     {
         /// <summary>
+        /// Sets whether this class should run Task operations as single threaded or multy threaded
+        /// </summary>
+        public bool SingleThreaded { get; set;  }
+
+        /// <summary>
         /// Create an Argon2 for encrypting the given password
         /// </summary>
         /// <param name="password"></param>
@@ -37,8 +42,8 @@ namespace Konscious.Security.Cryptography
         public override byte[] GetBytes(int bc)
         {
             ValidateParameters(bc);
-            var task = Task.Run(async () => await GetBytesAsyncImpl(bc).ConfigureAwait(false) );
-            return task.Result;
+            var task = GetBytesAsyncImpl(bc).Result;
+            return task;
         }
 
 
@@ -107,7 +112,7 @@ namespace Konscious.Security.Cryptography
             n.Iterations = Iterations;
             n.MemorySize = MemorySize;
             n.DegreeOfParallelism = DegreeOfParallelism;
-
+            n.SingleThreaded = SingleThreaded;
             return n.Hash(_password);
         }
 
