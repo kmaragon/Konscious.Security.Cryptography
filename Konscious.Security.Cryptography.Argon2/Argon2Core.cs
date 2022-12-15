@@ -14,6 +14,8 @@ namespace Konscious.Security.Cryptography
             _tagLine = hashSize;
         }
 
+        public bool SingleThreaded { get; set; }
+
         public int DegreeOfParallelism { get; set; }
 
         public int MemorySize { get; set; }
