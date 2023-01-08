@@ -1,4 +1,4 @@
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
 namespace Konscious.Security.Cryptography
 {
     using System;
@@ -36,15 +36,15 @@ namespace Konscious.Security.Cryptography
                 ref ulong m = ref Unsafe.As<byte,ulong>(ref MemoryMarshal.GetReference(dataBuffer));
 
                 ref ulong hash = ref MemoryMarshal.GetReference<ulong>(hashBuffer);
-                ref ulong iv = ref MemoryMarshal.GetReference<ulong>(Blake2Constants.IV);
 
                 var r_14 = isFinal ? ulong.MaxValue : 0;
                 var t_0 = Vector256.Create(totalSegmentsLow, totalSegmentsHigh, r_14, 0);
 
                 Vector256<ulong> row1 = VectorExtensions.LoadUnsafeVector256(ref hash);
                 Vector256<ulong> row2 = VectorExtensions.LoadUnsafeVector256(ref hash, (nuint)Vector256<ulong>.Count);
-                Vector256<ulong> row3 = VectorExtensions.LoadUnsafeVector256(ref iv);
-                Vector256<ulong> row4 = VectorExtensions.LoadUnsafeVector256(ref iv, (nuint)Vector256<ulong>.Count);
+                Vector256<ulong> row3 = Vector256.Create(
+                    (ulong)0x6A09E667F3BCC908UL, 0xBB67AE8584CAA73BUL, 0x3C6EF372FE94F82BUL, 0xA54FF53A5F1D36F1UL);
+                Vector256<ulong> row4 = Vector256.Create((ulong)0x510E527FADE682D1UL, 0x9B05688C2B3E6C1FUL, 0x1F83D9ABFB41BD6BUL, 0x5BE0CD19137E2179UL);
                 row4 = Avx2.Xor(row4, t_0);
 
                 Vector256<ulong> orig_1 = row1;
@@ -421,7 +421,7 @@ namespace Konscious.Security.Cryptography
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void Diagonalize(ref Vector256<ulong> row1, ref Vector256<ulong> row3, ref Vector256<ulong> row4)
+        private static void Diagonalize(ref Vector256<ulong> row1, ref Vector256<ulong> row3, ref Vector256<ulong> row4)
         {
             unchecked
             {
@@ -448,7 +448,7 @@ namespace Konscious.Security.Cryptography
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void G1(Vector256<byte> r24, ref Vector256<ulong> row1, ref Vector256<ulong> row2, ref Vector256<ulong> row3, ref Vector256<ulong> row4, Vector256<ulong> b0)
+        private static void G1(Vector256<byte> r24, ref Vector256<ulong> row1, ref Vector256<ulong> row2, ref Vector256<ulong> row3, ref Vector256<ulong> row4, Vector256<ulong> b0)
         {
             unchecked
             {
@@ -463,7 +463,7 @@ namespace Konscious.Security.Cryptography
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void G2(Vector256<byte> r16, ref Vector256<ulong> row1, ref Vector256<ulong> row2, ref Vector256<ulong> row3, ref Vector256<ulong> row4, Vector256<ulong> b0)
+        private static void G2(Vector256<byte> r16, ref Vector256<ulong> row1, ref Vector256<ulong> row2, ref Vector256<ulong> row3, ref Vector256<ulong> row4, Vector256<ulong> b0)
         {
             unchecked
             {
@@ -478,7 +478,7 @@ namespace Konscious.Security.Cryptography
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe void Undiagonalize(ref Vector256<ulong> row1, ref Vector256<ulong> row3, ref Vector256<ulong> row4)
+        private static void Undiagonalize(ref Vector256<ulong> row1, ref Vector256<ulong> row3, ref Vector256<ulong> row4)
         {
             unchecked
             {
@@ -530,18 +530,18 @@ namespace Konscious.Security.Cryptography
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void StoreUnsafe<T>(this Vector256<T> source, ref T destination)
+        public static void StoreUnsafe<T>(this Vector256<T> source, ref T pdestination)
                 where T : struct
         {
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination), source);
+            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref pdestination), source);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void StoreUnsafe<T>(this Vector256<T> source, ref T destination, nuint elementOffset)
+        public static void StoreUnsafe<T>(this Vector256<T> source, ref T Tdestination, nuint elementOffset)
             where T : struct
         {
-            destination = ref Unsafe.Add(ref destination, (nint)elementOffset);
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination), source);
+            Tdestination = ref Unsafe.Add(ref Tdestination, (nint)elementOffset);
+            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref Tdestination), source);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

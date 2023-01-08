@@ -2,9 +2,7 @@
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using Konscious.Security.Cryptography;
-using Perfolizer.Mathematics.Randomization;
 using System;
-using System.Threading.Tasks;
 
 BenchmarkRunner.Run<BlakeSimdBenchmark>();
 

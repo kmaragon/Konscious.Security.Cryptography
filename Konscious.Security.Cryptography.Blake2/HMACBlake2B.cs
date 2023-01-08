@@ -124,7 +124,7 @@ namespace Konscious.Security.Cryptography
 
         private Blake2bBase CreateImplementation()
         {
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
             if (System.Runtime.Intrinsics.X86.Avx2.IsSupported && BitConverter.IsLittleEndian)
                 return new Blake2bSimd(_hashSize / 8);
 #endif

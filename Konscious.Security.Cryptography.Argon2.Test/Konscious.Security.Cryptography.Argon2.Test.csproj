@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <PackageId>Konscious.Security.Cryptography.Argon2.Test</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <TargetFrameworks>net5</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Konscious.Security.Cryptography.Argon2/Konscious.Security.Cryptography.Argon2.csproj" />

@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Environments;
 
 namespace ArgonBenchmarks
 {
@@ -20,8 +22,28 @@ namespace ArgonBenchmarks
         }
     }
 
+    public class Config : ManualConfig
+    {
+        public Config()
+        {
+            //Run with intrinsics disabled
+            AddJob(
+                Job.Default
+                .WithEnvironmentVariable(new EnvironmentVariable("COMPlus_EnableSSE2", "0"))
+                .WithRuntime(CoreRuntime.Core60)
+                .AsBaseline());
+
+            // Run with intrinsics
+            AddJob(
+               Job.Default.WithRuntime(CoreRuntime.Core60));
+
+            AddJob(
+               Job.Default.WithRuntime(CoreRuntime.Core50));
+        }
+    }
+
+    [Config(typeof(Config))]
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.Net60)]
     [JsonExporterAttribute.BriefCompressed, CsvExporter(BenchmarkDotNet.Exporters.Csv.CsvSeparator.CurrentCulture), HtmlExporter]
     public class ArgonBenchmarks
     {

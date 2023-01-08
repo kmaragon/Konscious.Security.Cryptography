@@ -1,4 +1,4 @@
-#if NETCOREAPP3_0_OR_GREATER
+#if NET6_0_OR_GREATER
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -12,11 +12,6 @@ namespace Konscious.Security.Cryptography;
 
 internal static class ModifiedBlake2Intrinsics
 {
-    private static ReadOnlySpan<byte> rormask => new byte[] {
-        3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10, //r24
-			2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9  //r16
-		};
-
     //private unsafe static void ModifiedG(ulong* v, int a, int b, int c, int d)
     //{
     //    var t = (v[a] & 0xffffffff) * (v[b] & 0xffffffff);
@@ -44,11 +39,9 @@ internal static class ModifiedBlake2Intrinsics
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private unsafe static void ModifiedG(ref Vector256<ulong> a, ref Vector256<ulong> b, ref Vector256<ulong> c, ref Vector256<ulong> d)
     {
-        byte* prm = (byte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(rormask));
-        var r24 = Avx2.BroadcastVector128ToVector256(prm);
-        var r16 = Avx2.BroadcastVector128ToVector256(prm + Vector128<byte>.Count);
+        var r24 = Vector256.Create((byte)3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10, 3, 4, 5, 6, 7, 0, 1, 2, 11, 12, 13, 14, 15, 8, 9, 10);
+        var r16 = Vector256.Create((byte)2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9, 2, 3, 4, 5, 6, 7, 0, 1, 10, 11, 12, 13, 14, 15, 8, 9);
 
-        //var t = (v[a] & 0xffffffff) * (v[b] & 0xffffffff);
         Vector256<ulong> t = Avx2.Multiply(a.AsUInt32(), b.AsUInt32());
         a = Avx2.Add(Avx2.Add(a, b), Avx2.Add(t, t));
 
@@ -85,7 +78,7 @@ internal static class ModifiedBlake2Intrinsics
     //}
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void DoRoundColumns(Span<Vector256<ulong>> vectors)
+    public static void DoRoundColumns(Span<Vector256<ulong>> vectors)
     {
         // Takes vectors in the form
         // [<0,1,2,3>, <4,5,6,7>, <8,9...]
@@ -160,7 +153,7 @@ internal static class ModifiedBlake2Intrinsics
     //}
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static unsafe void DoRoundRows(Span<Vector256<ulong>> vectors)
+    public static void DoRoundRows(Span<Vector256<ulong>> vectors)
     {
         // Takes vectors in the form
         // [<0,16,32,48>, <1,17,33,49>, <2,18...] ...
@@ -224,7 +217,7 @@ internal static class ModifiedBlake2Intrinsics
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public unsafe static void ReOrder(Span<Vector256<ulong>> data)
+    public static void ReOrder(Span<Vector256<ulong>> data)
     {
         Debug.Assert(data.Length == 16);
 
@@ -234,31 +227,43 @@ internal static class ModifiedBlake2Intrinsics
         // Interweave takes two vectors, re packs the numbers, store them in the buffer.
         // Buffer is then recopied to data.
 
-        Span<Vector256<ulong>> buffer = stackalloc Vector256<ulong>[data.Length];
-        fixed (Vector256<ulong>* buff = &buffer[0], source = &data[0])
-        {
-            Interweave(source + 0, buff + 0);
-            Interweave(source + 8, buff + 2);
-            Interweave(source + 2, buff + 4);
-            Interweave(source + 10, buff + 6);
+        Span<Vector256<ulong>> buffer = stackalloc Vector256<ulong>[16];
 
-            Interweave(source + 4, buff + 8);
-            Interweave(source + 12, buff + 10);
-            Interweave(source + 6, buff + 12);
-            Interweave(source + 14, buff + 14);
+        ref Vector256<ulong> ptr = ref MemoryMarshal.GetReference(buffer);
+        ref Vector256<ulong> source = ref MemoryMarshal.GetReference(data);
 
-            buffer.CopyTo(data);
-        }
+        Interweave(ref source, ref ptr);
+        Interweave(ref Unsafe.Add(ref source, 8), ref Unsafe.Add(ref ptr, 2));
+        Interweave(ref Unsafe.Add(ref source, 2), ref Unsafe.Add(ref ptr, 4));
+        Interweave(ref Unsafe.Add(ref source, 10), ref Unsafe.Add(ref ptr, 6));
+
+        Interweave(ref Unsafe.Add(ref source, 4), ref Unsafe.Add(ref ptr, 8));
+        Interweave(ref Unsafe.Add(ref source, 12), ref Unsafe.Add(ref ptr, 10));
+        Interweave(ref Unsafe.Add(ref source, 6), ref Unsafe.Add(ref ptr, 12));
+        Interweave(ref Unsafe.Add(ref source, 14), ref Unsafe.Add(ref ptr, 14));
+
+        buffer.CopyTo(data);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private unsafe static void Interweave(Vector256<ulong>* source, Vector256<ulong>* destination)
+    private static void Interweave(ref Vector256<ulong> source, ref Vector256<ulong> destination)
     {
-        Vector256<ulong> low = Avx2.UnpackLow(*source, *(source + 1));
-        Vector256<ulong> high = Avx2.UnpackHigh(*source, *(source + 1));
+        //     +-------------------+
+        //     |  0 |  4 |  2 |  6 |
+        //     +-------------------+
+        //     |  1 |  5 |  3 |  7 |
+        //     +-------------------+
+        //         --->
+        //     +-------------------+
+        //     |  0 |  1 |  2 |  3 |
+        //     +-------------------+
+        //     |  4 |  5 |  6 |  7 |
+        //     +-------------------+
+        Vector256<ulong> low = Avx2.UnpackLow(source, Unsafe.Add(ref source, 1));
+        Vector256<ulong> high = Avx2.UnpackHigh(source, Unsafe.Add(ref source, 1));
 
-        *destination = Avx2.Permute2x128(low, high, 0b_00_10_00_00);
-        *(destination + 1) = Avx2.Permute2x128(low, high, 0b_00_11_00_01);
+        destination = Avx2.Permute2x128(low, high, 0b_00_10_00_00);
+        Unsafe.Add(ref destination, 1) = Avx2.Permute2x128(low, high, 0b_00_11_00_01);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

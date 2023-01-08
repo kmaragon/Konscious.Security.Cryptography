@@ -1,13 +1,12 @@
 using Blake2Core;
 using Xunit.Abstractions;
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
 namespace Konscious.Security.Cryptography.Test
 {
     using System;
     using System.Linq;
     using System.Runtime.InteropServices;
-    using System.Text;
     using Xunit;
 
     /// <summary>

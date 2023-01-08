@@ -4,9 +4,8 @@ namespace Konscious.Security.Cryptography
     using System.Linq;
     using System.Runtime.InteropServices;
     using System.Threading.Tasks;
-#if NETCOREAPP3_0_OR_GREATER
+#if NET6_0_OR_GREATER
     using System.Runtime.Intrinsics.X86;
-    using System.Runtime.Intrinsics;
 #endif
 
     internal abstract class Argon2Core
@@ -125,7 +124,7 @@ namespace Konscious.Security.Cryptography
 
         internal static unsafe void Compress(Span<ulong> dest, ReadOnlySpan<ulong> refb, ReadOnlySpan<ulong> prev)
         {
-#if NETCOREAPP3_0_OR_GREATER
+#if NET6_0_OR_GREATER
             if (Avx2.IsSupported && BitConverter.IsLittleEndian)
             {
                 Argon2CoreIntrinsics.Compress(dest, refb, prev);
