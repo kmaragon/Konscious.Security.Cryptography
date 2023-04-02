@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgonBenchmarks", "ArgonBen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComparisonHarness", "ComparisonHarness\ComparisonHarness.csproj", "{6A43B604-F49B-49E1-88CC-310E55BC8F18}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blake2Benchmarks", "Blake2Benchmarks\Blake2Benchmarks.csproj", "{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,18 @@ Global
 		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Release|x64.Build.0 = Release|Any CPU
 		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Release|x86.ActiveCfg = Release|Any CPU
 		{6A43B604-F49B-49E1-88CC-310E55BC8F18}.Release|x86.Build.0 = Release|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Debug|x64.Build.0 = Debug|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Debug|x86.Build.0 = Debug|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Release|x64.ActiveCfg = Release|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Release|x64.Build.0 = Release|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Release|x86.ActiveCfg = Release|Any CPU
+		{09637C5D-B1E0-4CCB-A2B1-06370DCC0F15}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
