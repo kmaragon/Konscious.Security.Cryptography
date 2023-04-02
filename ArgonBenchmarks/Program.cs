@@ -51,9 +51,9 @@ namespace ArgonBenchmarks
         private Argon2id _argon;
 
         [Benchmark]
-        public async Task<byte[]> GetHashAsync()
+        public byte[] GetHash()
         {
-            return await _argon.GetBytesAsync(128);
+            return _argon.GetBytes(128);
         }
 
         [IterationSetup]

@@ -62,8 +62,8 @@ namespace Konscious.Security.Cryptography
                     tmpBlock.Fill(0);
                     addressBlock.Fill(0);
 
-                    Compress(tmpBlock, inputBlock, _zeroBlock.Span);
-                    Compress(addressBlock, tmpBlock, _zeroBlock.Span);
+                    ModifiedBlake2Impl.Compress(tmpBlock, inputBlock, _zeroBlock.Span);
+                    ModifiedBlake2Impl.Compress(addressBlock, tmpBlock, _zeroBlock.Span);
                 }
 
                 rands[i] = addressBlock[ival];

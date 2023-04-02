@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+
+WORKDIR /source
+COPY . .
+RUN dotnet restore Konscious.Security.Cryptography.Argon2.Test/Konscious.Security.Cryptography.Argon2.Test.csproj && dotnet restore Konscious.Security.Cryptography.Blake2.Test/Konscious.Security.Cryptography.Blake2.Test.csproj && dotnet build -c Release Konscious.Security.Cryptography.Argon2.Test/Konscious.Security.Cryptography.Argon2.Test.csproj && dotnet build -c Release Konscious.Security.Cryptography.Blake2.Test/Konscious.Security.Cryptography.Blake2.Test.csproj
+
+# RUN dotnet test Konscious.Security.Cryptography.Blake2.Test/Konscious.Security.Cryptography.Blake2.Test.csproj
+RUN dotnet test Konscious.Security.Cryptography.Argon2.Test/Konscious.Security.Cryptography.Argon2.Test.csproj
+

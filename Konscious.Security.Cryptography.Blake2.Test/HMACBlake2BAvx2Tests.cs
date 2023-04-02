@@ -12,11 +12,11 @@ namespace Konscious.Security.Cryptography.Test
     /// <summary>
     /// Tests that assert that the non-HW-accelerated version works
     /// </summary>
-    public class HMACBlake2BSimdTests
+    public class HMACBlake2BAvx2Tests
     {
         private ITestOutputHelper _output;
         
-        public HMACBlake2BSimdTests(ITestOutputHelper helper)
+        public HMACBlake2BAvx2Tests(ITestOutputHelper helper)
         {
             _output = helper;
         }
@@ -84,7 +84,7 @@ namespace Konscious.Security.Cryptography.Test
         [Fact]
         public void Order()
         {
-            var simd = new Blake2bSimd(256 / 8);
+            var simd = new Blake2bAvx2(256 / 8);
             var data = Enumerable.Range(0, 16).Select(d => (ulong)d).ToArray();
             var key = new byte[128];
             simd.Initialize(key);
@@ -108,7 +108,7 @@ namespace Konscious.Security.Cryptography.Test
             var slowTime = (DateTime.Now - start).TotalMilliseconds * 1000;
             
             start = DateTime.Now;
-            var normal = new HMACBlake2B(key, hashSize, () => new Blake2bSimd(hashSize / 8));
+            var normal = new HMACBlake2B(key, hashSize, () => new Blake2bAvx2(hashSize / 8));
             normal.Initialize();
             var normalHash = normal.ComputeHash(data);
             var normalTime = (DateTime.Now - start).TotalMilliseconds * 1000;

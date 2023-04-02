@@ -6,15 +6,16 @@
     <AssemblyName>Konscious.Security.Cryptography.Blake2.Test</AssemblyName>
     <OutputType>Library</OutputType>
     <PackageId>Konscious.Security.Cryptography.Blake2.Test</PackageId>
-    <TargetFramework>net6</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Konscious.Security.Cryptography.Blake2/Konscious.Security.Cryptography.Blake2.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="Blake2Core" Version="1.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.reporters" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

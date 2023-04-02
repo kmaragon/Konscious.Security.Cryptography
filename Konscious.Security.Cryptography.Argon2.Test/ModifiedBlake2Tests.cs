@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Xunit.Sdk;
 
 namespace Konscious.Security.Cryptography.Test
 {
@@ -8,9 +10,20 @@ namespace Konscious.Security.Cryptography.Test
     [SuppressMessage("Microsoft.Naming", "CA1707")]
     public class ModifiedBlake2Tests
     {
-        [Fact]
-        public void Compress_MatchesArgon2ImplWithNonZeros()
+        public static IEnumerable<object[]> Data => new[]
         {
+            new object[] { new ModifiedBlake2Avx2() },
+            new object[] { new ModifiedBlake2Reference() },
+            new object[] { new ModifiedBlake2AdvSimd() },
+        };
+
+        [SkippableTheory]
+        [MemberData(nameof(Data))]
+        public void Compress_MatchesArgon2ImplWithNonZeros(object implObject)
+        {
+            var impl = implObject as IModifiedBlake2;
+            Skip.IfNot(impl.IsSupported, $"The current platform doesn't support {implObject.GetType().Name}");
+            
             ulong[] prev = {
                 0xac08119e3c72f5b5UL, 0x2a13fdad0c703169UL, 0x5f1751422a7716bcUL, 0x0ec86d7ff58cb708UL,
                 0x1aeb332d05f1d5ebUL, 0xdda5743e8949aa7eUL, 0x0eb23c256f2acb06UL, 0x5aed523fe93cfb2fUL,
@@ -151,17 +164,21 @@ namespace Konscious.Security.Cryptography.Test
                 0x9d0a939c6d3bb46cUL, 0xb046a0941c1b092dUL, 0x87c31932d2543161UL, 0x355040650606e96dUL
             };
 
-            Argon2Core.Compress(
+            impl.Compress(
                 nextblock.AsSpan(),
                 refblock.AsSpan(),
                 prev.AsSpan());
 
             Assert.Equal(expected, nextblock);
         }
-
-                [Fact]
-        public void Compress_MatchesArgon2ImplWithZeros()
+        
+        [SkippableTheory]
+        [MemberData(nameof(Data))]
+        public void Compress_MatchesArgon2ImplWithZeros(object implObject)
         {
+            var impl = implObject as IModifiedBlake2;
+            Skip.IfNot(impl.IsSupported, $"The current platform doesn't support {implObject.GetType().Name}");
+
             var prev = new ulong[128];
             var refblock = new ulong[128];
             refblock[1] = 1;
@@ -207,7 +224,7 @@ namespace Konscious.Security.Cryptography.Test
                 0xa69e24c9d96b2caaUL, 0xfa50d0f8d81bfa0cUL, 0x282732bba6f10ad1UL, 0x4de0ea71122db92aUL
             };
 
-            Argon2Core.Compress(
+            impl.Compress(
                 nextblock.AsSpan(),
                 refblock.AsSpan(),
                 prev.AsSpan());

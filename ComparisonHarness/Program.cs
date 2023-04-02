@@ -56,7 +56,7 @@ namespace ComparisonHarness
 
         private static Thread CreateTestThread(int howManyTests, int currentThread)
         {
-            return new Thread(async () =>
+            return new Thread(() =>
             {
                 _sw.Value!.Start();
                 for (int i = 0; i < howManyTests; i++)
@@ -74,13 +74,20 @@ namespace ComparisonHarness
 
                     try
                     {
-                        var referenceHash = await GetCSharpHashAsync(salt, pass, argonParams);
-                        var info = new ProcessStartInfo("python.exe", $"{_pythonFilePath} {argonParams.MemoryKb} {argonParams.Parallelism} {argonParams.Iterations} {argonParams.HashLength} { referenceHash} {pass}")
+                        var referenceHash = GetCSharpHash(salt, pass, argonParams);
+                        
+                        var info = new ProcessStartInfo("python", $"{_pythonFilePath} {argonParams.MemoryKb} {argonParams.Parallelism} {argonParams.Iterations} {argonParams.HashLength} { referenceHash} {pass}")
                         {
                             RedirectStandardOutput = true,
                         };
                         using var proc = Process.Start(info);
 
+                        if (proc == null)
+                        {
+                            Console.WriteLine("Python executable not found");
+                            return;
+                        }
+                        
                         proc.WaitForExit(30_000);
 
                         if (proc.ExitCode != 0)
@@ -104,7 +111,7 @@ namespace ComparisonHarness
             });
         }
 
-        private static async Task<string> GetCSharpHashAsync(string salt, string pass, ArgonParams argonParams)
+        private static string GetCSharpHash(string salt, string pass, ArgonParams argonParams)
         {
             var asBytes = Encoding.UTF8.GetBytes(pass);
             using var argon = new Argon2id(asBytes)
@@ -116,7 +123,7 @@ namespace ComparisonHarness
 
             argon.Salt = Encoding.UTF8.GetBytes(salt);
             //Console.WriteLine($"Salt is: {salt}");
-            var hash = await argon.GetBytesAsync(argonParams.HashLength);
+            var hash = argon.GetBytes(argonParams.HashLength);
             return argonParams.ToString(argon.Salt, hash);
         }
 

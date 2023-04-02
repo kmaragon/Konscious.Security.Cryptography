@@ -37,18 +37,7 @@ namespace Konscious.Security.Cryptography
         public override byte[] GetBytes(int bc)
         {
             ValidateParameters(bc);
-            var task = Task.Run(async () => await GetBytesAsyncImpl(bc).ConfigureAwait(false) );
-            return task.Result;
-        }
-
-
-        /// <summary>
-        /// Implementation of GetBytes
-        /// </summary>
-        public Task<byte[]> GetBytesAsync(int bc)
-        {
-            ValidateParameters(bc);
-            return GetBytesAsyncImpl(bc);
+            return GetBytesImpl(bc);
         }
 
         /// <summary>
@@ -98,7 +87,7 @@ namespace Konscious.Security.Cryptography
                 throw new InvalidOperationException("Argon2 requires at least 1 thread (DegreeOfParallelism)");
         }
 
-        private Task<byte[]> GetBytesAsyncImpl(int bc)
+        private byte[] GetBytesImpl(int bc)
         {
             var n = BuildCore(bc);
             n.Salt = Salt;
@@ -111,6 +100,6 @@ namespace Konscious.Security.Cryptography
             return n.Hash(_password);
         }
 
-        private byte[] _password;
+        private readonly byte[] _password;
     }
 }
