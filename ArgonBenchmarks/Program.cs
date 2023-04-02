@@ -37,8 +37,8 @@ namespace ArgonBenchmarks
             AddJob(
                Job.Default.WithRuntime(CoreRuntime.Core60));
 
-            AddJob(
-               Job.Default.WithRuntime(CoreRuntime.Core50));
+            //AddJob(
+            //   Job.Default.WithRuntime(CoreRuntime.Core50));
         }
     }
 

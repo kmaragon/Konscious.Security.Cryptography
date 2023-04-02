@@ -61,14 +61,24 @@ internal static class Argon2CoreIntrinsics
             Unsafe.Add(ref refDest, n) = Avx2.Xor(Unsafe.Add(ref refState, n), Unsafe.Add(ref refDest, n));
         }
 
-        ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
-        ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
+        //ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[..16]);
+        //ModifiedBlake2Intrinsics.DoRoundColumns(stateVectors[16..]);
 
-        ModifiedBlake2Intrinsics.DoRoundRows(stateVectors);
-        ModifiedBlake2Intrinsics.DoRoundRows(stateVectors[8..]);
+        //ModifiedBlake2Intrinsics.DoRoundRows(stateVectors);
+        //ModifiedBlake2Intrinsics.DoRoundRows(stateVectors[8..]);
 
-        ModifiedBlake2Intrinsics.ReOrder(stateVectors[..16]);
-        ModifiedBlake2Intrinsics.ReOrder(stateVectors[16..]);
+        //ModifiedBlake2Intrinsics.ReOrder(stateVectors[..16]);
+        //ModifiedBlake2Intrinsics.ReOrder(stateVectors[16..]);
+
+        for (int i = 0; i < 4; i++)
+        {
+            ModifiedBlake2Intrinsics.BLAKE2_ROUND_1(ref stateVectors[8 * i + 0], ref stateVectors[8 * i + 4], ref stateVectors[8 * i + 1], ref stateVectors[8 * i + 5], ref stateVectors[8 * i + 2], ref stateVectors[8 * i + 6], ref stateVectors[8 * i + 3], ref stateVectors[8 * i + 7]);
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            ModifiedBlake2Intrinsics.BLAKE2_ROUND_2(ref stateVectors[0 + i], ref stateVectors[4 + i], ref stateVectors[8 + i], ref stateVectors[12 + i], ref stateVectors[16 + i], ref stateVectors[20 + i], ref stateVectors[24 + i], ref stateVectors[28 + i]);
+        }
 
         for (int i = 0; i < stateVectors.Length; i++)
         {
