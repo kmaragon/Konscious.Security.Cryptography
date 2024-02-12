@@ -91,7 +91,10 @@ or
 ```C#
 var argon2 = new Argon2d(password);
 ```
-
+or
+```C#
+var argon2 = new Argon2id(password);
+```
 Various attributes can be added to secure the hash:
 
 | Property           | Type      | Required?   |    Description
