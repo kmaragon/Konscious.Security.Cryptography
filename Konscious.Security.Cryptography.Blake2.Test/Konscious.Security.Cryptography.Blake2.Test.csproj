@@ -6,7 +6,7 @@
     <AssemblyName>Konscious.Security.Cryptography.Blake2.Test</AssemblyName>
     <OutputType>Library</OutputType>
     <PackageId>Konscious.Security.Cryptography.Blake2.Test</PackageId>
-    <TargetFramework>net5</TargetFramework>
+    <TargetFrameworks>net5;net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../Konscious.Security.Cryptography.Blake2/Konscious.Security.Cryptography.Blake2.csproj" />
