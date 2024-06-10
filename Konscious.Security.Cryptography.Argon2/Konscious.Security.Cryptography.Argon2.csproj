@@ -9,7 +9,7 @@ Usage follows standard types found in System.Security.Cryptography in corefx. Sp
 C# Implementation of the Argon2 1.3 spec with variants for Argon2i, Argon2d, and Argon2id
 
       </Description>
-    <Copyright>(c) 2019 Keef Aragon</Copyright>
+    <Copyright>(c) 2024 Keef Aragon</Copyright>
     <AssemblyTitle>Konscious.Security.Cryptography.Argon2</AssemblyTitle>
     <VersionPrefix>1.3.1</VersionPrefix>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
