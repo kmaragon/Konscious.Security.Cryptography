@@ -5,6 +5,7 @@
     <AssemblyTitle>Konscious.Security.Cryptography.Blake2</AssemblyTitle>
     <VersionPrefix>1.1.1</VersionPrefix>
     <Authors>Keef Aragon</Authors>
+    <LangVersion>9.0</LangVersion>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>portable</DebugType>
@@ -24,11 +25,7 @@
     <TargetFrameworks>netstandard1.3;net46;net6.0;net8.0</TargetFrameworks>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Version>1.1.1</Version>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	<Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>

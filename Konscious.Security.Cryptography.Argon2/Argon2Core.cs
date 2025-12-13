@@ -22,11 +22,11 @@ namespace Konscious.Security.Cryptography
 
         public abstract int Type { get; }
 
-        public byte[] AssociatedData { get; set; }
+        public byte[]? AssociatedData { get; set; }
 
-        public byte[] Salt { get; set; }
+        public byte[]? Salt { get; set; }
 
-        public byte[] Secret { get; set; }
+        public byte[]? Secret { get; set; }
 
         // private stuff starts here
         internal async Task<byte[]> Hash(byte[] password)

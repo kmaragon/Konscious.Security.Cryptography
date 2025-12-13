@@ -1,6 +1,7 @@
 namespace Konscious.Security.Cryptography
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Numerics;
     using System.Security.Cryptography;
 
@@ -37,7 +38,7 @@ namespace Konscious.Security.Cryptography
         /// </summary>
         /// <param name="keyData">The key for the HMAC</param>
         /// <param name="hashSize">The hash size in bits</param>
-        public HMACBlake2B(byte[] keyData, int hashSize)
+        public HMACBlake2B(byte[]? keyData, int hashSize)
             : this(hashSize)
         {
             if (keyData == null)
@@ -53,7 +54,7 @@ namespace Konscious.Security.Cryptography
             Key = keyData;
         }
 
-        internal HMACBlake2B(byte[] keyData, int hashSize, Func<Blake2bBase> baseCreator)
+        internal HMACBlake2B(byte[]? keyData, int hashSize, Func<Blake2bBase> baseCreator)
             : this(keyData, hashSize)
         {
             _createImpl = baseCreator;
@@ -78,10 +79,6 @@ namespace Konscious.Security.Cryptography
         {
             get
             {
-#if NET451
-                if (KeyValue == null)
-                    return null;
-#endif
                 return base.Key;
             }
 
@@ -94,6 +91,7 @@ namespace Konscious.Security.Cryptography
         /// <summary>
         /// Implementation of Initialize - initializes the HMAC buffer
         /// </summary>
+        [MemberNotNull(nameof(_implementation))]
         public override void Initialize()
         {
             _implementation = _createImpl();
@@ -120,7 +118,7 @@ namespace Konscious.Security.Cryptography
         /// <returns>The final hash from HashCore</returns>
         protected override byte[] HashFinal()
         {
-            return _implementation.Final();
+            return _implementation!.Final();
         }
 
         private Blake2bBase CreateImplementation()
@@ -131,7 +129,7 @@ namespace Konscious.Security.Cryptography
             return new Blake2bNormal(_hashSize / 8);
         }
 
-        Blake2bBase _implementation;
+        Blake2bBase? _implementation;
         private readonly int _hashSize;
         private readonly Func<Blake2bBase> _createImpl;
     }
