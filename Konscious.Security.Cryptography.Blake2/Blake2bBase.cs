@@ -17,7 +17,7 @@ namespace Konscious.Security.Cryptography
             }
         }
 
-        public void Initialize(byte[] key)
+        public void Initialize(byte[]? key)
         {
             if ((key?.Length ?? 0) > _b.Length)
                 throw new ArgumentException($"Blake2 key size is too large. Max size is {_b.Length} bytes", nameof(key));
@@ -114,10 +114,10 @@ namespace Konscious.Security.Cryptography
             }
         }
 
-        private ulong[] _h = new ulong[8];
-        private ulong[] _t = new ulong[2];
-        private byte[] _b = new byte[128];
-        private int   _c;
-        private uint   _hashSize;
+        private readonly ulong[] _h = new ulong[8];
+        private readonly ulong[] _t = new ulong[2];
+        private readonly byte[] _b = new byte[128];
+        private int _c;
+        private readonly uint _hashSize;
     }
 }

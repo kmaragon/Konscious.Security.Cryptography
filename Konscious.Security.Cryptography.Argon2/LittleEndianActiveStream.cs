@@ -2,6 +2,7 @@ namespace Konscious.Security.Cryptography
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Runtime.InteropServices;
 
@@ -9,7 +10,7 @@ namespace Konscious.Security.Cryptography
     // but I only need little endian for this
     internal class LittleEndianActiveStream : Stream
     {
-        public LittleEndianActiveStream(byte[] buffer = null)
+        public LittleEndianActiveStream(byte[]? buffer = null)
         {
             _bufferSetupActions = new LinkedList<Action>();
             _buffer = buffer;
@@ -41,7 +42,7 @@ namespace Konscious.Security.Cryptography
             _bufferSetupActions.AddLast(() => BufferByte(data));
         }
 
-        public void Expose(byte[] data)
+        public void Expose(byte[]? data)
         {
             if (data != null)
             {
@@ -64,11 +65,8 @@ namespace Konscious.Security.Cryptography
 
         public void ClearBuffer()
         {
-            for (int i = 0; i < _buffer.Length; ++i)
-            {
-                _buffer[i] = 0;
-            }
-
+            if (_buffer is not null)
+                Array.Clear(_buffer, 0, _buffer.Length);
             _bufferAvailable = 0;
         }
 
@@ -90,7 +88,7 @@ namespace Konscious.Security.Cryptography
                         return totalRead;
                     }
 
-                    _bufferSetupActions.First.Value();
+                    _bufferSetupActions.First!.Value();
                     _bufferSetupActions.RemoveFirst();
 
                     // we are safe to assume that offset becomes 0 after that call
@@ -99,7 +97,7 @@ namespace Konscious.Security.Cryptography
 
                 // if we only need to read part of available - reduce that
                 available = Math.Min(available, count - totalRead);
-                Array.Copy(_buffer, _bufferOffset, buffer, offset, available);
+                Array.Copy(_buffer!, _bufferOffset, buffer, offset, available);
 
                 _bufferOffset += available;
                 offset += available;
@@ -175,6 +173,7 @@ namespace Konscious.Security.Cryptography
             _buffer[3] = (byte)(value >> 24);
         }
 
+        [MemberNotNull(nameof(_buffer))]
         private void ReserveBuffer(int size)
         {
             if (_buffer == null)
@@ -192,7 +191,7 @@ namespace Konscious.Security.Cryptography
 
         private LinkedList<Action> _bufferSetupActions;
 
-        private byte[] _buffer;
+        private byte[]? _buffer;
         private int _bufferOffset;
         private int _bufferAvailable;
 

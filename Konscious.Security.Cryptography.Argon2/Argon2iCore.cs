@@ -11,7 +11,7 @@ namespace Konscious.Security.Cryptography
 
         internal class PseudoRands : IArgon2PseudoRands
         {
-            private ulong[] _rands;
+            private readonly ulong[] _rands;
 
             public PseudoRands(ulong[] rands)
             {

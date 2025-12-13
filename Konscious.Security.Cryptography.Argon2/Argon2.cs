@@ -54,17 +54,17 @@ namespace Konscious.Security.Cryptography
         /// <summary>
         /// The password hashing salt
         /// </summary>
-        public byte[] Salt { get; set; }
+        public byte[]? Salt { get; set; }
 
         /// <summary>
         /// An optional secret to use while hashing the Password
         /// </summary>
-        public byte[] KnownSecret { get; set; }
+        public byte[]? KnownSecret { get; set; }
 
         /// <summary>
         /// Any extra associated data to use while hashing the password
         /// </summary>
-        public byte[] AssociatedData { get; set; }
+        public byte[]? AssociatedData { get; set; }
 
         /// <summary>
         /// The number of iterations to apply to the password hash
