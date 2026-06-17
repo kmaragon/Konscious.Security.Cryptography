@@ -1,4 +1,10 @@
 version: '1.0.{build}'
+image: Visual Studio 2026
+install:
+  # Download the official .NET install script
+  - ps: Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile "dotnet-install.ps1"
+  # Install the .NET 10 SDK directly into the system's dotnet folder
+  - ps: .\dotnet-install.ps1 -Channel 10.0 -InstallDir "C:\Program Files\dotnet"
 pull_requests:
   do_not_increment_build_number: true
 branches:
