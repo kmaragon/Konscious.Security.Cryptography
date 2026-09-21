@@ -81,6 +81,14 @@ namespace Konscious.Security.Cryptography
         /// </summary>
         public int DegreeOfParallelism { get; set; }
 
+        /// <summary>
+        /// The allocator used for Argon2's large working buffers. Defaults to <see cref="DefaultArgon2MemoryAllocator"/>,
+        /// which allocates a fresh array per hash (the original behavior). Assign a pooling allocator to reuse the
+        /// buffers across hashes and reduce garbage-collector pressure in server workloads.
+        /// See https://github.com/kmaragon/Konscious.Security.Cryptography/issues/35.
+        /// </summary>
+        public IArgon2MemoryAllocator MemoryAllocator { get; set; } = DefaultArgon2MemoryAllocator.Instance;
+
         internal abstract Argon2Core BuildCore(int bc);
 
         private void ValidateParameters(int bc)
@@ -107,6 +115,7 @@ namespace Konscious.Security.Cryptography
             n.Iterations = Iterations;
             n.MemorySize = MemorySize;
             n.DegreeOfParallelism = DegreeOfParallelism;
+            n.MemoryAllocator = MemoryAllocator ?? DefaultArgon2MemoryAllocator.Instance;
 
             return n.Hash(_password);
         }
