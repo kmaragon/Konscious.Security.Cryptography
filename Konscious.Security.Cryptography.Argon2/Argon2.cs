@@ -15,11 +15,11 @@ namespace Konscious.Security.Cryptography
         /// <summary>
         /// Create an Argon2 for encrypting the given password
         /// </summary>
-        /// <param name="password"></param>
+        /// <param name="password">The password to hash. May be empty, as permitted by the Argon2 spec.</param>
         public Argon2(byte[] password)
         {
-            if (password == null || password.Length == 0)
-                throw new ArgumentException("Argon2 needs a password set", nameof(password));
+            if (password == null)
+                throw new ArgumentNullException(nameof(password), "Argon2 needs a password set");
 
             _password = password;
         }

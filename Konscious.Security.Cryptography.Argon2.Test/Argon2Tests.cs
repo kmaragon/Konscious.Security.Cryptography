@@ -299,6 +299,48 @@ namespace Konscious.Security.Cryptography
             var hash = argon2.GetBytes(128);
         }
 
+        [Fact]
+        public void TestArgon2iWithEmptyPassword()
+        {
+            var expected = new byte[] {
+                0x7b, 0x6c, 0x1c, 0x50, 0xf1, 0x67, 0x20, 0xdb, 0x44, 0x72, 0x3a, 0xd0, 0x75, 0xe0, 0x5f, 0x30,
+                0x88, 0x7a, 0x00, 0xc1, 0x42, 0x3e, 0x29, 0x5b, 0x2a, 0x7e, 0xf0, 0xa6, 0xc1, 0x63, 0xbe, 0x53
+            };
+
+            var subject = new Argon2i(System.Array.Empty<byte>());
+            subject.DegreeOfParallelism = 3;
+            subject.Iterations = 4;
+            subject.MemorySize = 512;
+            subject.Salt = _salt;
+
+            var actual = subject.GetBytes(32);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void TestArgon2idWithEmptyPassword()
+        {
+            var expected = new byte[] {
+                0x60, 0x92, 0xe0, 0x69, 0x60, 0xfb, 0x9b, 0x4b, 0x7e, 0xa4, 0x1a, 0x60, 0x29, 0xa2, 0x2f, 0x8a,
+                0xab, 0x74, 0x57, 0x52, 0x64, 0x93, 0xd4, 0x17, 0xee, 0x12, 0x45, 0x4d, 0xbc, 0x0e, 0xf5, 0xee
+            };
+
+            var subject = new Argon2id(System.Array.Empty<byte>());
+            subject.DegreeOfParallelism = 3;
+            subject.Iterations = 4;
+            subject.MemorySize = 512;
+            subject.Salt = _salt;
+
+            var actual = subject.GetBytes(32);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void NullPasswordIsRejected()
+        {
+            Assert.Throws<System.ArgumentNullException>(() => new Argon2id(null));
+        }
+
         public static byte[] Hash(string password, string salt)
         {
             var saltBytes = Encoding.UTF8.GetBytes(salt);
